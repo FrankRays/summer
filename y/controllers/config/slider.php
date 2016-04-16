@@ -37,6 +37,7 @@ class Slider extends Ykj_Controller{
 
 	}
 
+
 	public function create(){
 		$this -> _data['content']['moduleName'] = '幻灯片管理';
 		$this -> _data['content']['moduleDesc'] = '首页幻灯片管理';
@@ -48,6 +49,11 @@ class Slider extends Ykj_Controller{
 
 		if($post){
 			$post['section'] = 'slides';
+
+			if(!isset($post["module"])) {
+				$post["module"] = "default";
+			}
+
 			if($lastInsertId = $this -> config_model -> create($post)){
 				$this -> jsonOutUtil -> resultOutString(true,
 					array('msg' => '保存成功', 'id'=> $lastInsertId));

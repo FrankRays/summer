@@ -18,6 +18,10 @@ class config_model extends CI_Model{
 	public function add($data = FALSE){
 		if($data == FALSE) return FALSE;
 
+		if(!isset($data["module"])) {
+			$data["module"] = "default";
+		}
+
 		$this -> db -> insert($this -> tableName, $data);
 		if($this -> db -> affected_rows()){
 			return TRUE;
@@ -149,16 +153,32 @@ class config_model extends CI_Model{
 		}
 		$updateData['summary'] = isset($post['summary']) ? $post['summary'] : '';
 		$section = isset($post['section']) ? $post['section'] : '';
-		// var_dump($updateData);
+
+		//insert Data value
+		$insertData = array("value" => json_encode($updateData));
+
 		if (isset($post['id']) && !empty($post['id'])) {
+			//update
 			$id = is_numeric($post['id']) ? intval($post['id']) : 0;
 
 			$this -> db -> where(array('id'=> $id));
-			$this -> db -> update($this -> tableName, array('value' => json_encode($updateData)));
+			$this -> db -> update($this -> tableName, $insertData);
 			return $id;
 		}else{
-			$this -> db -> insert($this -> tableName, array('value' => json_encode($updateData),
-					'section' => $section));
+			//create
+			$insertData["section"] = $section;
+			if(!isset($post["module"])) {
+				$insertData["module"] = "default";
+			}else{
+				$insertData["module"] = $post["module"];
+			}
+
+			if(!isset($post["owner"])) {
+				$insertData["owner"] = "summer";
+			}else{
+				$insertData["owner"] = $post["owner"];
+			}
+			$this -> db -> insert($this -> tableName, $insertData);
 			return $this -> db -> insert_id();
 		}
 	}

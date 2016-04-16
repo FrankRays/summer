@@ -94,7 +94,8 @@ class User_model extends CI_Model{
 	public function signup($username, $password){
 		$update = array(
 			'username' => $username,
-			'password' => $this -> _doSha1($password)
+			'password' => $this -> _doSha1($password),
+			"email" => "summer@summer.com",
 			);
 
 		$this -> db -> insert($this -> tableName, $update);

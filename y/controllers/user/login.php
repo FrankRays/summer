@@ -40,7 +40,7 @@ class login extends Ykj_Controller{
 	}
 
 	public function signUp(){
-		$username = "snow0x01";
+		$username = "summer";
 		$password = "123456";
 		$this -> user_model -> signUp($username, $password);
 	}

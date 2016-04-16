@@ -381,3 +381,19 @@ filter:progid:DXImageTransform.Microsoft.gradient( GradientType = 0,startColorst
   float: right;
   font-weight: normal;
 }
+
+
+/* hight slider */
+.imgag-gallery-wrapper{
+  position: relative;
+}
+
+
+.image-gallery-title {
+  width:100px;
+  height: 25px;
+  position: absolute;
+  left: 40px;
+  bottom: 60px;
+  background-color: #222;
+}
