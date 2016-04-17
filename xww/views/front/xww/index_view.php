@@ -27,9 +27,12 @@
 	<script type="text/javascript" src="<?php echo base_url('/source/layer/layer.min.js') ?>"></script>
 	<script type="text/javascript" src="<?php echo base_url('/source/layer/extend/layer.ext.js') ?>"></script>
 	<!-- lightslider -->
-	<link rel="stylesheet" type="text/css" href="<?php echo base_url("/statics/plugins/lightslider/css/lightslider.css") ?>
-	">
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url("/statics/plugins/lightslider/css/lightslider.css") ?>">
 	<!-- lightslider -->
+	<!-- tab js -->
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url("/statics/plugins/tab/css/pignose.tab.css") ?>">
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url("/statics/plugins/xww-tab/css/xww.tab.css") ?>">
+	<!-- tabjs -->
 </head>
 <body>
 	<div id="header">
@@ -54,7 +57,7 @@
 			</ul>
 		</div>
 	</div>
-	<div id="content">
+	<div class="content">
 
 
 		<div id="recent-im-news">
@@ -73,15 +76,15 @@
 					<?php } ?>
 				</ul>
 				<ul class="image-gallery-title">
+					<?php foreach($data['slide'] as $k => $v){  ?>
 					<li class="cS-hidden">
-						<a href="#">1梁咏琪</a>
+						<?php if(empty($v["value"]["linkSrc"])) { ?>
+						<a href="#"><?php echo $v["value"]["name"] ?></a>
+						<?php }else{  ?>
+							<a href="<?php echo $v["value"]["linkSrc"] ?>"><?php echo $v["value"]["name"] ?></a>
+						<?php } ?>
 					</li>
-					<li class="cS-hidden">
-						<a href="#">2木事</a>
-					</li>
-					<li class="cS-hidden">
-						<a href="#">3你呀你</a>
-					</li>
+					<?php } ?>
 				</ul>
 			</div>
 			<!--近期要闻图片轮播结束-->
@@ -159,8 +162,7 @@
 				<ul class="institute-list">
 					<?php foreach($data['xbdt'] as $v){ ?>
 					<li>
-						<a target="_blank" href="<?php echo "http://www.svtcc.edu.cn/front/view-16-".$v['id'].".html" ?>
-							" >
+						<a target="_blank" href="<?php echo "http://www.svtcc.edu.cn/front/view-16-".$v['id'].".html" ?>">
 							<?php echo $v['title'] ?></a>
 						<span>
 							<?php echo $v['index_ctime'] ?></span>
@@ -207,7 +209,73 @@
 			</div>
 			<div id="media">
 				<div id="video-show">
-					<div id="video-t">
+					<div class="xww-tab xww-tab-wrapper" style="height:152px;margin: 20px 0 0 0;">
+						<ul>
+							<li class="active">
+								<h2><a target="_blank" href="<?php echo site_url('video/') ?>" >视频展播</a></h2>
+								<div class="video-con">
+									<div class="video1">
+										<a title="<?php echo $data['spzb'][0]['title'] ?>
+											" href="
+											<?php echo site_url("video/archive/".$data['spzb'][0]['news_id']) ?>
+											">
+											<img src="<?php echo base_url($data['spzb'][0]['pic_src'])?>" /></a>
+									</div>
+									<div class="video2">
+										<a title="<?php echo $data['spzb'][1]['title'] ?>
+											" href="
+											<?php echo site_url("video/archive/".$data['spzb'][1]['news_id']) ?>
+											">
+											<img src="<?php echo base_url($data['spzb'][1]['pic_src'])?>" /></a>
+									</div>
+									<div class="video3">
+										<a title="<?php echo $data['spzb'][2]['title'] ?>
+											" href="
+											<?php echo site_url("video/archive/".$data['spzb'][2]['news_id']) ?>
+											">
+											<img src="<?php echo base_url($data['spzb'][2]['pic_src'])?>" /></a>
+									</div>
+								</div>
+							</li>
+							<li>
+								<h2><a target="_blank" href="<?php echo site_url('news/li/13') ?>" >微电台</a></h2>
+								<div>
+									<div class="video-con">
+										<?php if(isset($data["wdt"][0])) { ?>
+											<div class="video1">
+												<a title="<?php echo $data['wdt'][0]['title'] ?>
+													" href="
+													<?php echo site_url("video/archive/".$data['wdt'][0]['news_id']) ?>
+													">
+													<img src="<?php echo base_url($data['wdt'][0]['pic_src'])?>" /></a>
+											</div>
+										<?php	} ?>
+										<?php if(isset($data["wdt"][1])) { ?>
+											<div class="video2">
+												<a title="<?php echo $data['wdt'][1]['title'] ?>
+													" href="
+													<?php echo site_url("video/archive/".$data['wdt'][1]['news_id']) ?>
+													">
+													<img src="<?php echo base_url($data['wdt'][1]['pic_src'])?>" /></a>
+											</div>
+										<?php	} ?>
+										<?php if(isset($data["wdt"][2])) { ?>
+											<div class="video3">
+												<a title="<?php echo $data['wdt'][2]['title'] ?>
+													" href="
+													<?php echo site_url("video/archive/".$data['wdt'][2]['news_id']) ?>
+													">
+													<img src="<?php echo base_url($data['wdt'][2]['pic_src'])?>" /></a>
+											</div>
+										<?php	} ?>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+
+
+						<!-- <div id="video-t">
 						<h2>
 							<a target="_blank" href="<?php echo site_url('video/') ?>" >视频展播</a>
 						</h2>
@@ -217,7 +285,9 @@
 								<img src="<?php echo base_url('/source/ft/xww/images/triangle.jpg')?>"></a>
 						</div>
 					</div>
-					<div id="video-con">
+
+
+				<div id="video-con">
 						<div class="video1">
 							<a title="<?php echo $data['spzb'][0]['title'] ?>
 								" href="
@@ -239,15 +309,57 @@
 								">
 								<img src="<?php echo base_url($data['spzb'][2]['pic_src'])?>" /></a>
 						</div>
-					</div>
+					</div> -->
 				</div>
 				<div id="link">
+					<div class="xww-tab xww-tab-wrapper" style="height:152px;margin: 20px 0 0 30px;padding:0 5px;">
+						<ul>
+							<li class="active">
+								<h2>
+									<a href="<?php echo site_url('news/li/10')?>" >通知公告</a>
+								</h2>
+								<div>
+									<ul id="tzgg-wrapper" class="notice institute-list">
+										<?php foreach ($data['tzgg'] as $v) {?>
+										<li>
+											<a target="_blank" href="<?php echo site_url('news/archive/' . $v['news_id']) ?>
+												">
+												<?php echo $v['title'] ?></a>
+											<span>
+												<?php echo $v['add_time'] ?></span>
+										</li>
+										<?php } ?>
+									</ul>
+								</div>
+							</li>
+							<li>
+								<h2 >
+									<a href="<?php echo site_url('news/li/11')?>" >耕读交院</a>
+								</h2>
+								<div>
+									<ul id="jygy-wrapper" class="notice institute-list">
+										<?php foreach ($data['jygy'] as $v) {?>
+										<li>
+											<a target="_blank" href="<?php echo site_url('news/archive/' . $v['news_id']) ?>">
+												<?php echo $v['title'] ?></a>
+											<span><?php echo $v['add_time'] ?></span>
+										</li>
+										<?php } ?>
+									</ul>
+								</div>
+							</li>
+						</ul>
+					</div>
+
+
+
+				<!-- 
 					<div id="link-t">
 						<h2 id="summer-tzgg">
 							<a target="_blank" href="<?php echo site_url('news/li/10') ?>" >通知公告</a>
 						</h2>
 						<h2 id="summer-jygy" style="background:none;">
-							<a target="_blank" href="<?php echo site_url('news/li/11') ?>" >交院光荫</a>
+							<a target="_blank" href="<?php echo site_url('news/li/11') ?>" >耕读交院</a>
 						</h2>
 						<div id="more-wrap">
 							<a id="tzgg-jygy-more" href="<?php echo site_url('news/li/10') ?>
@@ -278,17 +390,17 @@
 							</li>
 							<?php }
 								?></ul>
-						<div id="link-con">
+						
+					</div> -->
+					<div id="link-con">
 							<a href="http://www.svtcc.edu.cn" target="_blank">
 								<img src="<?php echo base_url('/source/ft/xww/images/school_home.jpg')?>" /></a>
 							<a href="http://scjyyb.svtcc.edu.cn" target="_blank">
 								<img src="<?php echo base_url('/source/ft/xww/images/yb.jpg')?>" /></a>
 							<a href="http://weibo.com/u/5168125807" target="_blank">
 								<img src="<?php echo base_url('/source/ft/xww/images/weibo.jpg')?>" /></a>
-							<a target="blank" href="<?php echo base_url('/source/erwima.jpg') ?>
-								">
-								<img src="<?php echo base_url('/source/ft/xww/images/weixin.jpg')?>" /></a>
-						</div>
+							<a target="blank" href="<?php echo base_url('/source/erwima.jpg') ?>">
+							<img src="<?php echo base_url('/source/ft/xww/images/weixin.jpg')?>" /></a>
 					</div>
 				</div>
 			</div>
@@ -296,6 +408,70 @@
 		<div id="right-wrap">
 			<!--图片新闻-->
 			<div id="pic-news">
+				<div class="xww-tab" style="height:152px;margin:20px 0 0 0;">
+					<ul>
+						<li class="active">
+							<h2>
+								<a href="<?php echo site_url('photo/index/8') ?>">图片新闻</a>
+							</h2>
+							<div>
+								<div id="pic-news-con">
+									<div id="pic1">
+										<a href="<?php echo site_url('/photo/archive/'.$data['picnews'][0]['id']) ?>
+											">
+											<img src="<?php echo base_url($data['picnews'][0]['src'] )?>" /></a>
+										<a href="<?php echo site_url('/photo/archive/'.$data['picnews'][0]['id']) ?>
+											">
+											<p  style="margin-top:5px;text-align:center;">
+												<?php echo $data['picnews'][0]['title']?></p>
+										</a>
+									</div>
+									<?php unset($data['picnews'][0]) ?>
+									<?php foreach($data['picnews'] as $v){ ?>
+									<div id="pic2">
+										<a href="<?php echo site_url('/photo/archive/'.$v['id']) ?>
+											">
+											<img src="<?php echo base_url($v['src'])?>" /></a>
+									</div>
+									<?php } ?>
+								</div> 
+							</div>
+						</li>
+						<li>
+							<h2><a href="<?php echo site_url('photo/index/12') ?>">校园写意</a></h2>
+							<div>
+								<div id="pic-news-con">
+									<?php if(isset($data["xyxy"][0])) { ?>
+									<div id="pic1">
+										<a href="<?php echo site_url('/photo/archive/'.$data['xyxy'][0]['id']) ?>">
+											<img src="<?php echo base_url($data['xyxy'][0]['src'] )?>" />
+										</a>
+										<a href="<?php echo site_url('/photo/archive/'.$data['xyxy'][0]['id']) ?>
+											">
+											<p  style="margin-top:5px;text-align:center;">
+												<?php echo $data['xyxy'][0]['title']?></p>
+										</a>
+									</div>
+									<?php } ?>
+
+
+									<?php 
+									if(count($data["xyxy"]) > 0) {
+										unset($data['xyxy'][0]) ?>
+									<?php foreach($data['xyxy'] as $v){ ?>
+									<div id="pic2">
+										<a href="<?php echo site_url('/photo/archive/'.$v['id']) ?>
+											">
+											<img src="<?php echo base_url($v['src'])?>" /></a>
+									</div>
+									<?php }} ?>
+								</div> 
+							</div>
+						</li>
+					</ul>
+				</div>
+
+				<!-- 
 				<div id="pic-news-t">
 					<h2>
 						<a target="_blank" href="<?php echo site_url('photo/index/8') ?>" >图片新闻</a>
@@ -324,7 +500,9 @@
 							">
 							<img src="<?php echo base_url($v['src'])?>" /></a>
 					</div>
-					<?php } ?></div>
+					<?php } ?>
+				</div> 
+					-->
 			</div>
 			<div id="media-jy">
 				<div id="media-jy-t" style="margin-bottom:15px;">
@@ -436,11 +614,16 @@
 <!-- lightslider -->
 <script type="text/javascript" src="<?php echo base_url("/statics/plugins/lightslider/js/lightslider.js") ?>"></script>
 <!-- lightslider -->
+<!-- tab js -->
+<script type="text/javascript" src="<?php echo base_url("/statics/plugins/tab/js/pignose.tab.js") ?>"></script>
+<script type="text/javascript" src="<?php echo base_url("/statics/plugins/xww-tab/js/xww.tab.js") ?>"></script>
+<!-- tab js -->
 <!-- foot js -->
 <!-- lightslider set -->
 <script>
 	$(document).ready(function() {
 
+		//init slider
 		var galleryTitles =  $(".image-gallery-title").find("li");
 		$('#image-gallery').lightSlider({
 			gallery:false,
@@ -452,25 +635,33 @@
 			loop:true,
 			pause:4000,
 			onBeforeStart : function($el) {
-				console.log($el);
 			},
-			onSliderLoad: function() {
+			onSliderLoad: function($el) {
 				$('#image-gallery').removeClass('cS-hidden');
-			},
-			onBeforeSlide : function($el, scene) {
-				var i = scene - 2;
+				var i = $el.getCurrentSlideCount() - 1;
 				if(i >= 0) {
 					galleryTitles.eq(i).removeClass("cS-hidden");
 					galleryTitles.eq(i).siblings().addClass("cS-hidden");
 				}
-				console.log("before");
-				console.log(scene);
 			},
-			onAfterSlide : function($el, scene) {
+			onBeforeSlide : function($el, scene) {
+				var i = $el.getCurrentSlideCount() - 1;
+				if(i >= 0) {
+					galleryTitles.eq(i).removeClass("cS-hidden");
+					galleryTitles.eq(i).siblings().addClass("cS-hidden");
+				}
 			}
+		});
 
-			//image-gallery-title
-			
+		//init tabs
+		$('.tab').pignoseTab({
+			animation: true,
+			children: '.tab'
+		});
+
+		//init xww tabs
+		$(".xww-tab").xwwTab({
+
 		});
 	});
 </script>
