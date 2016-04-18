@@ -20,6 +20,7 @@ class Ykj_Controller extends CI_Controller{
 		$this -> load -> helper("url");
 		$this -> load -> helper('cookie');
 		$this -> load -> library('session');
+		$this->load->helper("form");
 		$this -> load -> library('yerror');
 		$this -> load -> model('lm_model');
 		$this -> load -> model('news_category_model');
@@ -43,9 +44,12 @@ class Ykj_Controller extends CI_Controller{
 		$this -> _data['foot'] = array();
 
 		//开发模式下开启性能分析模式
-//		if(ENVIRONMENT == 'development'){
-//			$this -> output -> enable_profiler(TRUE);
-//		}
+		if(ENVIRONMENT == 'development'){
+			$this -> output -> enable_profiler(TRUE);
+		}
+
+		//分页配置文件
+		$this->_paginationConfig = $this->config->item('paginationConfig', 'snowConfig/admin');
 		session_start();
 		$RTR =& load_class('Router', 'core');
 		if($RTR->fetch_class() != "login"){
@@ -87,6 +91,22 @@ class Ykj_Controller extends CI_Controller{
 		}
 		$this -> load -> view($tplPath, array('content' => $this -> _data['content']));
 		$this -> load -> view($this -> _footer, array('foot' => $this -> _data['foot']));
+	}
+
+	/**
+	 * load default admin template view
+	 * @param  [type] $tplPath [description]
+	 * @param  [type] $data    [description]
+	 * @return [type]          [description]
+	 */
+	public function loadView($tplPath, $data) {
+		$head = isset($data["head"]) ? $data["head"] : array();
+		$sidebar = isset($data["sidebar"]) ? $data["sidebar"] : array();
+		$foot = isset($data["foot"]) ? $data["foot"] : array();
+		$this->load->view($this->_header, $head);
+		$this->load->view($this->_sidebar, $sidebar);
+		$this->load->view($tplPath, $data);
+		$this->load->view($this->_footer, $foot);
 	}
 
 	/*
@@ -178,21 +198,14 @@ class Ykj_Controller extends CI_Controller{
 	//获得分页链接html字符串
 	public function _getPaginationStr($total){
 		//载入配置文件
-		$paginationConfig = $this -> config -> item('paginationConfig', 'snowConfig/admin');
 		//分页信息
-		$getArr = $this -> input -> get();
-		unset($getArr['page']);
+		$getArr = $this->input->get();
 		$getStr = '';
-		foreach($getArr as $k => $v){
-			$getStr .= $k . '=' . $v . '&';
-		}
-		$getStr = rtrim($getStr, '&');
 		$paginationConfig['base_url'] = site_url($getStr);
 		$paginationConfig['total_rows'] = $total;
 		//分页类载入
-		$this -> load -> library('pagination');
-		$this -> pagination -> initialize($paginationConfig);
-		return $this -> pagination -> create_links();
+		$this->pagination->initialize($paginationConfig);
+		return $this->pagination->create_links();
 	}
 
 	/**

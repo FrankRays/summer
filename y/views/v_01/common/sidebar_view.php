@@ -8,7 +8,7 @@
 ?>
 <div class="am-cf admin-main">
     <!-- sidebar start -->
-    <div class="admin-sidebar am-offcanvas" id="admin-offcanvas">
+    <div class="admin-sidebar am-offcanvas" i/"admin-offcanvas">
         <div class="am-offcanvas-bar admin-offcanvas-bar">
             <ul class="am-list admin-sidebar-list">
                 <li>
@@ -23,9 +23,9 @@
                         图文文章管理
                         <span class="am-icon-angle-right am-fr am-margin-right"></span>
                     </a>
-                    <ul class="am-list am-collapse admin-sidebar-sub am-in" id="collapse-nav">
+                    <ul class="am-list am-collapse admin-sidebar-sub am-in" i/"collapse-nav">
                         <li>
-                            <a href="<?php echo site_url('d=article&c=y&m=index') ?>
+                            <a href="<?php echo site_url('/article/y/index') ?>
                                 " class="am-cf">
                                 <span class="am-icon-check"></span>
                                 文章列表
@@ -34,14 +34,14 @@
                         </a>
                     </li>
                     <li>
-                        <a href="<?php echo site_url('d=article&c=y&m=create') ?>
+                        <a href="<?php echo site_url('/article/y/create') ?>
                             ">
                             <span class="am-icon-puzzle-piece"></span>
                             发布文章
                         </a>
                     </li>
                     <li>
-                        <a href="<?php echo site_url('d=config&c=slider&m=index') ?>
+                        <a href="<?php echo site_url('/config/slider/index') ?>
                             ">
                             <span class="am-icon-puzzle-piece"></span>
                             首页幻灯片
@@ -62,9 +62,9 @@
                 学院首页新闻管理
                 <span class="am-icon-angle-right am-fr am-margin-right"></span>
             </a>
-            <ul class="am-list am-collapse admin-sidebar-sub am-in" id="indexarticle-manage">
+            <ul class="am-list am-collapse admin-sidebar-sub am-in" i/"indexarticle-manage">
                 <li>
-                    <a href="<?php echo site_url('d=indexArticle&c=y&m=index&category_id=1') ?>
+                    <a href="<?php echo site_url('/indexArticle/y/index')."?category_id=1" ?>
                         " class="am-cf">
                         <span class="am-icon-check"></span>
                         学院新闻
@@ -73,21 +73,21 @@
                 </a>
             </li>
             <li>
-                <a href="<?php echo site_url('d=indexArticle&c=y&m=index&category_id=3') ?>
+                <a href="<?php echo site_url('/indexArticle/y/index')."?category_id=3" ?>
                     ">
                     <span class="am-icon-puzzle-piece"></span>
                     系部动态
                 </a>
             </li>
             <li>
-                <a href="<?php echo site_url('d=indexArticle&c=y&m=doCrawler') ?>
+                <a href="<?php echo site_url('/indexArticle/y/doCrawler') ?>
                     ">
                     <span class="am-icon-puzzle-piece"></span>
                     搬运首页新闻
                 </a>
             </li>
             <li>
-                <a href="<?php echo site_url('d=indexarticle&c=y&m=doCrawlNewPage') ?>
+                <a href="<?php echo site_url('/indexarticle/y/doCrawlNewPage') ?>
                     ">
                     <span class="am-icon-puzzle-piece"></span>
                     首页新闻统计
@@ -108,9 +108,9 @@
         图片管理
         <span class="am-icon-angle-right am-fr am-margin-right"></span>
     </a>
-    <ul class="am-list am-collapse admin-sidebar-sub am-in" id="photo-manage">
+    <ul class="am-list am-collapse admin-sidebar-sub am-in" i/"photo-manage">
         <li>
-            <a href="<?php echo site_url('d=article&c=photo&m=index&category_id=8') ?>
+            <a href="<?php echo site_url('/article/photo/index')."?category_id=8" ?>
                 " class="am-cf">
                 <span class="am-icon-check"></span>
                 图片新闻
@@ -119,14 +119,14 @@
         </a>
     </li>
     <li>
-        <a href="<?php echo site_url('d=article&c=photo&m=index&category_id=7') ?>
+        <a href="<?php echo site_url('/article/photo/index')."?category_id=7" ?>
             ">
             <span class="am-icon-puzzle-piece"></span>
             光影交院
         </a>
     </li>
     <li>
-        <a href="<?php echo site_url('d=article&c=photo&m=index&category_id=12') ?>
+        <a href="<?php echo site_url('/article/photo/index')."?category_id=12" ?>
             " class="am-cf">
             <span class="am-icon-check"></span>
             校园写意
@@ -143,9 +143,9 @@
 视频管理
 <span class="am-icon-angle-right am-fr am-margin-right"></span>
 </a>
-<ul class="am-list am-collapse admin-sidebar-sub am-in" id="video-manage">
+<ul class="am-list am-collapse admin-sidebar-sub am-in video-manage">
 <li>
-    <a href="<?php echo site_url('d=article&c=video&m=index') ?>
+    <a href="<?php echo site_url('/article/video/index') ?>
         " class="am-cf">
         <span class="am-icon-check"></span>
         视频列表
@@ -154,7 +154,7 @@
 </a>
 </li>
 <li>
-<a href="<?php echo site_url('d=article&c=video&m=create') ?>
+<a href="<?php echo site_url('/article/video/create') ?>
     ">
     <span class="am-icon-puzzle-piece"></span>
     添加视频
@@ -183,7 +183,7 @@
 </li>
 -->
 <li>
-<a href="<?php echo site_url('d=user&c=login&m=signOut') ?>
+<a href="<?php echo site_url('/user/login/signOut') ?>
 ">
 <span class="am-icon-sign-out"></span>
 注销

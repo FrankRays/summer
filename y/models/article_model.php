@@ -284,12 +284,86 @@ class article_model extends CI_Model {
 	}
 
 	//取出数据新接口，传入开始，结束，条件，返回得到的数组
-	public function getByCond($limit, $offset, $cond) {
-		$this->db->where($cond);
+	/**
+	 * @deprecated [<version>] [<description>]
+	 * @param  [type] $limit  [description]
+	 * @param  [type] $offset [description]
+	 * @param  [type] $cond   [description]
+	 * @return [type]         [description]
+	 */
+	public function getByCond($offset, $limit, $cond) {
+		$where = array();
+		if(isset($cond["category_id"])) {
+			$where["category_id"] = $cond["category_id"];
+		}
+		if(isset($cond["title"])) {
+			$this->db->like("title", $cond["title"], "both");
+		}
+		$this->db->where($where);
 		$this->selectCondition();
 		$result = $this->db->get($this->tableName . ' as ' . $this->tableAlias,
 			$limit, $offset)->result_array();
 
 		return $result;
 	}
+
+	public function getPages($offset=0, $limit=20, $cond=array()) {
+		$where = array();
+		$like = array();
+		if(isset($cond["category_id"])) {
+			$where["category_id"] = $cond["category_id"];
+		}
+		if(isset($cond["title"])) {
+			$like["title"] = $cond["title"];
+		}
+		$where["t1.is_delete"] = 0;
+
+		$this->db->start_cache();
+		$this->db->from($this->tableName . " as t1")
+				->join("news_category as t2", "t1.category_id=t2.id")
+				->where($where)
+				->like($like)
+				->order_by('t1.add_time', 'desc');
+		$this->db->stop_cache();
+
+		$this->db->limit($limit, $offset);
+
+		$select = array(
+			"t1.id as news_id",
+			"t1.content",
+			"t1.hits",
+			"t1.category_id",
+			"t1.status",
+			"t1.edit_time",
+			"t1.add_time",
+			"t1.video_src",
+			"t1.is_top",
+			"t1.title",
+			"t1.author",
+			"t1.summary",
+			"t1.keywords",
+			"t1.pic_src",
+			"t1.url_src",
+			"t1.come_from",
+			"t1.hits",
+			"t1.file_src",
+			"t1.sort",
+			"t2.pic_src as category_pic_src",
+			"t2.name as category_name",
+			"t2.describle",
+			);
+		$this->db->select($select);
+
+		$dataList = $this->db->get()->result_array();
+		$count = $this->db->count_all_results();
+		$result = array(
+			"dataList" => $dataList,
+			"count" => $count
+			);
+		$this->db->flush_cache();
+
+		return $result;
+	}
+
+
 }

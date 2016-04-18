@@ -38,6 +38,8 @@
   <!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
   <script type="text/javascript" charset="utf-8" src="<?php echo  base_url('source/ueditor/lang/zh-cn/zh-cn.js') ?>"></script>
 <!--  ueditor-->
+  <script type="text/javascript" src="<?php echo base_url("statics/plugins/chosen/amazeui.chosen.min.js") ?>"></script>
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url("statics/plugins/chosen/amazeui.chosen.css") ?>">
 </head>
 <body>
 <!--[if lte IE 9]>

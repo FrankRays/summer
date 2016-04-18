@@ -53,6 +53,23 @@ class news_category_model extends CI_Model{
 		return $result;
 	}
 
+	/**
+	 * 通过类型查找分类
+	 * @param  string $type [description]
+	 * @return [type]       [description]
+	 */
+	public function find_by_type($type="article"){
+		$this->db->where(array("is_delete"=>0, "type"=>$type));
+		$this->db->order_by("id", "DESC");
+
+		$result = $this->db->get($this->tableName)->result_array();
+		if(!empty($result)) {
+			return $result;
+		}else{
+			return array();
+		}
+	}
+
 
 	public function getRecList($fid = 0){
 		$categoryList = $this -> getList(null);

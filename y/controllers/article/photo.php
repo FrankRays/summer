@@ -30,31 +30,27 @@ class photo extends Ykj_Controller {
 	}
 
 	public function index() {
-		$this->_data['content']['moduleName'] = '图片文章管理';
-		$this->_data['content']['moduleDesc'] = '图片相关的文章管理';
-		$this->_data['sidebar'] = array();
-		$this->_data['foot'] = array();
+		$data['moduleName'] = '图片管理';
+		$data['moduleDesc'] = '图片相关管理';
 
-		$get = $this->input->get();
+		$get = $this->input->get(NULL, TRUE);
+        
+		if(isset($get["category_id"])) {
+			$cond["category_id"] = $get["category_id"];
+        	$_POST["category_id"] = $get["category_id"];
+		}
+		if(isset($get["title"])) {
+			$seach = trim($get["title"]);
+			if($seach != "") {
+				$cond["title"] = $get["title"];
+	        	$_POST["title"] = $get["title"];
+			}
+		}
 
-		$category_id = isset($get['category_id']) && is_numeric($get['category_id']) ?
-		intval($get['category_id']) : 0;
-		$page = isset($get['page']) && is_numeric($get['page']) ?
-		(intval($get['page']) - 1) : 0;
-		$this->_data['content']['pagination']
-		= $this->_getPaginationStr($this->article_model->
-				getTotalByCond(array('category_id' => $category_id)));
+		$data["page"] = $this->article_model->getPages(0, 20, $cond);
+        $data["categories"] = $this->news_category_model->find_by_type("image");
 
-		$paginationConfig = $this->config->item('paginationConfig', 'snowConfig/admin');
-		$this->_data['content']['articles'] =
-		$this->article_model->getByCond($paginationConfig['per_page'],
-			($page * $paginationConfig['per_page']),
-			array(
-				'category_id' => $category_id,
-			));
-
-		$this->_view($this->tpl['browse']);
-
+		$this->loadView("v_01/article/photo_browse_view", $data);
 	}
 
 	public function create() {
