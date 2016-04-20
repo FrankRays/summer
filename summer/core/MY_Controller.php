@@ -1,6 +1,6 @@
 <?php if(! defined('BASEPATH')) exit('No direct script access allowd');
 
-class Ykj_Controller extends CI_Controller{
+class MY_Controller extends CI_Controller{
 	//默认模板传值
 	protected $_data;
 	//默认模板后缀
@@ -99,7 +99,7 @@ class Ykj_Controller extends CI_Controller{
 	 * @param  [type] $data    [description]
 	 * @return [type]          [description]
 	 */
-	public function loadView($tplPath, $data) {
+	public function _loadView($tplPath, $data) {
 		$head = isset($data["head"]) ? $data["head"] : array();
 		$sidebar = isset($data["sidebar"]) ? $data["sidebar"] : array();
 		$foot = isset($data["foot"]) ? $data["foot"] : array();

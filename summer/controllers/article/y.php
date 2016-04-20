@@ -7,7 +7,7 @@ defined('BASEPATH') || exit('no direct access');
  * Time: 14:50
  */
 
-class y extends Ykj_Controller{
+class y extends MY_Controller{
 
     //模板
     private $tpl;
@@ -42,19 +42,23 @@ class y extends Ykj_Controller{
     /**
      *文章管理首页
      */
-    public function index(){
-        $this -> _data['content']['moduleName']
-            = $this -> _data['head']['title'] = '文章管理';
-        $this -> _data['content']['moduleDesc'] = '管理多媒体文章信息';
-        $this -> _data['sidebar'] = array();
-        $this -> _data['foot'] = array();
+    public function index() {
+        $data['moduleName']= '文章管理';
+        $data['moduleDesc'] = '管理多媒体文章信息';
 //      var_dump($this -> article_model -> getTotal());
-        $this -> _data['content']['pagination']
-            = $this -> _getPaginationStr($this -> article_model -> getTotal());
+        $data['pagination'] = $this -> _getPaginationStr($this -> article_model -> getTotal());
 
-        $this -> _data['content']['articles'] = $this -> article_model -> getNormalList();
-        $this -> _data['content']['categories'] = $this -> news_category_model -> getRecList();
-        $this -> _view($this -> tpl['browse']);
+        $category_id = $this->input->get("category_id", true);
+        $_POST["category_id"] = $category_id;
+
+        $data['articles'] = $this -> article_model -> getNormalList();
+        $data['categories'] = $this -> news_category_model -> getRecList();
+
+        $paginationConfig = $this->config->item("snowConfig/admin");
+        $paginationConfig = $paginationConfig['paginationConfig'];
+        var_dump($paginationConfig);
+
+        $this->_loadView('v_01/article/browse_view', $data);
     }
 
     /**

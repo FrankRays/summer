@@ -105,7 +105,7 @@ max_selected_options: 1
 });
 cateSelect.change(function(e, k){
 if(!!k.selected) {
-document.location.href="<?php echo site_url("/article/photo/index?category_id=") ?>" + k.selected;
+document.location.href="<?php echo site_url("/article/photo/index?&").'category_id=' ?>" + k.selected;
 }
 });
 </script>

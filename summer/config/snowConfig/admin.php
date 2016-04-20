@@ -14,8 +14,7 @@ $config['y']['view']['foot'] = 'v_o1/common/foot_view.php';
 //分页配置
 $config['paginationConfig'] = array(
     'per_page' => '20',
-    'use_page_numbers' => true,
-    'query_string_segment' => 'page',
+    'query_string_segment' => 'offset',
     'page_query_string' => true,
     'full_tag_open' => '<ul data-am-widget="pagination" class="am-pagination am-pagination-default">',
     'full_tag_close' => '</ul>',

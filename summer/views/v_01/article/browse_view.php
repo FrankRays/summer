@@ -3,8 +3,8 @@
 <div class="admin-content">
     <div class="am-cf am-padding">
       <div class="am-fl am-cf">
-        <strong class="am-text-primary am-text-lg"><?php echo $content['moduleName'] ?></strong> /
-        <small><?php echo $content['moduleDesc'] ?></small>
+        <strong class="am-text-primary am-text-lg"><?php echo $moduleName ?></strong> /
+        <small><?php echo $moduleDesc ?></small>
       </div>
     </div>
     <div class="am-g">
@@ -20,10 +20,10 @@
       </div>
       <div class="am-u-sm-12 am-u-md-3">
         <div class="am-form-group">
-          <select name="category" id="y-article-category" >
+          <select name="category_id" id="y-article-category" class="category-select" style="width:250px;">
             <option value="option1">所有类别</option>
-            <?php foreach($content['categories'] as $category){ ?>
-              <option value="<?php echo $category['id'] ?>"><?php echo $category['name'] ?></option>
+            <?php foreach($categories as $category){ ?>
+              <option value="<?php echo $category['id']?>" <?php echo set_select('category_id', $category['id']) ?>><?php echo $category['name'] ?></option>
             <?php } ?>
             <!-- 
             <option value="option2">IT业界</option>
@@ -61,7 +61,7 @@
               </tr>
           </thead>
           <tbody>
-          <?php foreach($content['articles'] as $article){ ?>
+          <?php foreach($articles as $article){ ?>
             <tr>
               <td><input type="checkbox" /></td>
               <td><?php echo $article['news_id'] ?></td>
@@ -98,7 +98,7 @@
           <div class="am-cf">
   共 15 条记录
   <div class="am-fr">
-    <?php echo $content['pagination'] ?>
+    <?php echo $pagination ?>
   </div>
 </div>
           <hr />
@@ -116,4 +116,14 @@
   var setTopUrl = "<?php echo site_url('d=article&c=y&m=setTopByID') ?>";
   var delUrl = "<?php echo site_url('d=article&c=y&m=del') ?>";
 </script>
-<script src="<?php echo base_url('/y/views/v_01/article/js/y.js') ?>"></script>
+<script type="text/javascript">
+  var cateSelect = $('.category-select').chosen({
+    max_selected_options: 1
+  });
+  cateSelect.change(function(e, k){
+    if(!!k.selected) {
+      document.location.href="<?php echo site_url("/article/y/index").'?category_id=' ?>" + k.selected;
+    }
+  });
+</script>
+<script type="text/javascript"></script>
