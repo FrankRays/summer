@@ -10,7 +10,7 @@
     <div class="am-u-sm-12 am-u-md-6">
       <div class="am-btn-toolbar">
         <div class="am-btn-group am-btn-group-xs">
-          <a type="button" class="am-btn am-btn-default"  href="<?php echo site_url('d=article&c=photo&m=create') ?>"><span class="am-icon-plus"></span> 新增</a>
+          <a type="button" class="am-btn am-btn-default"  href="<?php echo site_url('c=post&m=create') ?>"><span class="am-icon-plus"></span> 新增</a>
           <button type="button" class="am-btn am-btn-default"><span class="am-icon-save"></span> 保存</button>
           <button type="button" class="am-btn am-btn-default"><span class="am-icon-archive"></span> 审核</button>
           <button type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
@@ -54,7 +54,7 @@
             </tr>
           </thead>
           <tbody>
-            <?php foreach($page["dataList"] as $k=>$article){ ?>
+            <?php foreach($dataList as $k=>$article){ ?>
             <tr>
               <td><input type="checkbox" /></td>
               <td><?php echo $k+1 ?></td>
@@ -83,7 +83,7 @@
         <div class="am-cf">
           共 15 条记录
           <div class="am-fr">
-            <?php echo $content['pagination'] ?>
+            <?php echo $pagination ?>
           </div>
         </div>
         <hr />
@@ -105,7 +105,7 @@ max_selected_options: 1
 });
 cateSelect.change(function(e, k){
 if(!!k.selected) {
-document.location.href="<?php echo site_url("/article/photo/index?&").'category_id=' ?>" + k.selected;
+document.location.href="<?php echo site_url("c=post").'&category_id=' ?>" + k.selected;
 }
 });
 </script>

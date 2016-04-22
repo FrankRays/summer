@@ -166,8 +166,8 @@ class article_model extends CI_Model {
 		if (isset($post['content'])) {
 			$updateData['content'] = !empty($post['content']) ? $post['content'] : '';
 		}
-		if (isset($post['category'])) {
-			$updateData['category_id'] = !empty($post['category']) ? intval($post['category']) : 0;
+		if (isset($post['category_id'])) {
+			$updateData['category_id'] = !empty($post['category_id']) ? intval($post['category_id']) : 0;
 		}
 		if (isset($post['pic_src'])) {
 			$updateData['pic_src'] = !empty($post['pic_src']) ? $post['pic_src'] : '';
@@ -363,6 +363,16 @@ class article_model extends CI_Model {
 		$this->db->flush_cache();
 
 		return $result;
+	}
+
+
+	public function getById($id='0') {
+		$id = isset($id) && is_numeric($id) ? $id : 0;
+
+		$where['id'] = $id;
+		$where['is_delete'] = 0;
+		$article = $this->db->from($this->tableName)->where($where)->get()->row_array();
+		return $article;
 	}
 
 

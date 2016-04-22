@@ -40,10 +40,11 @@
  		
 	</div>
 
+    <?php echo validation_errors() ?>
     <form id="login-form" action="#" method="post" class="am-form" data-am-vaildator>
       <div class="am-form-group">
         <label for="account">账号:</label>
-        <input class="am-form-field" type="text" name="account" id="account" value=""  required placeholder="输入邮箱"/>
+        <input class="am-form-field" type="text" name="username" id="username" value="<?php set_value('username') ?>"  required placeholder="输入用户名"/>
       </div>
 
       <div class="am-form-group">
@@ -58,7 +59,7 @@
       </div>
 
       <div class="am-cf">
-        <input id="do-login" type="button" name="" value="登 录" class="am-btn am-btn-primary am-btn-sm am-fl">
+        <input id="do-login" type="submit" name="" value="登 录" class="am-btn am-btn-primary am-btn-sm am-fl">
         <input type="submit" name="" value="忘记密码 ^_^? " class="am-btn am-btn-default am-btn-sm am-fr">
       </div>
     </form>
@@ -79,51 +80,5 @@
 <!-- 登陆模糊窗口 -->
 <script src="<?php echo base_url('source/AmazeUI-2.1.0/assets/js/jquery.min.js') ?>"></script>
 <script src="<?php echo base_url('source/AmazeUI-2.1.0/assets/js/amazeui.min.js') ?>"></script>
-<script>
-  $(function(){
-    var loginUrl = "<?php echo site_url('/user/login/doLogin') ?>";
-    var successUrl = "<?php echo site_url('/article/y/index') ?>";
-    $("#do-login").on('click', function(){
-    	$("#y-signin-loading").modal({closeViaDimmer : false});
-      $.ajax({
-        url : loginUrl,
-        dataType : 'json',
-        type : 'post',
-        data : $("#login-form").serialize(),
-        success : function(data){
-        	console.log(data);
-          if(data.result && data.result == 'fail' && data.content.type == 1){
-          	setTimeout(function(){
-          		$("#y-signin-alert").html(data.content.msg);
-          		$("#y-signin-alert").show();
-          		$("#account").parent().addClass("am-form-error");
-          		$("#account").focus().select();
-          		setTimeout(function(){
-          			$("#y-signin-loading").modal('close');
-          		}, 500);
-          	}, 500);
-          }else if(data.result && data.result == 'fail' && data.content.type == 2){
-          	setTimeout(function(){
-          		$("#y-signin-alert").html(data.content.msg);
-          		$("#y-signin-alert").show();
-          		$("#password").parent().addClass("am-form-error");
-          		$("#password").focus().select();
-          		setTimeout(function(){
-          			$("#y-signin-loading").modal('close');
-          		}, 500);
-          	}, 500);
-          }else if(data.result && data.result == 'success'){
-          	setTimeout(function(){
-	          	location.replace(successUrl);
-          	}, 500);
-          }
-        },
-        error : function(xhr){
-          $("#debug").html(xhr.responseText);
-        }
-      });
-    });
-  });
-</script>
 </body>
 </html>

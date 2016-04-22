@@ -3,15 +3,15 @@
 <div class="admin-content">
     <div class="am-cf am-padding">
       <div class="am-fl am-cf">
-        <strong class="am-text-primary am-text-lg"><?php echo $content['moduleName'] ?></strong> /
-        <small><?php echo $content['moduleDesc'] ?></small>
+        <strong class="am-text-primary am-text-lg"><?php echo $moduleName ?></strong> /
+        <small><?php echo $moduleDesc ?></small>
       </div>
     </div>
     <div class="am-g">
       <div class="am-u-sm-12 am-u-md-6">
         <div class="am-btn-toolbar">
           <div class="am-btn-group am-btn-group-xs">
-            <a type="button" class="am-btn am-btn-default"  href="<?php echo site_url('d=article&c=video&m=create') ?>"><span class="am-icon-plus"></span> 新增</a>
+            <a type="button" class="am-btn am-btn-default"  href="<?php echo site_url('c=post&m=create') ?>"><span class="am-icon-plus"></span> 新增</a>
             <button type="button" class="am-btn am-btn-default"><span class="am-icon-save"></span> 保存</button>
             <button type="button" class="am-btn am-btn-default"><span class="am-icon-archive"></span> 审核</button>
             <button type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
@@ -20,18 +20,11 @@
       </div>
       <div class="am-u-sm-12 am-u-md-3">
         <div class="am-form-group">
-          <select name="category" id="y-article-category" >
+          <select name="category_id" id="y-article-category" class="category-select" style="width:200px;">
             <option value="option1">所有类别</option>
-            <?php foreach($content['categories'] as $category){ ?>
-              <option value="<?php echo $category['id'] ?>"><?php echo $category['name'] ?></option>
+            <?php foreach($categories as $category){ ?>
+              <option value="<?php echo $category['id'] ?>" <?php echo set_select("category_id", $category["id"]) ?> ><?php echo $category['name'] ?></option>
             <?php } ?>
-            <!-- 
-            <option value="option2">IT业界</option>
-            <option value="option3">数码产品</option>
-            <option value="option3">笔记本电脑</option>
-            <option value="option3">平板电脑</option>
-            <option value="option3">只能手机</option>
-            <option value="option3">超极本</option> -->
           </select>
         </div>
       </div>
@@ -61,7 +54,7 @@
               </tr>
           </thead>
           <tbody>
-          <?php foreach($content['articles'] as $article){ ?>
+          <?php foreach($dataList as $article){ ?>
             <tr>
               <td><input type="checkbox" /></td>
               <td><?php echo $article['news_id'] ?></td>
@@ -91,7 +84,7 @@
           <div class="am-cf">
   共 15 条记录
   <div class="am-fr">
-    <?php echo $content['pagination'] ?>
+    <?php echo $pagination ?>
   </div>
 </div>
           <hr />
@@ -107,5 +100,16 @@
   var editSiteUrl = "<?php echo site_url('d=article&c=y&m=del') ?>";
   var statusSiteUrl = "<?php echo site_url('d=article&c=y&m=changeStatus') ?>"
   var delUrl = "<?php echo site_url('d=article&c=y&m=del') ?>"
+</script>
+
+<script type="text/javascript">
+var cateSelect = $('.category-select').chosen({
+max_selected_options: 1
+});
+cateSelect.change(function(e, k){
+if(!!k.selected) {
+document.location.href="<?php echo site_url("c=post").'&category_id=' ?>" + k.selected;
+}
+});
 </script>
 <script src="<?php echo base_url('/y/views/v_01/article/js/y.js') ?>"></script>

@@ -5,7 +5,7 @@
  * Date: 2015/3/23
  * Time: 20:32
  */
-$article = isset($content['article']) ? $content['article'] : array();
+$article = isset($article) ? $article : array();
 function outValue($name, $arr){
 
     if($name == 'content' && isset($arr[$name])){
@@ -40,12 +40,12 @@ function outSelected($name, $arr, $categoryId){
 <div class="admin-content" style="min-height:1400px;">
     <div class="am-cf am-padding">
         <div class="am-fl am-cf">
-            <strong class="am-text-primary am-text-lg"><?php echo $content['moduleName'] ?></strong> /
-            <small><?php echo $content['moduleDesc'] ?></small>
+            <strong class="am-text-primary am-text-lg"><?php echo $moduleName ?></strong> /
+            <small><?php echo $moduleDesc ?></small>
         </div>
     </div>
     <div class="am-g" >
-        <form id="photoForm" class="am-form am-form-horizontal">
+        <form id="photoForm" action="#" method="post" class="am-form am-form-horizontal">
             <div class="am-form-group">
                 <label class="am-u-sm-2 am-form-label">文章标题</label>
                 <div class="am-u-sm-6">
@@ -57,10 +57,10 @@ function outSelected($name, $arr, $categoryId){
             <div class="am-form-group">
                 <label class="am-u-sm-2 am-form-label">文章类别</label>
                 <div class="am-u-sm-6">
-                    <select name="category">
+                    <select name="category_id">
                         <option value="0">文章类别</option>
-                        <?php foreach($content['categories'] as $category){ ?>
-                            <option <?php outSelected('category_id', $article, $category['id']) ?> value="<?php echo $category['id'] ?>"><?php echo $category['name'] ?></option>
+                        <?php foreach($categories as $category){ ?>
+                            <option <?php echo set_select('category_id', $category['id']) ?> value="<?php echo $category['id'] ?>"><?php echo $category['name'] ?></option>
                         <?php } ?>
                     </select>
                 </div>

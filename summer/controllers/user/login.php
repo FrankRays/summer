@@ -39,6 +39,7 @@ class login extends MY_Controller{
 		}
 	}
 
+
 	public function signUp(){
 		$username = "summer";
 		$password = "123456";

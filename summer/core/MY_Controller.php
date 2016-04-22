@@ -67,7 +67,7 @@ class MY_Controller extends CI_Controller{
 					return TRUE;
 				}
 				$msg = '你还没有登陆';
-				$href = site_url('user/login/index');
+				$href = site_url('c=login');
 				// var_dump($href);
 				$this -> yerror -> showYAdminError($msg, $href);
 				exit();

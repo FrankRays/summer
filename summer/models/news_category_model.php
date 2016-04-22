@@ -103,12 +103,11 @@ class news_category_model extends CI_Model{
 			'is_delete' => 0,
 			);
 		$this -> db -> where($where);
-		$this -> db -> select('id, name, describle, add_time, alias, fid');
 
 		$query = $this -> db -> get($this -> tableName);
-		$result = $query -> result_array();
+		$result = $query -> row_array();
 
-		return $result[0];
+		return $result;
 	}
 
 	//根据别名取得数据
@@ -176,7 +175,18 @@ class news_category_model extends CI_Model{
 		}else{
 			return FALSE;
 		}
+	}
 
+
+	public function findByCond($cond = array()) {
+		$where = array();
+		if(isset($cond['type'])) {
+			$where['type'] = $cond['type'];
+		}
+
+
+		$categories = $this->db->from($this->tableName)->where($where)->get()->result_array();
+		return $categories;
 	}
 
 }

@@ -4,7 +4,7 @@
  * 图片控制器
  */
 
-class photo extends Ykj_Controller {
+class photo extends MY_Controller {
 
 	public function __construct() {
 		parent::__construct();

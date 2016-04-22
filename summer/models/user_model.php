@@ -36,11 +36,11 @@ class User_model extends CI_Model{
 		return unserialize($str);
 	}
 
-	public function signIn($data){
+	public function signIn($username, $password){
 		$isSuccess = 0;
 
-		$data['account'] = addslashes($data['account']);
-		$data['password'] = addslashes($data['password']);
+		$data['account'] = addslashes($username);
+		$data['password'] = addslashes($password);
 
 		if(isset($data['account']) && !empty($data['account'])){
 			$this -> db -> where(array(
