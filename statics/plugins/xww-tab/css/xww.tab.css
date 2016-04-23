@@ -1,0 +1,26 @@
+.xww-tab-wrapper .xww-tab-group{
+    display: block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid #bebebe;
+    position: relative;
+}
+.xww-tab-wrapper .xww-tab-list{float: left;}
+.xww-tab-wrapper .xww-tab-btn{
+	background-image: none;
+	display: block;
+	padding: 0 0 5px 0;
+}
+
+.xww-tab-wrapper .xww-tab-container{
+    display: none;
+    width: 100%;
+    min-height: 100px;
+    position: absolute;
+    left: 0;
+    top:25px;
+    text-align: left;
+}
+.xww-tab-wrapper .xww-tab-container.active{display: block;}
+.xww-tab-wrapper .xww-tab-group:after{display: block;content: "";clear: both;}
