@@ -79,8 +79,19 @@ class post extends MY_controller {
                 $category_id = null;
                 if(!empty($_POST)) {
                         //action
-                        $post = $this->input->post(null, true);
-                        var_dump($post);
+                        $post = $this->input->post();
+                        if(isset($post['id']) && !empty($post['id'])) {
+                                //update
+                                $article = $this->_getUpdateArticle($post);
+                                $this->article_model->updateArticle($article, array('id'=>intval($post['id'])));
+
+                        }else{
+                                //create
+                                $article = $this->_getCreateArticle($post);
+                                // var_dump($article);
+                                $this->article_model->createArticle($article);
+                        }
+                        redirect(site_url('c=post&category_id='.$article['category_id']));
                 }else{
                         //page
                         $news_id = $this->input->get('news_id');
@@ -89,6 +100,9 @@ class post extends MY_controller {
                                 $article = $this->article_model->getById($news_id);
                                 $category_id = $article['category_id'];
                                 $data['article'] = $article;
+                                $data['content'] = array('article' => $article);
+                                $article['add_time'] = date('Y-m-d H:i:s', $article['add_time']);
+                                $_POST = array_merge($_POST, $article);
                         }else{
                                 //create page
                                 $category_id = $this->input->get('category_id');
@@ -110,6 +124,7 @@ class post extends MY_controller {
                         }else if($category['type'] == 'image') {
                                 $this->_loadView('v_01/article/photo_create_view', $data);
                         }else if($category['type'] == 'video') {
+
                                 $this->_loadView('v_01/article/video_create_view', $data);
                         }else{
                                 $tihs->_loadView('v_01/article/create_view', $data);
@@ -121,6 +136,71 @@ class post extends MY_controller {
                         $this->_loadView('v_01/article/create_view', $data);
                 }
 
+        }
+
+        public function setTop() {
+                $id = $this->input->get('id', true);
+                if(!empty($id)) {
+                        $this->article_model->setTop(intval($id));
+                        $article = $this->article_model->getById(intval($id));
+                        if(!empty($article) && isset($article['category_id'])) {
+                                redirect(site_url('c=post&category_id='.$article['category_id']));
+                                $_POST['category_id'] = $article['category_id'];
+                        }
+                }
+                redirect(site_url('c=post'));
+        }
+
+        public function del() {
+                $id = $this->input->get('id');
+                $article = $this->article_model->getById(intval($id));
+                if(!empty($article)) {
+                        $this->article_model->delOneById($article['id']);
+                        redirect(site_url('c=post&category_id='.$article['category_id']));
+                }
+                redirect(site_url('c=post'));
+        }
+
+        public function changeStatus() {
+                $id = $this->input->get('id');
+                $article = $this->article_model->getById(intval($id));
+                if(!empty($article)){
+                        $status = isset($article['status']) && $article['status'] == 1 ? 0 : 1;
+                        $this->article_model->updateArticle(array('status' => $status), array('id'=>$id));
+                        redirect(site_url('c=post&category_id='.$article['category_id']));
+                }
+                redirect(site_url('c=post'));
+        }
+
+        public function _getCreateArticle($post) {
+                $article = array();
+                $article['title'] = isset($post['title']) ? htmlspecialchars($post['title']) : '';
+                $article['category_id'] = isset($post['category_id']) && is_numeric($post['category_id']) ? intval($post['category_id']) : 0;
+                $article['author'] = isset($post['author']) ? htmlspecialchars($post['author']) : '';
+                $article['summary'] = isset($post['summary']) ? htmlspecialchars($post['summary']) : '';
+                $article['keywords'] = isset($post['keywords']) ? htmlspecialchars($post['keywords']) : '';
+                $article['content'] = isset($post['content']) ? $post['content'] : '';
+                $article['add_time'] = isset($post['add_time']) ? $post['add_time'] : '';
+                $article['add_time'] = strtotime($article['add_time']);
+                $article['edit_time'] = $article['add_time'];
+                $article['status'] = isset($post['status']) ? intval($post['status']) : 0;
+                $article['hits'] = 0;
+                $article['zan'] = 0;
+                $article['is_delete'] = 0;
+                return $article;
+        }
+
+        public function _getUpdateArticle($post) {
+                $article = array();
+                $article['title'] = isset($post['title']) ? htmlspecialchars($post['title']) : '';
+                $article['category_id'] = isset($post['category_id']) && is_numeric($post['category_id']) ? intval($post['category_id']) : 0;
+                $article['author'] = isset($post['author']) ? htmlspecialchars($post['author']) : '';
+                $article['summary'] = isset($post['summary']) ? htmlspecialchars($post['summary']) : '';
+                $article['keywords'] = isset($post['keywords']) ? htmlspecialchars($post['keywords']) : '';
+                $article['content'] = isset($post['content']) ? $post['content'] : '';
+                $article['edit_time'] = time();
+                $article['status'] = isset($post['status']) ? intval($post['status']) : 0;
+                return $article;
         }
 
 }

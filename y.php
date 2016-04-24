@@ -18,7 +18,7 @@ header("Content-type: text/html; charset=utf-8");
  * NOTE: If you change these, also change the error_reporting() code below
  *
  */
-	define('ENVIRONMENT', 'production');
+	define('ENVIRONMENT', 'development');
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING
@@ -72,7 +72,7 @@ if (defined('ENVIRONMENT'))
  * NO TRAILING SLASH!
  *
  */
-	$application_folder = 'y';
+	$application_folder = 'summer';
 
 /*
  * --------------------------------------------------------------------

@@ -1,6 +1,6 @@
 <?php
 
-class Video extends Ykj_Controller{
+class Video extends MY_Controller{
 
 	public function __construct(){
 		parent::__construct();

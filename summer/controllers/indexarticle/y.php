@@ -1,6 +1,6 @@
 <?php
 	
-class y extends Ykj_Controller{
+class y extends MY_Controller{
 	//模板数组
 	private $tpl;
 

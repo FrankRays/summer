@@ -37,7 +37,6 @@
                 <label class="am-u-sm-2 am-form-label"></label>
                 <div class="am-u-sm-6">
                     <button type="button" class="am-btn am-btn-default am-radius" id="saveArticle">保存</button>
-                    <a href="<?php echo site_url('d=article&c=y&m=index&category_id='.$content['article']['category_id']) ?>" class="am-btn am-btn-default am-radius">返回首页新闻列表</a>
                 </div>
                 <div class="am-u-sm-4"></div>
             </div>

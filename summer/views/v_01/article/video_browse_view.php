@@ -11,7 +11,7 @@
       <div class="am-u-sm-12 am-u-md-6">
         <div class="am-btn-toolbar">
           <div class="am-btn-group am-btn-group-xs">
-            <a type="button" class="am-btn am-btn-default"  href="<?php echo site_url('c=post&m=create') ?>"><span class="am-icon-plus"></span> 新增</a>
+            <a type="button" class="am-btn am-btn-default"  href="<?php echo site_url('c=post&m=save&category_id='. set_value('category_id', 0))?>"><span class="am-icon-plus"></span> 新增</a>
             <button type="button" class="am-btn am-btn-default"><span class="am-icon-save"></span> 保存</button>
             <button type="button" class="am-btn am-btn-default"><span class="am-icon-archive"></span> 审核</button>
             <button type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
@@ -65,14 +65,14 @@
               <td>
                 <div class="am-btn-toolbar">
                   <div class="am-btn-group am-btn-group-xs">
-                    <input type="hidden" name="id" value="<?php echo $article['news_id'] ?>" id="newsId" />
-                    <a href="<?php echo site_url('d=article&c=video&m=create&id='.$article['news_id']) ?>" class="am-btn am-btn-default am-btn-xs am-text-secondary y-edit-article-btn"><span class="am-icon-pencil-square-o"></span> 编辑</a>
-                    <?php if($article['status'] == 1){ ?>
-                      <button type="button" class="am-btn am-btn-default am-btn-xs am-text-success y-article-status-btn"><span class="am-icon-copy"></span> 发布</button>
-                    <?php }else{ ?>
-                      <button type="button" class="am-btn am-btn-default am-btn-xs am-text-danger y-article-status-btn"><span class="am-icon-copy"></span> 草稿</button>
-                    <?php } ?>
-                    <button type="button" class="am-btn am-btn-default am-btn-xs am-text-danger  y-article-del-btn"><span class="am-icon-trash-o"></span> 删除</button>
+                    <input type="hidden" name="id" value="<?php echo $article['news_id']; ?>" id="newsId" />
+                    <a href="<?php echo site_url('c=post&m=save&news_id=' . $article['news_id']) ?>" class="am-btn am-btn-default am-btn-xs am-text-secondary y-edit-article-btn"><span class="am-icon-pencil-square-o"></span> 编辑</a>
+                    <?php if ($article['status'] == 1) {?>
+                      <a href="<?php echo site_url('c=post&m=changeStatus&id='.$article['news_id']) ?>" class="am-btn am-btn-default am-btn-xs am-text-success y-article-status-btn"><span class="am-icon-copy"></span> 发布</a>
+                    <?php } else {?>
+                      <a href="<?php echo site_url('c=post&m=changeStatus&id='.$article['news_id']) ?>"  class="am-btn am-btn-default am-btn-xs am-text-danger y-article-status-btn"><span class="am-icon-copy"></span> 草稿</a>
+                    <?php }?>
+                    <a href="<?php echo site_url('c=post&m=del&id='.$article['news_id']) ?>" class="am-btn am-btn-default am-btn-xs am-text-danger  y-article-del-btn"><span class="am-icon-trash-o"></span> 删除</a>
                   </div>
                 </div>
               </td>

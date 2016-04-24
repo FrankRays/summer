@@ -14,11 +14,14 @@
         </div>
     </div>
     <div class="am-g" >
+        <?php echo validation_errors() ?>
         <form action="#" method="post" id="articleForm" class="am-form am-form-horizontal">
+
+            <input type="hidden" value="<?php echo set_value('id', '') ?>" name="id" />
             <div class="am-form-group">
                 <label class="am-u-sm-2 am-form-label">文章标题</label>
                 <div class="am-u-sm-6">
-                    <input name="title" type="text" placeholder="请输入文章标题" />
+                    <input name="title" type="text" value="<?php echo set_value('title') ?>" placeholder="请输入文章标题" />
                 </div>
                 <div class="am-u-sm-4"></div>
             </div>
@@ -39,28 +42,28 @@
             <div class="am-form-group">
                 <label class="am-u-sm-2 am-form-label">来稿</label>
                 <div class="am-u-sm-6">
-                    <input type="text" name="comefrom" placeholder="请输入来稿消息" />
+                    <input type="text" name="come_from" value="<?php echo set_value('come_from', '') ?>" placeholder="请输入来稿消息" />
                 </div>
                 <div class="am-u-sm-4"></div>
             </div>
             <div class="am-form-group">
                 <label class="am-u-sm-2 am-form-label">作者</label>
                 <div class="am-u-sm-6">
-                    <input name="author" type="text" placeholder="请输入作者" />
+                    <input name="author" type="text" value="<?php echo set_value('author', '') ?>" placeholder="请输入作者" />
                 </div>
                 <div class="am-u-sm-4"></div>
             </div>
             <div class="am-form-group">
                 <label class="am-u-sm-2 am-form-label">关键字</label>
                 <div class="am-u-sm-6">
-                    <input name="keywords" type="text" placeholder="请输入关键字，用逗号分开" />
+                    <input name="keywords" type="text" value="<?php echo set_value('keywords') ?>" placeholder="请输入关键字，用逗号分开" />
                 </div>
                 <div class="am-u-sm-4"></div>
             </div>
             <div class="am-form-group">
                 <label class="am-u-sm-2 am-form-label">文章简介</label>
                 <div class="am-u-sm-6">
-                    <textarea style="height:150px" name="summary"></textarea>
+                    <textarea style="height:150px" name="summary"><?php echo set_value('summary') ?></textarea>
                 </div>
                 <div class="am-u-sm-4"></div>
             </div>
@@ -68,7 +71,7 @@
                 <label class="am-u-sm-2 am-form-label">文章正文内容</label>
                 <div class="am-u-sm-8">
                     <div>
-                        <script id="container" name="content" style="height:500px" type="text/plain"></script>
+                        <script id="container" name="content" style="height:500px" type="text/plain"><?php echo isset($article) && isset($article['content']) ? $article['content'] :'' ?></script>
                     </div>
                 </div>
                 <div class="am-u-sm-2"></div>
@@ -77,7 +80,7 @@
             <div class="am-form-group">
                 <label class="am-u-sm-2 am-form-label">发布时间</label>
                 <div class="am-u-sm-6">
-                    <input type="text"  onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" placeholder="文章发布时间"  name="createTime"/>
+                    <input type="text" value="<?php echo set_value('add_time', date('Y-m-d H:i:s')) ?>" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" placeholder="文章发布时间"  name="add_time"/>
                 </div>
                 <div class="am-u-sm-4"></div>
             </div>
@@ -87,8 +90,8 @@
                 <div class="am-u-sm-8">
                     <div class="checkbox">
                         <label>
-                            <input type="radio" checked="checked" value="1" name="status" /> 发布
-                            <input type="radio" value="2" name="status" /> 草稿
+                            <input type="radio" <?php echo set_radio('status', '1', true) ?> value="1" name="status" /> 发布
+                            <input type="radio" <?php echo set_radio('status', '2') ?> value="2" name="status" /> 草稿
                         </label>
                     </div>
                 </div>
@@ -105,7 +108,6 @@
                 </div>
                 <div class="am-u-sm-4"></div>
             </div>
-            <input type="hidden" id="newsId" name="id" value="<?php echo isset($content['news_id']) ? $content['news_id'] : '' ?>" />
         </form>
     </div>
 </div>

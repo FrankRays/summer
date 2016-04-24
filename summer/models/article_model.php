@@ -375,5 +375,19 @@ class article_model extends CI_Model {
 		return $article;
 	}
 
+	public function createArticle($article) {
+		$this->db->insert($this->tableName, $article);
+		return $this->db->insert_id();
+	}
+
+	public function updateArticle($article, $cond) {
+		$where = array();
+		if(isset($cond['id'])) {
+			$where['id'] = $cond['id'];
+		}
+		$this->db->where($where)->update($this->tableName, $article);
+		return $this->db->affected_rows();
+	}
+
 
 }

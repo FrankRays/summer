@@ -1,6 +1,6 @@
 <?php
 	
-class Slider extends Ykj_Controller{
+class Slider extends MY_Controller{
 	//模板数组
 	private $tpl;
 

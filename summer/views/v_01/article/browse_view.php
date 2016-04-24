@@ -66,18 +66,18 @@
                 <div class="am-btn-toolbar">
                   <div class="am-btn-group am-btn-group-xs">
                     <input type="hidden" name="id" value="<?php echo $article['news_id']; ?>" id="newsId" />
-                    <a href="<?php echo site_url('c=post&m=save&news_id=' . $article['news_id']); ?>" class="am-btn am-btn-default am-btn-xs am-text-secondary y-edit-article-btn"><span class="am-icon-pencil-square-o"></span> 编辑</a>
+                    <a href="<?php echo site_url('c=post&m=save&news_id=' . $article['news_id']) ?>" class="am-btn am-btn-default am-btn-xs am-text-secondary y-edit-article-btn"><span class="am-icon-pencil-square-o"></span> 编辑</a>
                     <?php if ($article['status'] == 1) {?>
-                      <button type="button" class="am-btn am-btn-default am-btn-xs am-text-success y-article-status-btn"><span class="am-icon-copy"></span> 发布</button>
+                      <a href="<?php echo site_url('c=post&m=changeStatus&id='.$article['news_id']) ?>" class="am-btn am-btn-default am-btn-xs am-text-success y-article-status-btn"><span class="am-icon-copy"></span> 发布</a>
                     <?php } else {?>
-                      <button type="button" class="am-btn am-btn-default am-btn-xs am-text-danger y-article-status-btn"><span class="am-icon-copy"></span> 草稿</button>
+                      <a href="<?php echo site_url('c=post&m=changeStatus&id='.$article['news_id']) ?>"  class="am-btn am-btn-default am-btn-xs am-text-danger y-article-status-btn"><span class="am-icon-copy"></span> 草稿</a>
                     <?php }?>
-                    <button type="button" class="am-btn am-btn-default am-btn-xs am-text-danger  y-article-del-btn"><span class="am-icon-trash-o"></span> 删除</button>
+                    <a href="<?php echo site_url('c=post&m=del&id='.$article['news_id']) ?>" class="am-btn am-btn-default am-btn-xs am-text-danger  y-article-del-btn"><span class="am-icon-trash-o"></span> 删除</a>
                     <a  href="<?php echo site_url('d=article&c=y&m=setCoverImg&id=' . $article['news_id']); ?>" class="am-btn am-btn-default am-btn-xs am-text-success"><span class="am-icon-trash-o"></span> 置顶图片</a>
                     <?php if ($article['is_top'] == 1) {?>
-                       <button type="button" class="am-btn am-btn-default am-btn-xs am-text-danger y-article-nowtop-btn"><span class="am-icon-copy"></span> 置顶中</button>
+                       <a href="<?php echo site_url('c=post&m=setTop&id='.$article['news_id']) ?>" class="am-btn am-btn-default am-btn-xs am-text-danger y-article-nowtop-btn"><span class="am-icon-copy"></span> 置顶中</a>
                     <?php } else {?>
-                      <button type="button" class="am-btn am-btn-default am-btn-xs am-text-danger y-article-setTop-btn"><span class="am-icon-copy"></span> 置顶</button>
+                      <a href="<?php echo site_url('c=post&m=setTop&id='.$article['news_id']) ?>"  class="am-btn am-btn-default am-btn-xs am-text-danger y-article-setTop-btn"><span class="am-icon-copy"></span> 置顶</a>
                     <?php }?>
 
                   </div>

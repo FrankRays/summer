@@ -40,7 +40,7 @@ class login extends MY_Controller{
 	}
 
 
-	public function signUp(){
+	public function _signUp(){
 		$username = "summer";
 		$password = "123456";
 		$this -> user_model -> signUp($username, $password);

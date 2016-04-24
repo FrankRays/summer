@@ -14,8 +14,8 @@ function echoArticle($name, $arr){
 <div class="admin-content" style="min-height:1400px;">
     <div class="am-cf am-padding">
         <div class="am-fl am-cf">
-            <strong class="am-text-primary am-text-lg"><?php echo $content['moduleName'] ?></strong> /
-            <small><?php echo $content['moduleDesc'] ?></small>
+            <strong class="am-text-primary am-text-lg"><?php echo $moduleName ?></strong> /
+            <small><?php echo $moduleDesc ?></small>
         </div>
     </div>
     <div class="am-g" >
@@ -25,6 +25,18 @@ function echoArticle($name, $arr){
               <div class="am-u-sm-6 am-u-end">
                 <input  name="title" value="<?php echoArticle('title', $article) ?>" type="text" class="am-input-sm am-form-field" style="100%" />           
               </div>
+            </div>
+            <div class="am-form-group">
+                <label class="am-u-sm-2 am-form-label">文章类别</label>
+                <div class="am-u-sm-6">
+                    <select name="category_id" class="category-select">
+                        <option value="0">文章类别</option>
+                        <?php foreach($categories as $category){ ?>
+                            <option value="<?php echo $category['id'] ?>" <?php echo set_select('category_id', $category['id']) ?>><?php echo $category['name'] ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="am-u-sm-4"></div>
             </div>
             <div id="upload-coverimg-group" class="am-form-group">
               <label class="am-u-sm-2 am-form-label">视频地址</label>
@@ -63,7 +75,7 @@ function echoArticle($name, $arr){
                 <label class="am-u-sm-2 am-form-label">文章正文内容</label>
                 <div class="am-u-sm-8">
                     <div>
-                        <script id="container" name="content" style="height:500px" type="text/plain"></script>
+                        <script id="container" name="content" style="height:500px" type="text/plain"><?php echo isset($article) && isset($article['content']) ? $article['content'] :'' ?></script>
                     </div>
                 </div>
                 <div class="am-u-sm-2"></div>
@@ -79,7 +91,6 @@ function echoArticle($name, $arr){
                 <label class="am-u-sm-2 am-form-label"></label>
                 <div class="am-u-sm-6">
                     <button type="button" class="am-btn am-btn-default am-radius" id="saveArticle">保存</button>
-                    <a href="<?php echo site_url('d=article&c=video&m=index') ?>" class="am-btn am-btn-default am-radius">返回视频列表</a>
                 </div>
                 <div class="am-u-sm-4"></div>
             </div>

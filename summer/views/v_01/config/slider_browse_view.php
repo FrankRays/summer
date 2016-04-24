@@ -40,7 +40,7 @@
                 <th class="table-id">ID</th>
                 <th class="table-title">标题</th>
                 <th class="table-type">类别</th>
-                <th>发布日期</th>
+                <th>链接</th>
                 <th>操作</th>
               </tr>
           </thead>
