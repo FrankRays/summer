@@ -30,7 +30,7 @@ class MY_Controller extends CI_Controller{
 		$this -> load -> library('pagination');
 		$this -> config -> load('snowConfig/admin', true);
 
-		$this -> _data['head']['sitename'] = SITENAME;
+		$this -> _data['head']['sitename'] = '新闻网';
 		$this -> _data['head']['tplHeadCss'] = array();
 		array_push($this -> _data['head']['tplHeadCss'], 
 			base_url('source/AmazeUI-2.1.0/assets/css/amazeui.min.css'));
@@ -50,7 +50,6 @@ class MY_Controller extends CI_Controller{
 
 		//分页配置文件
 		$this->_paginationConfig = $this->config->item('paginationConfig', 'snowConfig/admin');
-		session_start();
 		$RTR =& load_class('Router', 'core');
 		if($RTR->fetch_class() != "login"){
 			 $this -> judgeLogin();

@@ -82,6 +82,7 @@ class post extends MY_controller {
                         $post = $this->input->post();
                         if(isset($post['id']) && !empty($post['id'])) {
                                 //update
+                                //
                                 $article = $this->_getUpdateArticle($post);
                                 $this->article_model->updateArticle($article, array('id'=>intval($post['id'])));
 

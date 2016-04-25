@@ -17,6 +17,7 @@ class login extends MY_Controller {
 	}
 
 	public function login() {
+
 		
 		$this->load->library('form_validation');
 
