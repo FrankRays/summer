@@ -179,6 +179,7 @@ class post extends MY_controller {
                 $article['author'] = isset($post['author']) ? htmlspecialchars($post['author']) : '';
                 $article['summary'] = isset($post['summary']) ? htmlspecialchars($post['summary']) : '';
                 $article['keywords'] = isset($post['keywords']) ? htmlspecialchars($post['keywords']) : '';
+                $article['come_from'] = isset($post['come_from']) ? $post['come_from'] : '';
                 $article['content'] = isset($post['content']) ? $post['content'] : '';
                 $article['add_time'] = isset($post['add_time']) ? $post['add_time'] : '';
                 $article['add_time'] = strtotime($article['add_time']);
@@ -196,6 +197,7 @@ class post extends MY_controller {
                 $article['category_id'] = isset($post['category_id']) && is_numeric($post['category_id']) ? intval($post['category_id']) : 0;
                 $article['author'] = isset($post['author']) ? htmlspecialchars($post['author']) : '';
                 $article['summary'] = isset($post['summary']) ? htmlspecialchars($post['summary']) : '';
+                $article['come_from'] = isset($post['post']) ? $post['post'] : '';
                 $article['keywords'] = isset($post['keywords']) ? htmlspecialchars($post['keywords']) : '';
                 $article['content'] = isset($post['content']) ? $post['content'] : '';
                 $article['edit_time'] = time();

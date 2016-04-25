@@ -34,7 +34,9 @@ class  Photo extends Ykj_controller{
 				$articles[$key]['title'] = mb_substr($value['title'], 0, 14) . "..";
 			}
 		}
-		
+
+		$data['category'] = $this->news_category_model->getById($categoryId);
+
 		$data['articles'] = $articles;
 		$recentList = $this -> news_crawler_model -> get(5, 0, 
 			array('category_id' => 1,
