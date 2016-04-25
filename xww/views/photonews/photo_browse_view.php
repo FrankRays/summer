@@ -1,7 +1,7 @@
 <div id="recent-news-con">
 		<div id="recent-news-left">
 		<div id="location-bar">
-			<p><i  class="fi-marker location-icon"></i>您的位置：<a id="pos1" href="<?php echo site_url() ?>" >交院新闻网</a> > 光影交院</p>
+			<p><i  class="fi-marker location-icon"></i>您的位置：<a id="pos1" href="<?php echo site_url() ?>" >交院新闻网</a> > <?php echo $data['category']['name'] ?></p>
 		</div>
 			<!--瀑布流  start-->
 				<div class="y-photo-container" style="width:660px;">

@@ -150,6 +150,23 @@ class Rw extends Ykj_controller{
 				$data['picnews'][$key]['title'] = mb_substr($value['title'], 0, 16) . "..";
 			}
 		}
+
+
+
+		//校园写意
+		$data["xyxy"] = $this->news_model->fgetByCId(12, 3);
+		$xyxyArr = array();
+		foreach ($data["xyxy"] as $key => $value) {
+			$photoes = json_decode($value['content']);
+			if(count($photoes) > 0) {
+				$xyxyArr[] = array('id' => $value['news_id']
+									,'src' => $photoes[0] -> src,
+									'title' => $value['title']);
+			}
+		}
+
+		$data["xyxy"] = $xyxyArr;
+
 		//get the guanyingjiaoyuan
 		$data['pics']['img'] = array();
 		$data['pics']['mimg'] = array();
@@ -171,6 +188,8 @@ class Rw extends Ykj_controller{
 			$gyjy[$key]['photoes'] = json_decode($value['content']);
 		}
 
+
+
 		$data['gyjy'] = $gyjy;
 		//媒体交院处理
 		$data['mtjy'] = $this -> news_model -> getListByCId(2, 5);
@@ -183,6 +202,10 @@ class Rw extends Ykj_controller{
 
 		//视频展播处理
 		$data['spzb'] = $this -> news_model -> getListByCId(6, 3);
+
+		//微电台
+		$data["wdt"] = $this->news_model->getListByCId(13, 3);
+
 		
 		$this -> load -> view('front/xww/index_view', array('data' => $data));
 	}
