@@ -846,6 +846,10 @@ if ( ! function_exists('set_radio'))
 			return ($input === $value) ? ' checked="checked"' : '';
 		}
 
+		if($input === $value) {
+			return ' checked="checked" ';
+		}
+
 		return ($default === TRUE) ? ' checked="checked"' : '';
 	}
 }

@@ -46,15 +46,11 @@ class config_model extends CI_Model{
 	*@param offset int offset fo the data start
 	**/
 	public function getSlide($num = 10, $offset = 0){
-		$slides = $this -> getList($num, $offset, 'slides');
+		$slides = $this -> getList($num, $offset, 'sliders');
 		foreach ($slides as $key => $value) {
 			$slides[$key]['value'] = json_decode($value['value'], true);
 			$curValue = $slides[$key]['value']['picSrc'];
-			//Deal pictrue;
-			// $picSrc = substr($curValue, 0 ,intval(strrpos($curValue, '/')) + 1);
-			// $picSrc .= 'm_'.substr($curValue, intval(strrpos($curValue, '/')) + 1);
-			// $slides[$key]['value']['picSrc'] = $picSrc;
-			//Deal linkurl
+
 			if(empty($slides[$key]['value']['linkSrc'])){
 				$slides[$key]['value']['linkSrc'] = 'javascript:;';
 			}

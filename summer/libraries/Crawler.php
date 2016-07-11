@@ -14,9 +14,6 @@ class Crawler {
     public $pageSize = 1000;
 
     public function __construct($params = array()) {
-
-
-
         if(count($params) > 0) {
             foreach ($params as $key => $value) {
                 if(isset($this->$key)){
@@ -73,6 +70,7 @@ class Crawler {
         $content = $this->getUrlContent($requestUrl) ;
         return $content;
     }
+
 
     public function doCrawler(){
         var_dump($this->parseContent($this->getContent()));
@@ -150,9 +148,125 @@ class Crawler {
         )charset utf8
         */
     }
-}
 
-// $url = "http://www.svtcc.edu.cn/newslist.jsp?cate=3";
-// $c = new Crawler($url);
-// $result = $c -> doCrawler($url);
-// var_dump($result);
+
+
+    //get content of the url
+    public function get_content($url, $overtime = 60) {
+        if(empty($url)) {
+            return '';
+        }
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $overtime);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        return $output;
+    }
+
+
+    public function download_img($url, $dir_path, $permit_ext, $overtime=120) {
+        $img_path_info = pathinfo($url);
+        $extension = strtolower($img_path_info['extension']);
+        if( ! in_array($extension, $permit_ext)) {
+            return false;
+        }
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $overtime);
+        $res = curl_exec($ch);
+        curl_close($ch);
+
+        $filename = date('Y/m') . '/' . time() . '_' . rand(0, 9999) . '.' . $extension;
+        $fp = fopen($dir_path . $filename, 'a');
+        fwrite($fp, $res);
+        fclose($fp);
+
+
+        return array(
+            'filename'  => $filename,
+            'file_path' => $dir_path . $filename,
+            );
+    }
+
+    public function handle_view_li_page($content) {
+        $list_preg_str  = '/newlist.png[\s\S]+?<\/a>/';
+        //view-11-7b0ecd941b0040d785286ccc0e6103fc.html
+        $href_preg_str = '/view\-(\d{2})\-(.*)\.html/';
+        $cid_id_preg_str = '/(\d{2})-([\s\S]+?)\./';
+        $date_preg_str = '/\d{4}-\d{2}-\d{2}/';
+
+        $is_match = preg_match_all($list_preg_str, $content, $matches);
+
+        $url_array = array();
+        $date_flag = FALSE;
+        if($is_match > 0 && is_array($matches)){
+            foreach($matches[0] as $v) {
+                $is_match = preg_match($date_preg_str, $v, $create_date);
+                if( ! $is_match) {
+                    return FALSE;
+                }
+                $create_date = $create_date[0];
+
+                $is_match = preg_match($href_preg_str, $v, $article_href);
+                if($is_match > 0) {
+                    $is_match_a = preg_match($cid_id_preg_str, $article_href[0], $cid_id);
+                    if($is_match_a > 0) {
+                        if(empty($date_flag) || strcmp($date_flag, $create_date) !== 0) {
+                            $date_flag = $create_date;
+                            $index_sort = 0;
+                        }else{
+                            $index_sort += 1;
+                        }
+                        $url_array[] = array(
+                            'http://www.svtcc.edu.cn/front/'. $article_href[0],
+                            $cid_id[1],
+                            $cid_id[2],
+                            $index_sort,
+                            $create_date,
+                            );
+                    }
+                }
+            }
+        }
+
+        return $url_array;
+    }
+
+
+    public function handle_view_content_page($article_content) {
+
+        $title_success = preg_match('/<h3.*?>(.*?)<\/h3>/', $article_content, $article_title);
+        $publisher_success = preg_match('/发布者：(.*?) &/', $article_content, $article_publisher);
+        $hits_success = preg_match('/点击数：(.*?) &/', $article_content, $article_hits);
+        $date_success = preg_match('/发布时间：(\d{4}-\d{2}-\d{2})/', $article_content, $date_str);
+        $content_success = preg_match('/25px;">(.*?)<\/form>/is', $article_content, $article);
+
+        if( ! $title_success || ! $publisher_success || ! $hits_success || ! $date_success 
+            || ! $content_success) {
+            return false;
+        }
+
+        $preged_num = preg_match_all('<img.*?src="(.*?)".*?>', $article[1], $article_imgs);
+
+        $article = preg_replace('/style="[\s\S]+?"/', '', $article);
+        $cur_news = array(
+            'title'         => $article_title[1],
+            'publisher'     => $article_publisher[1],
+            'article_hits'  => $article_hits[1],
+            'create_date'   => $date_str[1],
+            'content'       => $article[1],
+            );
+
+        if($preged_num > 0) {
+            $cur_news['imgs'] = $article_imgs[1];
+        }
+
+        return $cur_news;
+    }
+
+}

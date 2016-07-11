@@ -22,6 +22,8 @@ class article_model extends CI_Model {
 		parent::__construct();
 
 		$this->tableName = 'news';
+		$this->table_name = 'summer_article';
+
 	}
 
 	/**
@@ -122,105 +124,6 @@ class article_model extends CI_Model {
 		return $page - 1;
 	}
 
-	public function create($post) {
-
-		/*Array
-		(
-		[title] =>
-		[category] => 文章类别
-		[comefrom] =>
-		[author] =>
-		[keywords] =>
-		[summary] =>
-		[createTime] =>
-		[status] => 1
-		[content] => <p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;这里写你的初始化内容
-		&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>
-		)       */
-		//表单处理
-		// var_dump($post);
-		$updateData = array();
-//        var_dump($post);
-		if (isset($post['title'])) {
-			$updateData['title'] = !empty($post['title']) ? $post['title'] : '';
-		}
-		if (isset($post['comefrom'])) {
-			$updateData['come_from'] = !empty($post['comefrom']) ? $post['comefrom'] : '';
-		}
-		if (isset($post['author'])) {
-			$updateData['author'] = !empty($post['author']) ? $post['author'] : '';
-		}
-		if (isset($post['keywords'])) {
-			$updateData['keywords'] = !empty($post['keywords']) ? $post['keywords'] : '';
-		}
-		if (isset($post['summary'])) {
-			$updateData['summary'] = !empty($post['summary']) ? $post['summary'] : '';
-		}
-		if (isset($post['createTime'])) {
-			$updateData['add_time'] = !empty($post['createTime'])
-			? strtotime($post['createTime']) : time();
-		}
-		if (isset($post['status'])) {
-			$updateData['status'] = !empty($post['status']) && intval($post['status']) == 1 ? 1 : 0;
-		}
-		if (isset($post['content'])) {
-			$updateData['content'] = !empty($post['content']) ? $post['content'] : '';
-		}
-		if (isset($post['category_id'])) {
-			$updateData['category_id'] = !empty($post['category_id']) ? intval($post['category_id']) : 0;
-		}
-		if (isset($post['pic_src'])) {
-			$updateData['pic_src'] = !empty($post['pic_src']) ? $post['pic_src'] : '';
-		}
-		if (isset($post['file_src'])) {
-			$updateData['file_src'] = !empty($post['file_src']) ? $post['file_src'] : '';
-		}
-		if (isset($post['video_src'])) {
-			$updateData['video_src'] = !empty($post['video_src']) ? $post['video_src'] : '';
-		}
-		if (isset($post['is_video'])) {
-			$updateData['is_video'] = $post['is_video'];
-		}
-
-
-        $updateData["alias"] = isset($post["alias"]) ? $post["alias"] : "";
-        $updateData["json_data"] = isset($post["json_data"]) ? $post["json_data"] : "";
-
-
-		//处理图片时
-		if (isset($post['photoes'])) {
-			$updateData['content'] = $post['photoes'];
-		} else {
-			if (isset($updateData['content']) && empty($updateData['summary'])) {
-				$content = strip_tags($updateData['content']);
-				if (mb_strlen($content) > 200) {
-					$updateData['summary'] = mb_substr($content, 0, 200);
-				} else {
-					$updateData['summary'] = $content;
-				}
-			}
-		}
-		$updateData['edit_time'] = time();
-
-		$id = isset($post['id']) ? intval($post['id']) : 0;
-
-		// var_dump($updateData);
-		// return ;
-		if ($id) {
-			$this->db->where('id', $id);
-			$this->db->update($this->tableName, $updateData);
-			return $id;
-		} else {
-			$this->db->insert($this->tableName, $updateData);
-			if ($this->db->affected_rows()) {
-				$lastId = $this->db->insert_id();
-				return $lastId;
-			} else {
-				return false;
-			}
-		}
-	}
-
 	//获取单条信息
 	public function getOne($cond) {
 		$this->db->where($cond);
@@ -239,7 +142,7 @@ class article_model extends CI_Model {
 		if ($result = $this->getOne($where)) {
 			return $result;
 		} else {
-			return false;
+			return FALSE;
 		}
 	}
 
@@ -269,6 +172,8 @@ class article_model extends CI_Model {
 			return false;
 		}
 	}
+
+
 
 	//得到总数新接口，直接传入get或者post参数
 	public function getTotalByCond($cond) {
@@ -305,6 +210,85 @@ class article_model extends CI_Model {
 			$limit, $offset)->result_array();
 
 		return $result;
+	}
+
+	//v2 获取分页
+	public function get_pages($offset=0, $limit=20, $cond=array()) {
+		$where = array();
+		$like = array();
+
+		$where['is_delete'] = NO;
+
+		$this->db->start_cache();
+		$this->db->from('summer_article')
+			->where($where)
+			->like($like)
+			->order_by('create_time desc, sort asc');
+		$this->db->stop_cache();
+
+		$this->db->limit($limit, $offset);
+		$data_list = $this->db->get()->result_array();
+		$count = $this->db->count_all_results();
+
+		$this->db->flush_cache();
+		return array(
+			'data_list'		=> $data_list,
+			'total_rows'	=> $count,
+			);
+	}
+
+	//v2 根据首页ID获取文章
+	public function get_by_index_id($index_id) {
+		$where = array(
+			'index_id'	=> $index_id,
+			'is_delete' => 0,
+			'type'		=> ARTICLE_TYPE_INDEX,
+			);
+		$this->db->from('summer_article')
+			->where($where);
+
+		$article = $this->db->get()->row_array();
+		return $article;
+	}
+
+	//v2 根据ID获取文章
+	public function get_by_id($article_id) {
+		$where = array(
+			'id' => $article_id
+			);
+		$article = $this->db
+					->where($where)
+					->from('summer_article')
+					->get()
+					->row_array();					
+
+		return $article;
+	}
+
+	//v2 根据首页ID更新文章内容
+	public function update_by_index_id($article, $index_id) {
+		$where = array(
+			'index_id'	=> $index_id,
+			'type'		=> ARTICLE_TYPE_INDEX,
+			);
+		$this->db->where($where)->update('summer_article', $article);
+		return $this->db->affected_rows();
+	}
+
+	//v2 根据主键ID更行文章内容
+	public function update_by_id($article, $id) {
+		$where = array(
+			'id'	=> $id,
+			);
+		$this->db->where($where)->update('summer_article', $article);
+		return $this->db->affected_rows();
+	}
+
+
+	// v2 批量更新
+	public function update_by_ids($article, $ids) {
+		$this->db->or_where_in('id', $ids)->update('summer_article', $article);
+		return $this->db->affected_rows();
 	}
 
 	public function getPages($offset=0, $limit=20, $cond=array()) {
@@ -380,6 +364,15 @@ class article_model extends CI_Model {
 		return $this->db->insert_id();
 	}
 
+	public function create($article) {
+		$this->db->insert($this->table_name, $article);
+		return $this->db->insert_id();
+	}
+
+	public function create_article_index($article_index) {
+		$this->db->insert('summer_article_index', $article_index);
+	}
+
 	public function updateArticle($article, $cond) {
 		$where = array();
 		if(isset($cond['id'])) {
@@ -387,6 +380,14 @@ class article_model extends CI_Model {
 		}
 		$this->db->where($where)->update($this->tableName, $article);
 		return $this->db->affected_rows();
+	}
+
+	public function createPhoto($photo) {
+		return $this->createArticle($photo);
+	}
+
+	public function updatePhoto($photo, $cond) {
+		return $this->updateArticle($photo, $cond);
 	}
 
 

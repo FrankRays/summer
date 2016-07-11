@@ -14,21 +14,22 @@ class MY_Controller extends CI_Controller{
 	public function __construct(){	
 		parent::__construct();
 
-		//系统自动载入的模块，属于核心类
-		//载入yconfig配置文件
-		//$this -> config -> load('snowConfig/admin.php', TRUE);
-		$this -> load -> helper("url");
-		$this -> load -> helper('cookie');
-		$this -> load -> library('session');
+		$this->load->helper("url");
 		$this->load->helper("form");
-		$this -> load -> library('yerror');
-		$this -> load -> model('lm_model');
-		$this -> load -> model('news_category_model');
-		$this -> load -> model('friendlink_model');
-		$this -> load -> model('article_model');
-		$this -> load -> model('user_model');
-		$this -> load -> library('pagination');
-		$this -> config -> load('snowConfig/admin', true);
+		$this->load->helper('cookie');
+		$this->load->helper('summer_view');
+
+		$this->load->library('pagination');
+		$this->load->library('session');
+
+		$this->load->model('lm_model');
+		$this->load->model('news_category_model');
+		$this->load->model('friendlink_model');
+		$this->load->model('article_model');
+		$this->load->model('user_model');
+
+		$this->config-> load('snowConfig/admin', TRUE);
+		$this->config->load('s/config');
 
 		$this -> _data['head']['sitename'] = '新闻网';
 		$this -> _data['head']['tplHeadCss'] = array();
@@ -44,9 +45,9 @@ class MY_Controller extends CI_Controller{
 		$this -> _data['foot'] = array();
 
 		//开发模式下开启性能分析模式
-		// if(ENVIRONMENT == 'development'){
-		// 	$this -> output -> enable_profiler(TRUE);
-		// }
+		if(ENVIRONMENT == 'development' && ! isset($this->is_ajax)){
+			// $this -> output -> enable_profiler(TRUE);
+		}
 
 		//分页配置文件
 		$this->_paginationConfig = $this->config->item('paginationConfig', 'snowConfig/admin');
@@ -58,17 +59,14 @@ class MY_Controller extends CI_Controller{
 
 	public function judgeLogin($login = FALSE){
 		$session_Clogin = $this -> session -> userdata('user');
-		// $cookie_Clogin = $this -> input ->	cookie('user', TRUE);
-		// var_dump($session_Clogin);
-		// var_dump($session_Clogin);
 			if(empty($session_Clogin) || empty($_SESSION['user'])){
 				if($login == TRUE){
 					return TRUE;
 				}
 				$msg = '你还没有登陆';
 				$href = site_url('c=login');
-				// var_dump($href);
-				$this -> yerror -> showYAdminError($msg, $href);
+				setFlashAlert(200, '未登录');
+				redirect($href);
 				exit();
 			}
 	}
@@ -106,6 +104,10 @@ class MY_Controller extends CI_Controller{
 		$this->load->view($this->_sidebar, $sidebar);
 		$this->load->view($tplPath, $data);
 		$this->load->view($this->_footer, $foot);
+	}
+
+	public function _load_view($tpl_path, $data=array()) {
+		$this->_loadView($tpl_path, $data);
 	}
 
 	/*
@@ -224,19 +226,5 @@ class MY_Controller extends CI_Controller{
 		}
 		$data['newsList'] = $this -> news_model -> getListByCId($data['categoryList']['id'], $num);
 		return $data;
-	}
-
-	public function yPotal(){
-
-		//局域网内有问题 现在都可以使用
-		// if( ! $this -> user_model -> getUserByToken()){
-		// 	header('Location:'.site_url('d=user&c=login&m=index'));
-		// }
-	}
-
-	public function ySignPotal(){
-		// if( $this -> user_model -> getUserByToken()){
-		// 	header('Location:'.site_url('d=article&c=y&m=index'));
-		// }
 	}
 }

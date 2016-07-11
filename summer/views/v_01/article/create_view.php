@@ -6,7 +6,7 @@
  * Time: 22:52
  */
 ?>
-<div class="admin-content" style="min-height:1400px;">
+<div class="admin-content">
     <div class="am-cf am-padding">
         <div class="am-fl am-cf">
             <strong class="am-text-primary am-text-lg"><?php echo $moduleName ?></strong> /
@@ -14,9 +14,10 @@
         </div>
     </div>
     <div class="am-g" >
-        <?php echo validation_errors() ?>
+        <div class="am-u-12">
+                <?php echo validation_errors() ?>
+        </div>
         <form action="#" method="post" id="articleForm" class="am-form am-form-horizontal">
-
             <input type="hidden" value="<?php echo set_value('id', '') ?>" name="id" />
             <div class="am-form-group">
                 <label class="am-u-sm-2 am-form-label">文章标题</label>
@@ -103,50 +104,23 @@
                 <label class="am-u-sm-2 am-form-label"></label>
                 <div class="am-u-sm-6">
                     <button type="submit" class="am-btn am-btn-default am-radius" id="saveArticle">保存</button>
-                    <a href="<?php echo site_url('d=article&c=y&m=create')?>" class="am-btn am-btn-default am-radius" >继续添加</a>
-                    <a href="<?php echo site_url('d=article&c=y&m=index')?>" class="am-btn am-btn-default am-radius" >返回列表</a>
                 </div>
                 <div class="am-u-sm-4"></div>
             </div>
         </form>
     </div>
+
 </div>
+
 
 <script>
     $(function(){
-        var ue = UE.getEditor('container');
-
-
+        var ue = UE.getEditor('container', 
+            {
+                'serverUrl': "<?=site_url('c=file&m=uEditorUpload')?>"
+            });
         var cateSelect = $('.category-select').chosen({
                 max_selected_options: 1
             });
-
-        // $("#saveArticle").on('click', function(){
-        //     var formData = $("#articleForm").serializeArray();
-        //     formData.push({name : 'content', value : UE.getEditor('container').getContent()});
-        //     console.log(formData);
-        //     $.ajax({
-        //         url : '<?php echo site_url('d=article&c=y&m=create') ?>',
-        //         type : 'post',
-        //         dataType : 'json',
-        //         data : formData,
-        //         success : function(data){
-        //             if(data.result && data.result == 'success'){
-        //                 $("#newsId").val(data.content.newsId);
-        //                 layer.msg(data.content.msg, 2, 1);
-        //             }else{
-        //                 layer.msg(data.content, 2);
-        //             }
-        //         },
-        //         error : function(xhr){
-        //             $.layer({
-        //                 type : 1,
-        //                 page : {
-        //                     html : xhr.responseText
-        //                 }
-        //             });
-        //         }
-        //     });
-        // });
     });
 </script>

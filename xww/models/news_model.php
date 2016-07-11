@@ -12,8 +12,7 @@ class news_model extends CI_Model{
 	//construct function 
 	public function __construct(){
 		parent::__construct();
-
-
+		
 		$this -> tableName = 'news';
 	}
 

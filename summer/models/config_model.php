@@ -2,32 +2,12 @@
 
 class config_model extends CI_Model{
 
-
-	//config
-	//tableName
-	public $tableName = '';
-	//function __construct
 	public function __construct(){
 		parent::__construct();
 
-		$this -> tableName = 'config';
-	}
+		$table = $this->config->item('table', 'snowConfig/admin');
+		$this->table = $table['config']['table_name'];
 
-
-	//add
-	public function add($data = FALSE){
-		if($data == FALSE) return FALSE;
-
-		if(!isset($data["module"])) {
-			$data["module"] = "default";
-		}
-
-		$this -> db -> insert($this -> tableName, $data);
-		if($this -> db -> affected_rows()){
-			return TRUE;
-		}else{
-			return FALSE;
-		}
 	}
 
 	/**
@@ -87,37 +67,13 @@ class config_model extends CI_Model{
 	**/
 	public function getById($id){
 		$id = intval($id);
-		$where = array();
-
-		$where['id'] = $id;
-		$this -> db -> where($where);
-		$this -> db -> select('id, owner, module, section, key, value');
-		$result = $this -> db -> get($this -> tableName) -> result_array();
-		if($result[0]){
-			return $result[0];
-		}else{
-			return FALSE;
-		}
-	}
-
-	/**
-	*update data by id
-	*@param $data array update data
-	*@param $id the id of update data
-	*@return boolean update if successful
-	**/
-	public function update($data, $id){
-		$id = intval($id);
-
 		$where = array(
 			'id' => $id,
 			);
-		$this -> db -> where($where);
-		if($this -> db -> update($this -> tableName, $data)){
-			return TRUE;
-		}else{
-			return FALSE;
-		}
+
+		$query = $this->db->where($where)->from($this->table)->get();
+		$config = $query->row_array();
+		return $config;
 	}
 
 	/**
@@ -131,7 +87,7 @@ class config_model extends CI_Model{
 			'id' => $id,
 			);
 		$this -> db -> where($where);
-		if($this -> db -> delete($this -> tableName)){
+		if($this -> db -> delete($this->table)){
 			return TRUE;
 		}else{
 			return FALSE;
@@ -139,48 +95,53 @@ class config_model extends CI_Model{
 
 	}
 
-	public function create($post){
-		//过滤数据
-		$updateData = array();
-		if(isset($post['name'])){
-			$updateData['name'] = isset($post['name']) ? $post['name'] : '';
-		}
-		if(isset($post['picSrc'])){
-			$updateData['picSrc'] = isset($post['picSrc']) ? $post['picSrc'] : '';
-		}
-		if(isset($post['linkSrc'])){
-			$updateData['linkSrc'] = !empty($post['linkSrc']) ? $post['linkSrc'] : '';
-		}
-		$updateData['summary'] = isset($post['summary']) ? $post['summary'] : '';
-		$section = isset($post['section']) ? $post['section'] : '';
+	//create config
+	public function create($config) {
+		$this->db->insert($this->table, $config);
+		$insert_id = $this->db->insert_id();
 
-		//insert Data value
-		$insertData = array("value" => json_encode($updateData));
-
-		if (isset($post['id']) && !empty($post['id'])) {
-			//update
-			$id = is_numeric($post['id']) ? intval($post['id']) : 0;
-
-			$this -> db -> where(array('id'=> $id));
-			$this -> db -> update($this -> tableName, $insertData);
-			return $id;
+		if($insert_id) {
+			return $insert_id;
 		}else{
-			//create
-			$insertData["section"] = $section;
-			if(!isset($post["module"])) {
-				$insertData["module"] = "default";
-			}else{
-				$insertData["module"] = $post["module"];
-			}
-
-			if(!isset($post["owner"])) {
-				$insertData["owner"] = "summer";
-			}else{
-				$insertData["owner"] = $post["owner"];
-			}
-			$this -> db -> insert($this -> tableName, $insertData);
-			return $this -> db -> insert_id();
+			return false;
 		}
+	}
+
+	public function update($config, $id) {
+		$where = array(
+			'id' => $id
+			);
+
+		$this->db->where($where)->update($this->table, $config);
+
+		$affected_rows = $this->db->affected_rows();
+		return $affected_rows;
+	}
+
+
+	public function get_page($offset=0, $limit=20, $cond=array()) {
+
+		$where = array();
+		if(isset($cond['section'])) {
+			$where['section'] = $cond['section'];
+		}
+
+		$this->db->start_cache();
+		$this->db->from($this->table);
+		$this->db->where($where);
+		$this->db->stop_cache();
+
+		$this->db->limit($offset, $limit);
+		$this->db->order_by('id', 'desc');
+		$data_list = $this->db->get()->result_array();
+		$count = $this->db->count_all_results();
+
+		$result = array(
+			'data_list' => $data_list,
+			'count' 	=> $count,
+			);
+
+		return $result;
 	}
 
 }

@@ -403,3 +403,13 @@ filter:progid:DXImageTransform.Microsoft.gradient( GradientType = 0,startColorst
   padding: 5px 8px;
   background-color: #444;
 }
+
+
+.college-news li a{
+  
+    width:250px;
+    word-wrap: normal; /* for IE */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}

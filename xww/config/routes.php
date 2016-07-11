@@ -51,4 +51,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
+
+//mobile config
+$route['m/index'] = '/welcome/m_index';
+$route['m/archive/(:any)'] = '/welcome/m_archive/$1';
+//学院新闻
+// $route['collegenews'] = '/welcome/collegenews';
+$route['collegenews'] = '/welcome/m_noopen';
+$route['departmentnotice'] = '/welcome/m_noopen';
+$route['photonews'] = '/welcome/m_noopen';
+$route['focushot'] = '/welcome/m_noopen';
+$route['videodispay'] = '/welcome/m_noopen';
+$route['svtccmedia'] = '/welcome/m_noopen';
+$route['svtccphoto'] = '/welcome/m_noopen';
+$route['svtccreading'] = '/welcome/m_noopen';
+
+//未开放
+$route['m/noopen'] = '/welcome/m_noopen';
+
 $route['translate_uri_dashes'] = FALSE;

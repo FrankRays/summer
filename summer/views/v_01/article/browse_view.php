@@ -110,13 +110,20 @@
   var delUrl = "<?php echo site_url('d=article&c=y&m=del'); ?>";
 </script>
 <script type="text/javascript">
-  var cateSelect = $('.category-select').chosen({
-    max_selected_options: 1
-  });
-  cateSelect.change(function(e, k){
-    if(!!k.selected) {
-      document.location.href="<?php echo site_url("c=post") . '&category_id='; ?>" + k.selected;
+$(function(){
+    var cateSelect = $('.category-select').chosen({
+      max_selected_options: 1
+    });
+    cateSelect.change(function(e, k){
+      if(!!k.selected) {
+        document.location.href="<?php echo site_url("c=post") . '&category_id='; ?>" + k.selected;
+      }
+    });
+
+    var saveStatus = <?php echo $save_status ?>;
+    if(!!saveStatus) {
+      alert("<?php echo $save_message ?>");
     }
-  });
+})
 </script>
 <script type="text/javascript"></script>

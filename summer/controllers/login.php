@@ -13,6 +13,7 @@ class login extends MY_Controller {
 	}
 
 	public function index() {
+		
 		$this->login();
 	}
 
@@ -38,22 +39,22 @@ class login extends MY_Controller {
 
 	public function _hasUsername($username='') {
 		if($this->user_model->hasAccount($username)) {
-			return true;
+			return TRUE;
 		}else{
 
 			$this->form_validation->set_message('_hasUsername', '用户名不存在');
-			return false;
+			return FALSE;
 		}
 	}
 
 	public function _checkPassword($password='', $val) {
-		$username = $this->input->post('username', true);
+		$username = $this->input->post('username', TRUE);
 
 		if($this->user_model->signIn($username, $password)) {
-			return ture;
+			return TRUE;
 		}else{
 			$this->form_validation->set_message('_checkPassword', '密码错误');
-			return false;
+			return FALSE;
 		}
 
 	}

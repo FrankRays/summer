@@ -10,7 +10,15 @@ class news_index_model extends CI_Model{
 		$this -> tableName = 'new_crawler';
 		$this -> category1 = '学院新闻';
 		$this -> category2 = '系部动态';
+
+		$this->category_xyxw = '学院新闻';
+		$this->category_xbdt = '西部动态';
+		$this->category_notice = '通知公告';
 		$this -> load -> library('Crawler');
+
+		//table properties
+		$tables = $this->config->item('table', 'snowConfig/admin');
+		$this->table = $tables['index_news']['table_name'];
 	}
 
 
@@ -73,8 +81,6 @@ class news_index_model extends CI_Model{
 	}
 
 	public function setCoverImg($post){
-		// $id = isset($post['id']) && is_numeric($post['id']) ?
-		// 	intval($post['id']) : 0;
 
 		$id = isset($post['id']) ? stripslashes($post['id']) : "-1";
 		$coverImg = isset($post['coverImg']) ? $post['coverImg'] : '';
@@ -149,6 +155,13 @@ class news_index_model extends CI_Model{
 		}
 	}
 
+
+	public function create($article) {
+		$this->db->insert($this->table, $article);
+		$insert_id = $this->db->insert_id();
+		return $insert_id;
+	}
+
 	public function updateData($data){
 
 		foreach ($data as $key => $value) {
@@ -184,5 +197,114 @@ class news_index_model extends CI_Model{
 	public function del($id){
 		$id = stripslashes($id);
 		$this->db->where(array("id"=>$id))->delete($this->tableName);
+	}
+
+
+	/**
+	 * get page of news of www.svtcc.edu.cn
+	 * @param  integer $offset [description]
+	 * @param  integer $limit  [description]
+	 * @param  array   $cond   [description]
+	 * @return [type]          [description]
+	 */
+	public function getPage($offset=0, $limit=20, $cond=array()) {
+		$where = array();
+		if(isset($cond['category_id'])) {
+			$where['category_id'] = $cond['category_id'];
+		}
+
+		$tables = $this->config->item('table', 'snowConfig/admin');
+
+		//cache sql for select count and list
+		$this->db->start_cache();
+		$this->db->from($tables['index_news']['table_name']);
+		$this->db->where($where);
+		$this->db->order_by('create_date', 'desc')->order_by('cur_order', 'asc');
+		$this->db->stop_cache();
+
+		$this->db->limit($limit, $offset);
+		$dataList = $this->db->get()->result_array();
+		$count = $this->db->count_all_results();
+
+		$wwwBaseLink = 'http://www.svtcc.edu.cn/front/view';
+		foreach($dataList as &$value) {
+			if($value['category_id'] == 11) {
+				//create news of www.svtcc.edu.cn category
+				$value['category_name'] = $this->category1;
+				//create view link of news of www.svtcc.edu.cn
+				$value['view_link'] = $wwwBaseLink . '-11-'.$value['id'].'.html';
+			}else if($value['category_id'] == 16){
+				$value['category_name'] = $this->category2;
+				$value['view_link'] = $wwwBaseLink . '-16-'.$value['id'].'.html';
+			}else if($value['category_id'] == 12) {
+				$value['category_name']  = $this->category_notice;
+				$value['view_link'] = $wwwBaseLink . '-12-'.$value['id'].'.html';
+			}
+
+			$value['index_cmitime'] = $value['index_ctime'] 
+				= date("Y-m-d", $value['index_ctime']);
+		}
+
+
+		$result = array(
+			'data_list' => $dataList,
+			'count' => $count
+			);
+		return $result;
+	}
+
+	public function get_by_index_id($index_id) {
+
+		$where = array(
+			'index_id'		=> addslashes($index_id),
+			);
+
+		$article = $this->db->from($this->table)
+					->where($where)
+					->limit(1)
+					->get()
+					->row_array();
+
+		return $article;
+	}
+
+	public function getById($id) {
+		if(empty($id)) {
+			return false;
+		}
+
+		$tables = $this->config->item('table', 'snowConfig/admin');
+		$indexArticle = $this->db->from($tables['index_news']['table_name'])
+			->where(array('id' => $id))
+			->get()
+			->row_array();
+
+		return $indexArticle;
+	}
+
+	public function update_by_id($article, $id) {
+
+		$this->db->where(array('id'=>$id))
+			->update($this->table, $article);
+
+		return $this->db->affected_rows();
+	}
+
+	public function updateById($indexNews, $id) {
+		if(empty($id)) {
+			return false;
+		}
+
+		$table = $this->table;
+
+		$this->db->where(array('id'=>$id))
+			->update($table['table_name'], $indexNews);
+
+		$affected_rows = $this->db->affected_rows();
+		if($affected_rows === 0) {
+			return false;
+		}else{
+			return true;
+		}
 	}
 }

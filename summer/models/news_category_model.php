@@ -9,6 +9,7 @@
 
 class news_category_model extends CI_Model{
 
+	public $table_name = 'news_category';
 	//construct function 
 	public function __construct(){
 		parent::__construct();
@@ -187,6 +188,26 @@ class news_category_model extends CI_Model{
 
 		$categories = $this->db->from($this->tableName)->where($where)->get()->result_array();
 		return $categories;
+	}
+
+
+	//v2 根据ID获取文章分类
+	public function get_by_id($category_id) {
+		$where = array(
+			'id'		=> $category_id,
+			'is_delete'	=> NO,
+			);
+		return $this->db->from($this->table_name)->where($where)->get()->row_array();
+	}
+
+
+
+	//v2 获取所有分类
+	public function get_all() {
+		$where = array(
+				'is_delete' => 0,
+			);
+		return $this->db->from($this->table_name)->where($where)->get()->result_array();
 	}
 
 }

@@ -87,3 +87,5 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 
 
 require_once(APPPATH.'../modules/summer/config/summer_constants.php');
+require_once(APPPATH.'config/snowConfig/constants.php');
+require APPPATH.'config/s/constants.php';

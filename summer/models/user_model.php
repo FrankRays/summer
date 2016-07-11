@@ -9,6 +9,7 @@ class User_model extends CI_Model{
 	private $tokenLife = 604800;
 	public function __contruct(){
 		parent::__contruct();
+
 	}
 
 	public function _doSha1($password){
@@ -49,7 +50,6 @@ class User_model extends CI_Model{
 				));
 
 			$user = $this -> db -> get($this -> tableName) -> row_array();
-			// var_dump($user);
 			if( $user ){
 				//设置token cookie
 				$token = $this -> encryptToken($data['account'] . '_' . (time() + $this -> tokenLife),

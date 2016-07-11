@@ -11,7 +11,22 @@ $config['y']['view']['head'] = 'v_01/common/head_view.php';
 $config['y']['view']['foot'] = 'v_o1/common/foot_view.php';
 
 
-//分页配置
+
+$config['upload'] = array();
+$config['upload']['thumb'] = array(
+        array(100, 100),array(400, 400), array(400, 400)
+    );
+
+
+if(file_exists(APPPATH.'/resource/')) {
+    $config['upload']['resource_path'] = APPPATH.'/resource/';
+}else if(file_exists(dirname(APPPATH).'/resource/')) {
+    $config['upload']['resource_path'] = dirname(APPPATH).'/resource/';
+}else{
+    exit('未找到存放资源的文件夹');
+}
+
+//分页参数
 $config['paginationConfig'] = array(
     'per_page' => '20',
     'query_string_segment' => 'offset',
@@ -35,3 +50,18 @@ $config['paginationConfig'] = array(
     'next_link' => '下一页',
     'last_link' => '最末页'
 );
+
+//databases tables base infomation
+
+$config['table'] = array(
+    //新闻网首页
+    'index_news' => array(
+            'table_name' => 'summer_article_index',
+            'fields' => array('id', 'title', 'category_id', 'is_top', 'cover_img'
+                , 'index_ctime', 'index_id', 'category_name', 'index_cmitime', 'cur_order'),
+        ),
+    'config'    => array(
+            'table_name'    => 'config',
+            'fields'        => array('id', 'owner', 'module', 'section', 'key', 'value'),
+        ),
+    );

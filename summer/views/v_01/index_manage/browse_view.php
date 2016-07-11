@@ -3,8 +3,8 @@
 <div class="admin-content">
     <div class="am-cf am-padding">
       <div class="am-fl am-cf">
-        <strong class="am-text-primary am-text-lg"><?php echo $content['moduleName'] ?></strong> /
-        <small><?php echo $content['moduleDesc'] ?></small>
+        <strong class="am-text-primary am-text-lg"><?=$moduleName ?></strong> /
+        <small><?=$moduleDesc ?></small>
       </div>
     </div>
     <div class="am-g">
@@ -37,7 +37,6 @@
             <thead>
               <tr>
                 <th class="table-check"><input type="checkbox" /></th>
-                <th class="table-id">ID</th>
                 <th class="table-title">标题</th>
                 <th class="table-type">类别</th>
                 <th>发布日期</th>
@@ -45,13 +44,12 @@
               </tr>
           </thead>
           <tbody>
-          <?php foreach($content['articles'] as $article){ ?>
+          <?php foreach($page['data_list'] as $article){ ?>
             <tr>
               <td><input type="checkbox" /></td>
-              <td><?php echo $article['id'] ?></td>
-              <td style="width:30%"><a href="#"><?php echo $article['title'] ?></a></td>
+              <td style="width:40%"><a target="blank" href="<?=$article['view_link']?>"><?php echo $article['title'] ?></a></td>
               <td><?php echo $article['category_name'] ?></td>
-              <td><?php echo $article['index_ctime'] ?></td>
+              <td><?php echo $article['create_date'] ?></td>
               <td>
                 <div class="am-btn-toolbar">
                   <div class="am-btn-group am-btn-group-xs">
@@ -62,9 +60,9 @@
                         <button type="button" class="am-btn am-btn-xs am-text-secondary am-btn-success  y-settop-btn"><span class="am-icon-pencil-square-o"></span> 置顶中</button>
                     <?php } ?>
                     <?php if(!empty($article['cover_img'])){ ?>
-                      <a href="<?php echo site_url('d=indexArticle&c=y&m=setCoverImg&id='.$article['id']) ?>" class="am-btn am-btn-default am-btn-xs am-text-danger"><span class="am-icon-trash-o"></span> 已添加</a>
+                      <a href="<?php echo site_url('d=indexArticle&c=y&m=setCoverImg&id='.$article['id']) ?>" class="am-btn am-btn-default am-btn-xs am-text-danger"><span class="am-icon-trash-o"></span>已添加封面</a>
                     <?php }else{ ?>
-                      <a href="<?php echo site_url('d=indexArticle&c=y&m=setCoverImg&id='.$article['id']) ?>" class="am-btn am-btn-default am-btn-xs am-text-danger"><span class="am-icon-trash-o"></span> 添加</a>
+                      <a href="<?php echo site_url('d=indexArticle&c=y&m=setCoverImg&id='.$article['id']) ?>" class="am-btn am-btn-default am-btn-xs am-text-danger"><span class="am-icon-trash-o"></span>添加封面</a>
                     <?php } ?> 
 
                     <a href="<?php echo site_url('d=indexArticle&c=y&m=del&id='.$article['id']) ?>" class="am-btn am-btn-default am-btn-xs am-text-danger news-delete-btn"><span class="am-icon-trash-o"></span> 删除</a>
@@ -77,9 +75,9 @@
         </table>
 
           <div class="am-cf">
-  共 15 条记录
+  共 <?=$page['count']?> 条记录
   <div class="am-fr">
-    <?php echo $content['pagination'] ?>
+    <?=$pagination ?>
   </div>
 </div>
           <hr />
@@ -90,7 +88,7 @@
     </div>
   </div>
 <!-- content end -->
-
+<?=getFlashAlert()?>
 <script>
 $(function(){
   var setTopUrl = "<?php echo site_url('d=indexArticle&c=y&m=setTop') ?>";

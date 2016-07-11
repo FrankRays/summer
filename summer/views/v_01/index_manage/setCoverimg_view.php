@@ -9,105 +9,64 @@
 <div class="admin-content" style="min-height:1400px;">
     <div class="am-cf am-padding">
         <div class="am-fl am-cf">
-            <strong class="am-text-primary am-text-lg"><?php echo $content['moduleName'] ?></strong> /
-            <small><?php echo $content['moduleDesc'] ?></small>
+            <strong class="am-text-primary am-text-lg"><?=$moduleName ?></strong> /
+            <small><?=$moduleDesc ?></small>
         </div>
     </div>
     <div class="am-g" >
-        <form id="articleForm" class="am-form am-form-horizontal">
-            <div id="upload-coverimg-group" class="am-form-group">
-              <label class="am-u-sm-3">图片地址</label>
-              <div class="am-u-sm-6">
-                <input id="upload-coverimg" value="<?php echo $content['article']['cover_img'] ?>" class="am-g am-input-sm am-form-field" style="width:100%" type="test" name="coverImg"/>
-              </div>
-              <div class="am-u-sm-3">
-                <button type="button" id="upload-coverimg-btn" class="am-btn am-btn-default am-btn-xs" id="y-ueditor-upload-img">上传图片</button>
-              </div>
-              <script type="text/plain" id="coverimg-textarea" style="height:5px;display:none;" ></script>
-            </div>  
+        <form id="articleForm" method="post" action="<?=site_url('d=indexArticle&c=y&m=setCoverImg')?>" class="am-form am-form-horizontal">
             <div class="am-form-group">
               <label class="am-u-sm-3">图片预览</label>
-              <div id="upload-img-view" class="am-u-sm-9">
-                  <?php if(isset($content['article']['cover_img']) && !empty($content['article']['cover_img'])){ ?>
-                    <img src="<?php echo base_url($content['article']['cover_img']) ?>" style="width:160px;height:90px;" />
-                  <?php } ?>            
+              <div  class="am-u-sm-9">
+                <div>
+                  <button type="button" id="summer-photo-upload-btn" class="am-btn am-btn-default am-btn-xs">上传图片</button>
+                </div>
+                <div>  
+                  <img src="<?=set_value('cover_img', '')?>" style="width:100px" id="upload-img-view" />
+                </div>
+                <input type="hidden" name="coverImg" id="cover-img-src-input" value="<?=set_value('cover_img', '')?>" /> 
+                <input type="hidden" name="id" value="<?=set_value('id', '') ?>" />
               </div>
             </div>
             <div class="am-form-group">
                 <label class="am-u-sm-2 am-form-label"></label>
                 <div class="am-u-sm-6">
-                    <button type="button" class="am-btn am-btn-default am-radius" id="saveArticle">保存</button>
-                    <a href="<?php echo site_url('d=indexArticle&c=y&m=index&category_id='.$content['article']['category_id']) ?>" class="am-btn am-btn-default am-radius">返回首页新闻列表</a>
+                    <button type="submit" class="am-btn am-btn-default am-radius" id="saveArticle">保存</button>
                 </div>
                 <div class="am-u-sm-4"></div>
             </div>
-            <input type="hidden" id="newsId" name="id" value="<?php echo isset($content['article']['id']) ? $content['article']['id'] : '' ?>" />
         </form>
     </div>
 </div>
 
 <script>
     $(function(){
-    var setCoverimgUrl = "<?php echo site_url('d=indexArticle&c=y&m=setCoverImg') ?>" 
-    //调用ueditor
-    var coverimgEditor = UE.getEditor('coverimg-textarea', {
-      autoHeightEnabled : false
-    });
 
-    coverimgEditor.ready(function(){
-      coverimgEditor.hide();
-    });
+        var imageUploader = WebUploader.create({
+            "server" : "<?=site_url('c=file&m=articlePhoto') ?>",
+            "swf" : "<?=base_url('static/plugins/webuploader/Uploader.swf') ?>",
+            "resize" : false,
+            "accept" : {
+                "title" : "Images",
+                "extensions" : "gif,jpg,jpeg,bmp,png",
+                "mimeTypes" : "image/*"
+            },
+            "pick" : {
+                "id" : "#summer-photo-upload-btn",
+                "style" : ""
+            },
+            "auto" : true
+        });
 
-    //监听图片上传
-    coverimgEditor.addListener('beforeInsertImage', function (t,arg)
-    {
-      console.log(arg);
-      // alert('这是图片地址：'+arg[0].src);
-      $("#upload-coverimg").val(arg[0].src);
-      $("#upload-img-view").html('');
-      $("#upload-img-view").append('<img src="'+arg[0].src+'" style="width:160px;height:90px" />');
-    });
-
-    //弹出图片上传的对话框
-    function upImage()
-    {
-      var myImage = coverimgEditor.getDialog("insertimage");
-      myImage.open();
-    }
-
-    $("#upload-coverimg-btn").on('click', function(){
-      upImage();
-    });
-
-    //保存监听事件
-    $("#saveArticle").on('click', function(){
-      var id = $("#newsId").val();
-      var coverImg = $("#upload-coverimg").val();
-      $.ajax({
-        type : 'post',
-        url : setCoverimgUrl,
-        dataType : 'json',
-        data : {'id' : id, 'coverImg' : coverImg},
-        success : function(data){
-          if(data.result && data.result == 'fail'){
-            layer.alert(data.content.msg, 1);
-          }else if(data.result == 'success'){
-            layer.alert (data.content.msg, 1);
-          }else{
-            layer.alert('系统出错了');
+        imageUploader.on('uploadSuccess', function(file, response){
+          if(!response.file_uri) {
+            alert('上传失败，重新上传');
+            return ;
           }
-        },
-        error : function(xhr){
-          $.layer({
-            type : 1,
-            page : {
-              html : xhr.responseText
-            }
-          });
-        }
-      });
-    });
 
+          $('#upload-img-view').attr('src', response.file_uri);
+          $('#cover-img-src-input').val(response.file_uri);
+        });
 
     });
 </script>

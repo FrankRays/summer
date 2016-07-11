@@ -8,8 +8,8 @@ class Slider extends MY_Controller{
 		parent::__construct();
 
 		$this -> tpl = array(
-			'browse' => 'v_01/config/slider_browse_view',
-			'create' => 'v_01/config/slider_create_view'
+			'browse' => '',
+			'create' => ''
 			);
 
 		//初始化分页信息
@@ -17,74 +17,180 @@ class Slider extends MY_Controller{
 		//载入工具类
 		$this -> load -> library('pagination');
 		$this -> load -> model('config_model');
-		$this -> load -> library('JsonOutUtil');
-		$this -> jsonOutUtil = new JsonOutUtil();
-
-		//potal
-		$this -> yPotal();
+		$this->load->helper('summer_view');
 	}
 
 	public function index(){
-		$this -> _data['content']['moduleName'] = '幻灯片管理';
-		$this -> _data['content']['moduleDesc'] = '首页幻灯片管理';
-		$this -> _data['sidebar'] = array();
-		$this -> _data['foot'] = array();
 
-		$this -> _data['content']['articles'] = $this -> config_model -> getSlide(10);
-		// var_dump($this -> _data['content']['articles']);
-		$this -> _view($this -> tpl['browse']);
+		$p_cfg = $this->config->item('paginationConfig', 'snowConfig/admin');
 
+		$get = $this->input->get();
+		$offset = isset($get['offset']) && is_numeric($get['offset']) ? intval($get['offset']) : 0;
+		$limit = isset($get['limit']) && is_numeric($get['limit']) ? intval($get['limit']) : $p_cfg['per_page'];
 
+		$cond = array(
+		// 	'section' => 'sliders',
+			);
+
+		$page = $this->config_model->get_page($offset, $limit, $cond);
+
+		//create pagination links
+		$base_url = array();
+		if(isset($get['offset'])) {
+			unset($get['offset']);
+		}
+		foreach($get as $k => $v) {
+			$base_url[] = $k . '=' . $v;
+		}
+
+		$p_cfg['base_url'] = site_url(implode($base_url, '&'));
+		$p_cfg['total_rows'] = $page['count'];
+		$this->pagination->initialize($p_cfg);
+
+		//{'picSrc', 'linkSrc', 'summary'}
+		$view_data_list = array();
+		foreach($page['data_list'] as $v) {
+			if(isset($v['value'])) {
+				$value = json_decode($v['value'], true);
+				if( ! is_array($value)) {
+					break;
+				}
+
+				$view_data_list[] = array(
+					'id'		=> $v['id'],
+					'section'	=> $v['section'],
+					'name'		=> isset($value['name']) ? $value['name'] : '',
+					'pic_src'	=> isset($value['picSrc']) ? $value['picSrc'] : '',
+					'link_src'	=> isset($value['linkSrc']) ? $value['linkSrc'] : '',
+					'summary'	=> isset($value['summary']) ? $value['summary'] : '',
+					);
+			}
+		}
+
+		$data = array(
+			'module_name' 	=> '幻灯片管理',
+			'module_desc'	=> '首页幻灯片管理',
+			'data_list'		=> $view_data_list,
+			'count'			=> $page['count'],
+			'pagination'	=> $this->pagination->create_links(),
+			);
+
+		$this->_loadView('v_01/config/slider_browse_view', $data);
 	}
 
 
 	public function create(){
-		$this -> _data['content']['moduleName'] = '幻灯片管理';
-		$this -> _data['content']['moduleDesc'] = '首页幻灯片管理';
-		$this -> _data['sidebar'] = array();
-		$this -> _data['foot'] = array();
 
-		$post = $this -> input -> post();
-		$get = $this -> input -> get();
-
+		$post = $this->input->post();
 		if($post){
-			$post['section'] = 'slides';
+			//save the slider img
+			$this->config->load('snowConfig/form_validation', TRUE);
+			$form_validation_config = $this->config->item('form_validation', 'snowConfig/form_validation');
+			$this->load->library('form_validation', $form_validation_config);
+			$this->form_validation->set_rules('name', '图片名称', 'required');
+			$this->form_validation->set_rules('picSrc', '上传图片', 'required');
 
-			if(!isset($post["module"])) {
-				$post["module"] = "default";
+			if( ! $this->form_validation->run()) {
+				$data = array(
+					'moduleName' => '幻灯片添加',
+					'moduleDesc' => '首页幻灯片添加',
+					);
+				$this->_load_view('v_01/config/slider_create_view', $data);
+				return ;
 			}
 
-			if($lastInsertId = $this -> config_model -> create($post)){
-				$this -> jsonOutUtil -> resultOutString(true,
-					array('msg' => '保存成功', 'id'=> $lastInsertId));
+			$module = $this->input->post('module', TRUE);
+			if(empty($module)) {
+				$module = 'default';
+			}
+
+			$id = $this->input->post('id');
+			$id = intval($id);
+			$name 		= $this->input->post('name', TRUE);
+			$link_src 	= $this->input->post('linkSrc', TRUE);
+			$pic_src 	= $this->input->post('picSrc', TRUE);
+
+			$value = array(
+				'name'		=> $name,
+				'linkSrc'	=> $link_src,
+				'picSrc'	=> $pic_src,
+				'summary'	=> '',
+				);
+
+			//update slider
+			if(isset($post['id']) && ! empty($post['id'])) {
+
+				$slider = array(
+					'value' => json_encode($value)
+					);
+
+				var_dump($value);
+				$affected_rows = $this->config_model->update($slider, $id);
+
+				setFlashAlert(200, $this->lang->line('slider_save_success'));
 			}else{
-				$this -> jsonOutUtil -> resultOutString(false,
-					array('msg' => '保存失败'));
+				//insert new slider
+				$slider = array(
+					'owner'		=> 'ykjver',
+					'section'	=> 'sliders',
+					'module'	=> 'default',
+					'value'	=> json_encode($value),
+					);
+				$this->config_model->create($slider);
+
+				setFlashAlert(200, $this->lang->line('slider_save_success'));
 			}
+			redirect(site_url('d=config&c=slider&m=index'));
 			return ;
+		}else{
+			//slider img page
+			$id = $this->input->get('id');
+			if(empty($id)) {
+				$data = array(
+					'moduleName'	=> '幻灯片添加',
+					'moduleDesc'	=>	'首页幻灯片添加',
+					);
+				$this->_load_view('v_01/config/slider_create_view', $data);
+				return ;
+			}else{
+				$id = intval($id);
+			}
+
+			//get the slider by id
+			$slider = $this->config_model->getById($id);
+			if(!empty($slider)) {
+				$slider['value'] = json_decode($slider['value'], TRUE);
+
+				$inputData = array(
+					'id' => $slider['id'],
+					'name' => $slider['value']['name'],
+					'picSrc' => $slider['value']['picSrc'],
+					'linkSrc' => $slider['value']['linkSrc'],
+					'summary' => isset($slider['value']['summary']) ? $slider['value']['summary'] : '',
+					);
+
+				$_POST = array_merge($inputData, $_POST);
+			}
 		}
 
-		if(isset($get['id'])){
-			$id = intval($get['id']);
-			$article = $this -> config_model -> getById($id);
-			$article['value'] = json_decode($article['value'], true);
-			$this -> _data['content']['slider'] = $article;
-		}
+		$data = array(
+			'inputData' => $inputData,
+			'moduleName' => '幻灯片管理',
+			'moduleDesc' => '首页幻灯片管理',
+			);
 
-		$this -> _view($this -> tpl['create']);
+		$this->_loadView('v_01/config/slider_create_view', $data);
 	}
 
 	public function del(){
-		$post = $this -> input -> post();
-
-		if(isset($post['id'])){
-			$this -> config_model -> del($post['id']);
-			$this -> jsonOutUtil -> resultOutString(true, array(
-				'msg' => '删除成功'));
+		$get = $this -> input -> get();
+		if(isset($get['id'])){
+			$this -> config_model -> del($get['id']);
+			setFlashAlert(200, $this->lang->line('slider_delete_success'));
 		}else{
-			$this -> jsonOutUtil -> resultOutString(false, array(
-				'msg' => '删除失败'));
+			setFlashAlert(500, $this->lang->line('slider_delete_fail'));
 		}
+		redirect(site_url('d=config&c=slider&m=index'));
 	}
 
 }
