@@ -38,7 +38,18 @@ img {border:none;}
 #home-col a.date p {font-size:12px; color:#2B5CAB; margin-bottom:4px;}
 .institute-list {width:330px; margin:6px auto; }
 .institute-list li {width:330px; height:28px; background: url('../images/round_ico.jpg') no-repeat left center; line-height:24px; text-indent: 14px; }
-.institute-list li a {font-size:13px; float:left; overflow: hidden;line-height:28px;color:#414141;}
+.institute-list li a {
+  font-size:13px;
+  float:left;
+  overflow: hidden;
+  line-height:28px;
+  color:#414141;
+  width:250px;
+  word-wrap: normal; /* for IE */
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
 .institute-list li a:hover {color:#222222;}
 .institute-list li span {float:right; font-size:13px; color:#4E7797;}
 /*****  */

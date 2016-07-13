@@ -52,6 +52,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 
+$route['archive/(:any)'] = '/welcome/archive/$1';
+
 //mobile config
 $route['m/index'] = '/welcome/m_index';
 $route['m/archive/(:any)'] = '/welcome/m_archive/$1';

@@ -255,7 +255,7 @@ class Welcome extends MY_controller{
 		$sliders = $this->config_model->getSlide();
 
 		//学院新闻，置顶数据
-		$top_college_news = $this->article_model->get_top(INDEX_CID_COLLEGE_NEWS, 1);
+		$top_college_news = $this->article_model->get_top(INDEX_CID_COLLEGE_NEWS, 1, 0);
 		if(is_array($top_college_news) && count($top_college_news) > 0) {
 			$top_college_news = $top_college_news[0];
 		}else{
@@ -263,17 +263,17 @@ class Welcome extends MY_controller{
 		}
 
 		//学院新闻
-		$college_news = $this->article_model->get_by_cid(INDEX_CID_COLLEGE_NEWS, 5);
+		$college_news = $this->article_model->get_by_cid(INDEX_CID_COLLEGE_NEWS, 5, 0);
 
 		//系部动态，置顶数据
-		$top_depart_news = $this->article_model->get_top(INDEX_CID_DEPART_NEWS, 1);
+		$top_depart_news = $this->article_model->get_top(INDEX_CID_DEPART_NEWS, 1, 0);
 		if(is_array($top_depart_news) && count($top_depart_news) > 0) {
 			$top_depart_news = $top_depart_news[0];
 		}else{
 			$top_depart_news = NULL;
 		}
 
-		$depart_news = $this->article_model->get_by_cid(INDEX_CID_DEPART_NEWS, 5);
+		$depart_news = $this->article_model->get_by_cid(INDEX_CID_DEPART_NEWS, 5, 0);
 
 
 		$view_data['nav'] = $nav;
@@ -283,6 +283,19 @@ class Welcome extends MY_controller{
 		$view_data['top_depart_news'] = $top_depart_news;
 		$view_data['depart_news'] = $depart_news;
 		$this->load->view('default/index_view', $view_data);
+	}
+
+
+	public function archive() {
+		$id = $this->uri->segment(2);
+		$article = $this->article_model->get_by_id($id);
+		if($article === NULL) {
+			show_404();
+		}
+
+
+
+		dnav(array('cid'=>1));
 	}
 
 	//友情链接页面

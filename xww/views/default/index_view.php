@@ -188,30 +188,33 @@ defined('APPPATH') OR  exit('forbbiden for access');
 							<img src="<?php echo base_url('/source/ft/xww/images/triangle.jpg')?>"></a>
 					</div>
 				</div>
+
 				<div id="home-col">
-					<a href="<?php echo site_url('news/archive/'.$data['firstJjrd']['newsID']) ?>
+					<?php foreach(darticle(array('category_id'=>1, 'is_top'=>1,'limit'=>1)) as $v) { ?>
+					<a href="<?php echo site_url('news/archive/'.$v['id']) ?>
 						" class="pic" >
-						<img src="<?php echo base_url($data['firstJjrd']['pic_src']) ?>" ></a>
-					<a href="<?php echo site_url('news/archive/'.$data['firstJjrd']['newsID']) ?>
+						<img src="<?php echo base_url($v['coverimg_path']) ?>" ></a>
+					<a href="<?=$v['href']?>
 						" class="headline" >
 						<p>
-							<?php echo $data['firstJjrd']['title'] ?></p>
+							<?php echo $v['title'] ?></p>
 					</a>
-					<a href="<?php echo site_url('news/archive/'.$data['firstJjrd']['newsID']) ?>
+					<a href="<?php echo site_url('news/archive/'.$v['id']) ?>
 						" class="desc" >
 						<p>
 							<span>&nbsp;</span>
 						</p>
 					</a>
+					<?php } ?>
 				</div>
 				<ul class="institute-list">
-					<?php foreach($data['bellowJjrd'] as $v){ ?>
+					<?php foreach(darticle(array('category_id'=>1,'limit'=>5)) as $v){ ?>
 					<li>
-						<a href="<?php echo site_url('news/archive/'.$v['newsID']) ?>
+						<a href="<?=$v['href']?>
 							" >
 							<?php echo $v['title'] ?></a>
 						<span>
-							<?php echo $v['addTime'] ?></span>
+							<?php echo $v['publish_date'] ?></span>
 					</li>
 					<?php } ?></ul>
 			</div>

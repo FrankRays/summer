@@ -42,7 +42,7 @@ class Article_Model extends CI_Model {
 
 
 	//v2 根据分类IP获取指定数量的文章数组
-	public function get_by_cid($cid, $limit) {
+	public function get_by_cid($cid, $limit, $offset) {
 		$where = array(
 			'is_delete'		=> NO,
 			'is_top'		=> NO,
@@ -50,12 +50,27 @@ class Article_Model extends CI_Model {
 			'category_id'	=> $cid,
 			);
 
+
 		$articles = $this->db->from($this->table_name)
 							->where($where)
 							->limit($limit)
+							->offset($offset)
 							->get()
 							->result_array();
 
 		return $articles;
+	}
+
+	//根据ID获取文章详细信息
+	public function get_by_id($id) {
+		$where = array(
+			'is_delete'		=> NO,
+			'status'		=> YES,
+			'id'			=> $id,
+			);
+
+		$article = $this->db->from('summer_article')->where($where)->get()->row_array();
+
+		return $article;
 	}
 }
