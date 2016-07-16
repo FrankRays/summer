@@ -59,4 +59,9 @@ class login extends MY_Controller {
 
 	}
 
+	//v2 退出登录
+	public function logout() {
+
+	}
+
 }

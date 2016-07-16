@@ -52,9 +52,9 @@ class MY_Controller extends CI_Controller{
 		//分页配置文件
 		$this->_paginationConfig = $this->config->item('paginationConfig', 'snowConfig/admin');
 		$RTR =& load_class('Router', 'core');
-		if($RTR->fetch_class() != "login"){
-			 $this -> judgeLogin();
-		}
+		// if($RTR->fetch_class() != "login"){
+		// 	 $this -> judgeLogin();
+		// }
 	}
 
 	public function judgeLogin($login = FALSE){

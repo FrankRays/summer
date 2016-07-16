@@ -41,7 +41,7 @@ function darticle($cond = array()) {
 			->get()->result_array();
 	foreach($article as &$v) {
 		$v['href'] = site_url('archive/'.$v['id']);
-		$v['coverimg_path'] = static_url($v['coverimg_path']);
+		$v['coverimg_path'] = resource_url($v['coverimg_path']);
 	}
 
 	return $article;

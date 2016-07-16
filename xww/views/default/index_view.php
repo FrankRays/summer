@@ -223,60 +223,70 @@ defined('APPPATH') OR  exit('forbbiden for access');
 					<div class="xww-tab xww-tab-wrapper" style="height:152px;margin: 20px 0 0 0;">
 						<ul>
 							<li class="active">
-								<h2><a target="_blank" href="<?php echo site_url('video/') ?>" >视频展播</a></h2>
+								<h2><a target="_blank" href="<?php echo site_url('video/') ?>" >影像交院</a></h2>
+								
 								<div class="video-con">
+
+								<?php 
+
+									$video = darticle(array('category_id'=>3, 'limit'=>3, 'offset'=>0));
+									if(isset($video[0])) {
+								 ?>
 									<div class="video1">
-										<a title="<?php echo $data['spzb'][0]['title'] ?>
+										<a title="<?=$video[0]['title'] ?>
 											" href="
-											<?php echo site_url("video/archive/".$data['spzb'][0]['news_id']) ?>
+											<?=$video[0]['href'] ?>
 											">
-											<img src="<?php echo base_url($data['spzb'][0]['pic_src'])?>" /></a>
+											<img src="<?=$video[0]['coverimg_path']?>" /></a>
 									</div>
+								<?php }
+									if(isset($video[1])) {
+								 ?>
 									<div class="video2">
-										<a title="<?php echo $data['spzb'][1]['title'] ?>
-											" href="
-											<?php echo site_url("video/archive/".$data['spzb'][1]['news_id']) ?>
-											">
-											<img src="<?php echo base_url($data['spzb'][1]['pic_src'])?>" /></a>
+										<a title="<?=$video[1]['title'] ?>" href="<?=$video[1]['href'] ?>">
+											<img src="<?=$video[1]['coverimg_path']?>" />
+										</a>
 									</div>
+
+									<?php 
+										
+									}
+
+									if(isset($video[2])) {
+
+									?>
 									<div class="video3">
-										<a title="<?php echo $data['spzb'][2]['title'] ?>
-											" href="
-											<?php echo site_url("video/archive/".$data['spzb'][2]['news_id']) ?>
-											">
-											<img src="<?php echo base_url($data['spzb'][2]['pic_src'])?>" /></a>
+										<a title="<?=$video[2]['title']?>">
+											<img src="<?=$video[2]['coverimg_path']?>" />
+										</a>
 									</div>
+
+									<?php 
+										}
+									?>
 								</div>
 							</li>
 							<li>
 								<h2><a target="_blank" href="<?php echo site_url('news/li/13') ?>" >微电台</a></h2>
 								<div>
 									<div class="video-con">
-										<?php if(isset($data["wdt"][0])) { ?>
+									<?php $wei_radio = darticle(array('category_id'=>8, 'limit'=>3, 'offset'=>0));
+									 if(isset($wei_radio[0])) { ?>
 											<div class="video1">
-												<a title="<?php echo $data['wdt'][0]['title'] ?>
-													" href="
-													<?php echo site_url("video/archive/".$data['wdt'][0]['news_id']) ?>
-													">
-													<img src="<?php echo base_url($data['wdt'][0]['pic_src'])?>" /></a>
+												<a title="<?=$wei_radio[0]['title'] ?>" href="<?=$wei_radio[0]['href'] ?>">
+													<img src="<?=$wei_radio[0]['coverimg_path']?>" /></a>
 											</div>
-										<?php	} ?>
-										<?php if(isset($data["wdt"][1])) { ?>
+										<?php	} 
+										if(isset($wei_radio[1])) { ?>
 											<div class="video2">
-												<a title="<?php echo $data['wdt'][1]['title'] ?>
-													" href="
-													<?php echo site_url("video/archive/".$data['wdt'][1]['news_id']) ?>
-													">
-													<img src="<?php echo base_url($data['wdt'][1]['pic_src'])?>" /></a>
+												<a title="" href="<?=$wei_radio[1]['href'] ?>">
+													<img src="<?=$wei_radio[1]['coverimg_path']?>" /></a>
 											</div>
 										<?php	} ?>
-										<?php if(isset($data["wdt"][2])) { ?>
+										<?php if(isset($wei_radio[2])) { ?>
 											<div class="video3">
-												<a title="<?php echo $data['wdt'][2]['title'] ?>
-													" href="
-													<?php echo site_url("video/archive/".$data['wdt'][2]['news_id']) ?>
-													">
-													<img src="<?php echo base_url($data['wdt'][2]['pic_src'])?>" /></a>
+												<a title="<?=$wei_radio[2]['title'] ?>" href="<?=$wei_radio[2]['href'] ?>">
+													<img src="<?=$wei_radio[2]['pic_src']?>" /></a>
 											</div>
 										<?php	} ?>
 									</div>
@@ -284,43 +294,6 @@ defined('APPPATH') OR  exit('forbbiden for access');
 							</li>
 						</ul>
 					</div>
-
-
-						<!-- <div id="video-t">
-						<h2>
-							<a target="_blank" href="<?php echo site_url('video/') ?>" >视频展播</a>
-						</h2>
-						<div id="more-wrap">
-							<a href="<?php echo site_url('video/') ?>
-								">更多
-								<img src="<?php echo base_url('/source/ft/xww/images/triangle.jpg')?>"></a>
-						</div>
-					</div>
-
-
-				<div id="video-con">
-						<div class="video1">
-							<a title="<?php echo $data['spzb'][0]['title'] ?>
-								" href="
-								<?php echo site_url("video/archive/".$data['spzb'][0]['news_id']) ?>
-								">
-								<img src="<?php echo base_url($data['spzb'][0]['pic_src'])?>" /></a>
-						</div>
-						<div class="video2">
-							<a title="<?php echo $data['spzb'][1]['title'] ?>
-								" href="
-								<?php echo site_url("video/archive/".$data['spzb'][1]['news_id']) ?>
-								">
-								<img src="<?php echo base_url($data['spzb'][1]['pic_src'])?>" /></a>
-						</div>
-						<div class="video3">
-							<a title="<?php echo $data['spzb'][2]['title'] ?>
-								" href="
-								<?php echo site_url("video/archive/".$data['spzb'][2]['news_id']) ?>
-								">
-								<img src="<?php echo base_url($data['spzb'][2]['pic_src'])?>" /></a>
-						</div>
-					</div> -->
 				</div>
 				<div id="link">
 					<div class="xww-tab xww-tab-wrapper" style="height:152px;margin: 20px 0 0 30px;padding:0 5px;">
@@ -331,13 +304,12 @@ defined('APPPATH') OR  exit('forbbiden for access');
 								</h2>
 								<div>
 									<ul id="tzgg-wrapper" class="notice institute-list">
-										<?php foreach ($data['tzgg'] as $v) {?>
+										<?php foreach (darticle(array('category_id'=>12, 'limit'=>5, 'offset'=>0))as $v) {?>
 										<li>
-											<a target="_blank" href="<?php echo site_url('news/archive/' . $v['news_id']) ?>
-												">
-												<?php echo $v['title'] ?></a>
-											<span>
-												<?php echo $v['add_time'] ?></span>
+											<a target="_blank" href="<?=$v['href'] ?>">
+												<?php echo $v['title'] ?>
+											</a>
+											<span><?php echo $v['publish_date'] ?></span>
 										</li>
 										<?php } ?>
 									</ul>
@@ -349,11 +321,12 @@ defined('APPPATH') OR  exit('forbbiden for access');
 								</h2>
 								<div>
 									<ul id="jygy-wrapper" class="notice institute-list">
-										<?php foreach ($data['jygy'] as $v) {?>
+										<?php foreach (darticle(array('category_id'=>6, 'limit'=>5, 'offset'=>0))as $v) {?>
 										<li>
-											<a target="_blank" href="<?php echo site_url('news/archive/' . $v['news_id']) ?>">
-												<?php echo $v['title'] ?></a>
-											<span><?php echo $v['add_time'] ?></span>
+											<a target="_blank" href="<?=$v['href'] ?>">
+												<?php echo $v['title'] ?>
+											</a>
+											<span><?php echo $v['publish_date'] ?></span>
 										</li>
 										<?php } ?>
 									</ul>
@@ -361,48 +334,6 @@ defined('APPPATH') OR  exit('forbbiden for access');
 							</li>
 						</ul>
 					</div>
-
-
-
-				<!-- 
-					<div id="link-t">
-						<h2 id="summer-tzgg">
-							<a target="_blank" href="<?php echo site_url('news/li/10') ?>" >通知公告</a>
-						</h2>
-						<h2 id="summer-jygy" style="background:none;">
-							<a target="_blank" href="<?php echo site_url('news/li/11') ?>" >耕读交院</a>
-						</h2>
-						<div id="more-wrap">
-							<a id="tzgg-jygy-more" href="<?php echo site_url('news/li/10') ?>
-								">更多
-								<img src="<?php echo base_url('/source/ft/xww/images/triangle.jpg') ?>"></a>
-						</div>
-					</div>
-					<div class="link-and-notice">
-						<ul id="tzgg-wrapper" class="notice institute-list">
-							<?php foreach ($data['tzgg'] as $v) {?>
-							<li>
-								<a target="_blank" href="<?php echo site_url('news/archive/' . $v['news_id']) ?>
-									">
-									<?php echo $v['title'] ?></a>
-								<span>
-									<?php echo $v['add_time'] ?></span>
-							</li>
-							<?php }
-								?></ul>
-						<ul id="jygy-wrapper" style="display:none;" class="notice institute-list">
-							<?php foreach ($data['jygy'] as $v) {?>
-							<li>
-								<a target="_blank" href="<?php echo site_url('news/archive/' . $v['news_id']) ?>
-									">
-									<?php echo $v['title'] ?></a>
-								<span>
-									<?php echo $v['add_time'] ?></span>
-							</li>
-							<?php }
-								?></ul>
-						
-					</div> -->
 					<div id="link-con">
 							<a href="http://www.svtcc.edu.cn" target="_blank">
 								<img src="<?php echo base_url('/source/ft/xww/images/school_home.jpg')?>" /></a>
@@ -427,22 +358,24 @@ defined('APPPATH') OR  exit('forbbiden for access');
 							</h2>
 							<div>
 								<div id="pic-news-con">
+										<?php $college_imgs = darticle(array('category_id'=>2, 'limit'=>3)); 
+										if(isset($college_imgs[0])) { ?>
 									<div id="pic1">
-										<a href="<?php echo site_url('/photo/archive/'.$data['picnews'][0]['id']) ?>
-											">
-											<img src="<?php echo base_url($data['picnews'][0]['src'] )?>" /></a>
-										<a href="<?php echo site_url('/photo/archive/'.$data['picnews'][0]['id']) ?>
-											">
+										<a href="<?=$college_imgs[0]['href']?>">
+											<img src="<?=$college_imgs[0]['coverimg_path']?>" /></a>
+										<a href="<?=$college_imgs[0]['href'] ?>">
 											<p  style="margin-top:5px;text-align:center;">
-												<?php echo $data['picnews'][0]['title']?></p>
+												<?=$college_imgs[0]['title']?></p>
 										</a>
 									</div>
-									<?php unset($data['picnews'][0]) ?>
-									<?php foreach($data['picnews'] as $v){ ?>
+									<?php } 
+									 if(isset($college_imgs[0])) unset($data['picnews'][0]);
+									 foreach($college_imgs as $v){ 
+									 ?>
 									<div id="pic2">
-										<a href="<?php echo site_url('/photo/archive/'.$v['id']) ?>
-											">
-											<img src="<?php echo base_url($v['src'])?>" /></a>
+										<a href="<?=$v['href'] ?>">
+											<img src="<?=$v['coverimg_path']?>" />
+										</a>
 									</div>
 									<?php } ?>
 								</div> 
@@ -452,68 +385,34 @@ defined('APPPATH') OR  exit('forbbiden for access');
 							<h2><a href="<?php echo site_url('photo/index/12') ?>">校园写意</a></h2>
 							<div>
 								<div id="pic-news-con">
-									<?php if(isset($data["xyxy"][0])) { ?>
+										<?php $college_pics = darticle(array('category_id'=>7, 'limit'=>3)); 
+										if(isset($college_pics[0])) { ?>
 									<div id="pic1">
-										<a href="<?php echo site_url('/photo/archive/'.$data['xyxy'][0]['id']) ?>">
-											<img src="<?php echo base_url($data['xyxy'][0]['src'] )?>" />
-										</a>
-										<a href="<?php echo site_url('/photo/archive/'.$data['xyxy'][0]['id']) ?>
-											">
+										<a href="<?=$college_pics[0]['href']?>">
+											<img src="<?=$college_pics[0]['coverimg_path']?>" /></a>
+										<a href="<?=$college_pics[0]['href'] ?>">
 											<p  style="margin-top:5px;text-align:center;">
-												<?php echo $data['xyxy'][0]['title']?></p>
+												<?=$college_pics[0]['title']?></p>
 										</a>
 									</div>
 									<?php } ?>
 
 
 									<?php 
-									if(count($data["xyxy"]) > 0) {
-										unset($data['xyxy'][0]) ?>
-									<?php foreach($data['xyxy'] as $v){ ?>
+									 if(isset($college_pics[0])) unset($data['picnews'][0]);
+									 foreach($college_pics as $v){ 
+									 ?>
 									<div id="pic2">
-										<a href="<?php echo site_url('/photo/archive/'.$v['id']) ?>
-											">
-											<img src="<?php echo base_url($v['src'])?>" /></a>
+										<a href="<?=$v['href'] ?>">
+											<img src="<?=$v['coverimg_path']?>" />
+										</a>
 									</div>
-									<?php }} ?>
+									<?php } ?>
 								</div> 
 							</div>
 						</li>
 					</ul>
 				</div>
-
-				<!-- 
-				<div id="pic-news-t">
-					<h2>
-						<a target="_blank" href="<?php echo site_url('photo/index/8') ?>" >图片新闻</a>
-					</h2>
-					<div id="more-wrap">
-						<a href="<?php echo site_url('photo/index/8') ?>
-							">更多
-							<img src="<?php echo base_url('/source/ft/xww/images/triangle.jpg')?>"></a>
-					</div>
-				</div>
-				<div id="pic-news-con">
-					<div id="pic1">
-						<a href="<?php echo site_url('/photo/archive/'.$data['picnews'][0]['id']) ?>
-							">
-							<img src="<?php echo base_url($data['picnews'][0]['src'] )?>" /></a>
-						<a href="<?php echo site_url('/photo/archive/'.$data['picnews'][0]['id']) ?>
-							">
-							<p  style="margin-top:5px;text-align:center;">
-								<?php echo $data['picnews'][0]['title']?></p>
-						</a>
-					</div>
-					<?php unset($data['picnews'][0]) ?>
-					<?php foreach($data['picnews'] as $v){ ?>
-					<div id="pic2">
-						<a href="<?php echo site_url('/photo/archive/'.$v['id']) ?>
-							">
-							<img src="<?php echo base_url($v['src'])?>" /></a>
-					</div>
-					<?php } ?>
-				</div> 
-					-->
 			</div>
 			<div id="media-jy">
 				<div id="media-jy-t" style="margin-bottom:15px;">
@@ -528,38 +427,20 @@ defined('APPPATH') OR  exit('forbbiden for access');
 				</div>
 				<div id="media-jy-list" >
 					<ul class="hot-newspaper-pic">
+					<?php foreach(darticle(array('category_id'=>9, 'limit'=>2)) as $v) ?>
 						<li>
-							<div class="newspaper">
-								<img src="<?php echo base_url('/source/mtjylogo.jpg')?>" /></div>
-							<a target="blank" href="<?php echo $data['mtjy'][0]['come_from'] ?>
-								">
-								<?php echo $data['mtjy'][0]['title'] ?>
-								(
-								<?php echo date('Y-m-d', $data['mtjy'][0]['add_time'])  ?>)</a>
-						</li>
-						<li>
-							<div class="newspaper">
-								<img src="<?php echo base_url('/source/mtjylogo.jpg')?>" /></div>
-							<a target="blank" href="<?php echo $data['mtjy'][1]['come_from'] ?>
-								">
-								<?php echo $data['mtjy'][1]['title'] ?>
-								(
-								<?php echo date('Y-m-d', $data['mtjy'][1]['add_time'])  ?>)</a>
+							<div class="newspaper"><img src="<?php echo base_url('/source/mtjylogo.jpg')?>" /></div>
+							<a target="blank" href="<?=$v['href'] ?>"><?=$v['title']?>(<?=$v['publish_date'] ?>)</a>
 						</li>
 					</ul>
 					<ul style="clear:both" class="hot-newspaper">
-						<?php unset($data['mtjy'][0]) ?>
-						<?php unset($data['mtjy'][1]) ?>
-						<?php foreach($data['mtjy'] as $v) { ?>
+					<?php foreach(darticle(array('category_id'=>9, 'limit'=>3, 'offset'=>2)) as $v) {?>
 						<li>
-							<a target="blank" href="<?php echo $v['come_from'] ?>
-								">
-								<?php echo $v['title'] ?></a>
-							<span>
-								(
-								<?php echo date('Y-m-d', $v['add_time']) ?>)</span>
+							<a target="blank" href="<?php echo $v['come_from_url'] ?>"> <?php echo $v['title'] ?></a>
+							<span>(<?=$v['publish_date']?>)</span>
 						</li>
-						<?php } ?></ul>
+					<?php } ?>
+					</ul>
 				</div>
 			</div>
 		</div>
@@ -578,13 +459,11 @@ defined('APPPATH') OR  exit('forbbiden for access');
 		<div id="roll-pic-con">
 			<table border="0" align="center" cellpadding="0" cellspacing="0">
 				<tr>
-					<?php foreach($data['gyjy'] as $v ) {?>
+					<?php foreach(darticle(array('category_id'=>5, 'limit'=>4)) as $v ) {?>
 					<td valign="top" class="pic-td" >
-						<a class="y-gyjy-img-wrap" href="<?php echo site_url('photo/archive/'.$v['news_id']) ?>
-							">
-							<img alt="<?php echo $v['title'] ?>
-							" src="
-							<?php echo base_url($v['photoes'][0] ->src)?>" /></a>
+						<a class="y-gyjy-img-wrap" href="<?=$v['href'] ?>">
+							<img alt="<?=v['title'] ?>" src="<?=$v['coverimg_path']?>" />
+						</a>
 					</td>
 					<?php } ?></tr>
 			</table>

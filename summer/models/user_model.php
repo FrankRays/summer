@@ -3,9 +3,9 @@
 
 class User_model extends CI_Model{
 	private $tableName = 'user';
-	private $salt = 'yexuewoaini';
-	private $tokenEncryptyKey = 'yexuenih';
-	private $tokenCookieName = 'see_you_again';
+	private $salt = 'asdfg';
+	private $tokenEncryptyKey = 'asdfg';
+	private $tokenCookieName = 'asdfg';
 	private $tokenLife = 604800;
 	public function __contruct(){
 		parent::__contruct();
@@ -95,10 +95,11 @@ class User_model extends CI_Model{
 		$update = array(
 			'username' => $username,
 			'password' => $this -> _doSha1($password),
-			"email" => "summer@summer.com",
+			"email" => "admin@admin.com",
 			);
 
 		$this -> db -> insert($this -> tableName, $update);
+		return $this->db->insert_id();
 	}
 
 	public function getUserByToken(){
