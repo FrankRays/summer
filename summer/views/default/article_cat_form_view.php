@@ -37,7 +37,7 @@ defined('APPPATH') OR exit('forbidden to access');
                     <select name="fid" class="category-select">
                         <option value="0">根分类</option>
                         <?php foreach($parents as $category){ ?>
-                            <option value="<?php echo $category['id'] ?>" <?php echo set_select('category_id', $category['id']) ?>><?php echo $category['name'] ?></option>
+                            <option value="<?php echo $category['id'] ?>" <?php echo set_select('fid', $category['id']) ?>><?php echo $category['name']?></option>
                         <?php } ?>
                     </select>
                 </div>

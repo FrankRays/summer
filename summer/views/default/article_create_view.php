@@ -71,7 +71,7 @@
                 <label class="am-u-sm-2 am-form-label">文章正文内容</label>
                 <div class="am-u-sm-8">
                     <div>
-                        <script id="container" name="content" style="height:500px" type="text/plain"><?php echo isset($content) && isset($content) ? $content :'' ?></script>
+                        <script id="container" name="content" style="height:300px" type="text/plain"><?php echo isset($content) && isset($content) ? $content :'' ?></script>
                     </div>
                 </div>
                 <div class="am-u-sm-2"></div>

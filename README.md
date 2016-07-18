@@ -1,14 +1,22 @@
 ###summer
 
-**darticle方法
+
+后端地址：http://localhost/xww/y.php?c=post
+
+
+
+##视图
+
+**darticle方法**
 
 darticle($cond)，获取文章列表
 
 $cond 获取文章使用的条件参数
 
-```
+```php
 
-darticle(
+//可以使用的参数如下
+array = darticle(
 	array(
 	'category_id'	=> 1,   //文章分类
 	'limit'			=> 1,	//取数据条数
@@ -19,8 +27,7 @@ darticle(
 
 ```
 
-
-**darticle_detail()
+**darticle_detail()**
 
 获取单个文章详细信息，方法必须用到archive/xxx.html页面，archive页面自带一个文章详细全局变量`$article`
 

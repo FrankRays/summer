@@ -26,6 +26,7 @@ class Article_category extends MY_Controller {
 		$view_data['module_desc'] = '';
 		$view_data['post_url'] = site_url('c=article_category&m=create');
 
+		$view_data['parents'] = $this->article_cat_model->get_tree();
 		$post = $this->input->post();
 		if( ! empty($post)) {
 			//post
@@ -42,6 +43,12 @@ class Article_category extends MY_Controller {
 			$status = intval($post['status']);
 			$summary = isset($post['summary']) ? $post['summary'] : '';
 
+			$path = 0;
+			if($fid != 0) {
+				$fcat = $this->article_cat_model->get_by_id($fid);
+				$path = $fcat['path'] . '-' . $fcat['id'];
+			}
+
 			$insert_article_cat = array(
 				'cat_id'	=> $cat_id,
 				'id'		=> $id,
@@ -49,14 +56,15 @@ class Article_category extends MY_Controller {
 				'fid'		=> $fid,
 				'status'	=> $status,
 				'summary'	=> $summary,
+				'path'		=> $path,
 				'is_delete'	=> NO,
 				);
+
 			$insert_id = $this->article_cat_model->create($insert_article_cat);
 			set_flashalert('添加父类成功' . $insert_id);
 			redirect(site_url('c=article_category&m=index'));
 		}else{
 			//page
-			$view_data['parents'] = $this->article_cat_model->get_tree();
 			$this->_load_view('default/article_cat_form_view', $view_data);
 		}
 
@@ -65,9 +73,11 @@ class Article_category extends MY_Controller {
 
 	//v2 编辑文章分类
 	public function edit() {
+		exit('分类一旦创建不允许修改');
 		$view_data['module_name'] = '文章分类编辑';
 		$view_data['module_desc'] = '';
 		$view_data['post_url'] = site_url('c=article_category&m=edit');
+		$view_data['parents'] = $this->article_cat_model->get_tree();
 
 		$post = $this->input->post();
 
@@ -84,15 +94,37 @@ class Article_category extends MY_Controller {
 			$status = intval($post['status']);
 			$summary = isset($post['summary']) ? $post['summary'] : '';
 
+			//获取子类，更改子类所有的path
+			$cat = $this->article_cat_model->get_by_id($id);
+			if($cat === NULL) {
+				show_error('修改的分类不存在');
+			}
+			$cat_children = $this->article_cat_model->get_children($id);
+
+			$path = 0;
+			if($fid != 0) {
+				$fcat = $this->article_cat_model->get_by_id($fid);
+				if(empty($fcat)) {
+					show_error('父类不存在');
+				}
+				$path = $fcat['path'] . '-' . $fcat['id'];
+			}
+
 			$update_article_cat = array(
 				'cat_id'		=> $cat_id,
 				'name'		=> $name,
 				'fid'		=> $fid,
 				'status'	=> $status,
+				'path'		=> $path,
 				'summary'	=> $summary,
 				);
-			var_dump($id);
-			var_dump($update_article_cat);
+
+
+			//修改子类的path路径，保持正确
+			foreach($cat_children as $value){ 
+				$new_path = str_replace($cat['path'], $path, $value['path']);
+				$this->article_cat_model->update_by_id(array('path'=>$new_path), $value['id']);
+			}
 
 			$affected_rows = $this->article_cat_model->update_by_id($update_article_cat, $id);
 			set_flashalert('修改文章分类成功');
@@ -119,9 +151,41 @@ class Article_category extends MY_Controller {
 					'summary'	=> $article_cat['summary'],
 					));
 
+			$view_data['article_cat'] = $article_cat;
 			$this->_load_view($this->tpl_path_form, $view_data);
 		}
 
+	}
+
+	//v2 删除文章分类
+	public function del() {
+		exit('分类一旦创建不允许删除');
+		$article_cat_id = $this->input->get('article_cat_id');
+		if($article_cat_id === NULL || ! is_numeric($article_cat_id)) {
+			show_error('文章分类ID不正确');
+		}
+
+		$article_cat_id = intval($article_cat_id);
+		$cat = $this->article_cat_model->get_by_id($article_cat_id);
+
+		if($cat === NULL) {
+			show_error('删除文章分类不存在');
+		}
+
+		$update_article_cat = array(
+			'is_delete'	=> YES,
+			);
+
+		//删除自己的子类
+		$cat_children = $this->article_cat_model->get_children($cat['id']);
+		foreach($cat_children as $value) {
+			$affected_rows = $this->article_cat_model->update_by_id($update_article_cat, $value['id']);
+		}
+
+		//删除自己
+		$this->article_cat_model->update_by_id($update_article_cat, $article_cat_id);
+		set_flashalert('删除文章文类成功');
+		redirect(site_url('c=article_category&m=index'));
 	}
 
 
@@ -143,7 +207,7 @@ class Article_category extends MY_Controller {
 			array(
 				'field'	=> 'fid',
 				'label'	=> '父级分类',
-				'rules'	=> 'required',
+				'rules'	=> 'required|callback__fid_check',
 				),
 			array(
 				'field' => 'status',
@@ -155,22 +219,24 @@ class Article_category extends MY_Controller {
 		return $this->form_validation->run();
 	}
 
-	//v2 删除文章分类
-	public function del() {
-		$article_cat_ids_str = $this->input->get('article_cat_ids');
-		if($article_cat_ids_str === NULL) {
-			show_error('文章分类ID不正确');
+	//v2 验证表单，所选父类不能为自己和自己的子类。
+	public function _fid_check($fid) {
+		$id = $this->input->post('id');
+
+		if($id !== NULL) {
+			if($id == $fid) {
+				$this->form_validation->set_message('_fid_check', '父级分类不能为自己的或者自己的子节点');
+				return FALSE;
+			}
+			$children = $this->article_cat_model->get_children($id);
+			foreach($children as $value) {
+				if($value['id'] == $fid) {
+					$this->form_validation->set_message('_fid_check', '父级分类不能为自己的或者自己的子节点');
+					return FALSE;
+				}
+			}
 		}
 
-		$article_cat_ids = explode('_', $article_cat_ids_str);
-		if( ! is_array($article_cat_ids)) {
-			show_error('文章分类ID不正确');
-		}
-		$update_article_cat = array(
-			'is_delete'	=> YES,
-			);
-		$affected_rows = $this->article_cat_model->update_by_ids($update_article_cat, $article_cat_ids);
-		set_flashalert('删除文章文类成功');
-		redirect(site_url('c=article_category&m=index'));
+		return TRUE;
 	}
 }

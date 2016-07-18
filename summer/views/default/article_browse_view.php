@@ -51,6 +51,7 @@
                 <th class="table-type">类别</th>
                 <th>作者</th>
                 <th>发布日期</th>
+                <th>阅读</th>
                 <th>操作</th>
               </tr>
           </thead>
@@ -58,12 +59,13 @@
           <?php foreach ($data_list as $article) {?>
             <tr>
               <td><input type="checkbox" value="<?=$article['id']?>" name="article_id" /></td>
-              <td><a href="#"><?php echo $article['title']; ?></a></td>
+              <td style="width:20%"><a href="#"><?php echo $article['title']; ?></a></td>
               <td>
                 <?php if( ! empty($article['coverimg_path'])) { ?>
                   <a target="blank" href="<?=base_url($article['coverimg_path'])?>" >
-                    <img src="<?=base_url($article['coverimg_path'])?>" style="width:100px;" />
+                    <img src="<?=base_url($article['coverimg_path'])?>" style="width:100px;" />      
                   </a>
+                  <a href="<?php echo site_url('c=post&m=set_coverimg&id=' . $article['id']); ?>">修改</a>
                 <?php }else{ ?>
 
                   <a href="<?php echo site_url('c=post&m=set_coverimg&id=' . $article['id']); ?>">添加</a>
@@ -72,6 +74,7 @@
               <td><?php echo $article['category_name']; ?></td>
               <td><?php echo $article['author_name']; ?></td>
               <td><?=$article['publish_date']; ?></td>
+              <td><?=$article['hits']; ?></td>
               <td>
                 <div class="am-btn-toolbar">
                   <div class="am-btn-group am-btn-group-xs">
