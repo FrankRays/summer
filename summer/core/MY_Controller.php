@@ -14,22 +14,25 @@ class MY_Controller extends CI_Controller{
 	public function __construct(){	
 		parent::__construct();
 
+		//加载
+		$this->config-> load('snowConfig/admin', TRUE);
+		$this->config->load('s/config');
+
 		$this->load->helper("url");
 		$this->load->helper("form");
 		$this->load->helper('cookie');
 		$this->load->helper('summer_view');
 
+		//加载类库
 		$this->load->library('pagination');
 		$this->load->library('session');
+		$this->load->library('form_validation', $this->config->item('form_validation'));
 
 		$this->load->model('lm_model');
 		$this->load->model('news_category_model');
 		$this->load->model('friendlink_model');
 		$this->load->model('article_model');
 		$this->load->model('user_model');
-
-		$this->config-> load('snowConfig/admin', TRUE);
-		$this->config->load('s/config');
 
 		$this -> _data['head']['sitename'] = '新闻网';
 		$this -> _data['head']['tplHeadCss'] = array();
@@ -226,5 +229,14 @@ class MY_Controller extends CI_Controller{
 		}
 		$data['newsList'] = $this -> news_model -> getListByCId($data['categoryList']['id'], $num);
 		return $data;
+	}
+
+
+	//验证后端用户
+	protected function _verify($admin='common') {
+		$user = $this->session->userdata('user');
+		if(empty($user) || ! is_array($user) || ! isset($user['admin']) || $user['admin'] != $admin) {
+			redirect(site_url('c=user&m=login'));
+		}
 	}
 }

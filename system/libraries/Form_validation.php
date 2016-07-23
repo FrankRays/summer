@@ -361,6 +361,10 @@ class CI_Form_validation {
 		return $this->_error_array;
 	}
 
+	public function set_error_array($error_array = array()) {
+		$this->_error_array = array_merge($this->_error_array, $error_array);
+	}
+
 	// --------------------------------------------------------------------
 
 	/**

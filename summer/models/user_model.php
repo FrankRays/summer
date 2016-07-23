@@ -3,12 +3,21 @@
 
 class User_model extends CI_Model{
 	private $tableName = 'user';
+
 	private $salt = 'asdfg';
+
+	//我为我自己代言
+	const salty = 'Lasia';
+
 	private $tokenEncryptyKey = 'asdfg';
+
 	private $tokenCookieName = 'asdfg';
+
 	private $tokenLife = 604800;
+
 	public function __contruct(){
 		parent::__contruct();
+
 
 	}
 
@@ -134,4 +143,115 @@ class User_model extends CI_Model{
 		}
 		header('location:'.site_url('d=user&c=login&m=index'));
 	}
+
+
+	//v2,创建用户
+	public function create() {
+		$account = $this->input->post('account', TRUE);
+		$password = $this->input->post('password1');
+		$password = $this->create_password($password, $account);
+		$realname = $this->input->post('realname', TRUE);
+		$nickname = $this->input->post('nickname', TRUE);
+
+		//
+		$admin = 'common';
+		$email = $this->input->post('email', TRUE);
+		$mobile = $this->input->post('mobile', TRUE);
+		$ip = $this->input->ip_address();
+		$join_time = date(TIME_FORMAT);
+		$join = $join_time;
+		$last = $join_time;
+
+		$user = array(
+			'account'		=> $account,
+			'password'		=> $password,
+			'realname'		=> $realname,
+			'nickname'		=> $nickname,
+			'admin'			=> $admin,
+			'email'			=> $email,
+			'mobile'		=> $mobile,
+			'ip'			=> $ip,
+			'join'			=> $join,
+			'last'			=> $join,
+			);
+		$this->db->insert(TABLE_USER, $user);
+		return $this->db->insert_id();
+	}
+
+	//v2,创建密码
+	public function create_password($password, $account) {
+		return md5(md5($password . $account) . user_model::salty);
+	}
+
+	//得到用户分页数据
+	public function get_page($limit, $offset, $cond=array()) {
+		$where = array();
+
+		$this->db->start_cache();
+		$this->db->from(TABLE_USER);
+		$this->db->where($where);
+		$this->db->stop_cache();
+
+		$users = $this->db->limit($limit)->offset($offset)->get()->result_array();
+		$total_rows = $this->db->count_all_results();
+
+		return array(
+			'data_list'		=> $users,
+			'total_rows'	=> $total_rows,
+			);
+	}
+
+	public function get_by_id($user_id) {
+		$where = array(
+			'id'	=> $user_id,
+			);
+		$user = $this->db->where($where)->from(TABLE_USER)->get()->row_array();
+		return $user;
+	}
+
+	public function get_by_account($account) {
+		$where = array(
+			'account'	=> $account,
+			);
+
+		$user = $this->db->where($where)->from(TABLE_USER)->get()->row_array();
+		return $user;
+	}
+
+	public function login($account, $password) {
+		$password = $this->create_password($password, $account);
+		$where = array(
+			'account' => $account,
+			'password'	=> $password,
+			);
+
+		$user = $this->db->where($where)->from(TABLE_USER)->get()->row_array();
+		if(!empty($user)) {
+			return $user;
+		}
+
+		$where = array(
+			'email'	=> $account,
+			'password'	=> $password,
+			);
+		$user = $this->db->where($where)->from(TABLE_USER)->get()->row_array();
+
+		return $user;
+	}
+
+	public function update_by_id($user, $user_id) {
+		$where = array(
+			'id'		=> $user_id,
+			);
+		$this->db->where($where)->update(TABLE_USER, $user);
+		return $this->db->affected_rows();	
+	}
+
+	public function del_by_id($id) {
+		$where = array(
+			'id'	=> $id,
+			);
+		$this->db->where($where)->delete(TABLE_USER);
+	}
+
 }

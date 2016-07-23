@@ -32,7 +32,7 @@
                        <!--  <li><a href="admin-404.html"><span class="am-icon-bug"></span> 404</a></li> -->
                     </ul>
                 </li>
-                <li><a href="<?php echo site_url('d=user&c=login&m=signOut') ?>"><span class="am-icon-sign-out"></span> 注销</a></li>
+                <li><a href="<?php echo site_url('c=user&m=logout') ?>"><span class="am-icon-sign-out"></span> 注销</a></li>
             </ul>
 
             <div class="am-panel am-panel-default admin-sidebar-panel">
@@ -45,13 +45,6 @@
                     </ol>
                 </div>
             </div>
-
-            <!-- <div class="am-panel am-panel-default admin-sidebar-panel">
-                <div class="am-panel-bd">
-                    <p><span class="am-icon-tag"></span> wiki</p>
-                    <p>Welcome to the Amaze UI wiki!</p>
-                </div>
-            </div> -->
         </div>
     </div>
     <!-- sidebar end -->

@@ -28,3 +28,12 @@ defined('INDEX_CNAME_NOTATION')		OR define('INDEX_CNAME_NOTATION', '通知公告
 defined('INDEX_CID_COLLEGE_NEWS') 	OR define('INDEX_CID_COLLEGE_NEWS', 11);
 defined('INDEX_CID_DEPART_NEWS') 	OR define('INDEX_CID_DEPART_NEWS', 16);
 defined('INDEX_CID_NOTATION') 		OR define('INDEX_CID_NOTATION', 12);
+
+//管理员基本类型
+defined('ADMIN_NO') 				OR define('ADMIN_NO', 'no');
+defined('ADMIN_COMMON')				OR define('ADMIN_COMMON', 'common');
+defined('ADMIN_SUPER')				OR define('ADMIN_SUPER', 'super');
+
+
+//表名称
+defined('TABLE_USER')				OR define('TABLE_USER', 'summer_user');

@@ -12,3 +12,6 @@ $lang['slider_save_success'] = '保存幻灯片成功';
 $lang['slider_save_fail'] = '保存幻灯片失败';
 $lang['slider_delete_success'] = '删除幻灯片成功';
 $lang['slider_delete_fail'] = '删除幻灯片失败';
+
+
+$lang['user_create_success'] = '添加用户成功';
