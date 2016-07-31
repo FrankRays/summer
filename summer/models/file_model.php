@@ -33,6 +33,12 @@ class file_model extends CI_Model{
 		}
 	}
 
+	//v2 添加用户
+	public function create($file) {
+		$this->db->insert(TABLE_FILE, $file);
+		return $this->db->insert_id();	
+	}
+
 	/**
 	*getByObjId
 	*@param int $objId 	id of the files
@@ -46,7 +52,6 @@ class file_model extends CI_Model{
 		$objId = intval($objId);
 
 		$this -> db -> where('ObjectId', $objId);
-		$this -> db -> order_by('id', 'DESC');
 		$this -> db -> select('*');
 
 		$query = $this -> db -> get($this -> tableName, $limit, $offset);
@@ -56,14 +61,11 @@ class file_model extends CI_Model{
 	}
 
 
-
 	/**
 	*upload file add picture
 	*@return array Info of upload data
 	**/
 	public function upload(){
-
-		//load the upload_model
 		$filesInfo = $this -> uploadFile();
 		if(empty($filesInfo)) return FALSE;
 
@@ -115,6 +117,11 @@ class file_model extends CI_Model{
 		//return the info of the upload file  
 
 		return $objId;
+	}
+
+	public function upload_img() {
+
+
 	}
 
 	/**
@@ -398,4 +405,49 @@ class file_model extends CI_Model{
 		$fileList = $this -> getByObjId($objId);
 		return $fileList;
 	}
+
+
+	//v2 更具objectid获取图片
+	public function get_imgs_by_object_id($object_id) {
+		$where = array(
+			'object_id'		=> $object_id,
+			'object_type'	=> 'article',
+			'width <>'		=> 0,
+			);
+
+		$files = $this->db->where($where)->from(TABLE_FILE)->get()->result_array();
+		return $files;
+	}
+
+	//v2 
+	public function get_by_id($id) {
+		$where = array(
+			'id'		=> $id,
+			);
+
+		$file = $this->db->where($where)->from(TABLE_FILE)->get()->row_array();
+		return $file;
+	}
+
+	//v2 通过ID更新图片图片信息
+	public function update_by_id($file, $id) {
+		$where = array(
+			'id'	=> $id,
+			);
+
+		$this->db->where($where)->update(TABLE_FILE, $file);
+		return $this->db->affected_rows();
+	}
+
+	//v2 通过ID删除图片数据库信息
+	public function del_by_id($file_id) {
+		$where = array(
+				'id'		=> $file_id,
+			);
+
+		$this->db->from(TABLE_FILE)->where($where)->delete();
+
+		return $this->db->affected_rows();
+	}
+
 }

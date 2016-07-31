@@ -63,12 +63,12 @@
               <td>
                 <?php if( ! empty($article['coverimg_path'])) { ?>
                   <a target="blank" href="<?=base_url($article['coverimg_path'])?>" >
-                    <img src="<?=base_url($article['coverimg_path'])?>" style="width:100px;" />      
+                    <img src="<?=resource_url($article['coverimg_path'])?>" style="width:100px;" />      
                   </a>
-                  <a href="<?php echo site_url('c=post&m=set_coverimg&id=' . $article['id']); ?>">修改</a>
+                 
                 <?php }else{ ?>
 
-                  <a href="<?php echo site_url('c=post&m=set_coverimg&id=' . $article['id']); ?>">添加</a>
+                  <a href="<?php echo site_url('c=post&m=imgs&object_id=' . $article['id']); ?>">添加</a>
                   <?php } ?>
               </td>
               <td><?php echo $article['category_name']; ?></td>
@@ -89,7 +89,7 @@
                     <?php } else {?>
                       <a href="<?php echo site_url('c=post&m=setTop&id='.$article['id']) ?>"  class="am-btn am-btn-default am-btn-xs am-text-success y-article-setTop-btn"><span class="am-icon-copy"></span> 置顶</a>
                     <?php }?>
-
+                       <a href="<?php echo site_url('c=post&m=imgs&object_id='.$article['id']) ?>"  class="am-btn am-btn-default am-btn-xs am-text-success"><span class="am-icon-copy"></span>图片</a>
                   </div>
                 </div>
               </td>

@@ -10,6 +10,15 @@ $config['www_url_xbdt'] = 'http://www.svtcc.edu.cn/front/list-16.html';
 //通知公告
 $config['www_url_tzgg']	= 'http://www.svtcc.edu.cn/front/list-12.html';
 
+//文件上传config
+$config['upload_config'] = array(
+        'allowed_types'     => 'jpg|png|gif',
+        'max_size'          => '2048',
+        'max_width'         => '1920',
+        'max_height'        => '1920',
+    );
+
+
 
 
 //分页参数
@@ -49,3 +58,5 @@ $config['static_base_path'] = 'http://127.0.0.1:9999/xww/statics/';
 
 $config['resource_base_path'] = 'http://127.0.0.1:9999/xww/resource/';
 // $config['resource_base_path'] = 'http://192.168.2.167/xww/resource/';
+//资源上传绝对路径
+$config['resource_upload_path'] = 'G:/ziyuan/project/xwwnews/resource/';

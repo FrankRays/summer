@@ -12,6 +12,7 @@ class post extends MY_controller {
         $this->load->model('article_cat_model');
         $this->load->model('article_model');
 		$this->load->model('file_model');
+
 	}
 
 	public function index() {
@@ -181,6 +182,205 @@ class post extends MY_controller {
         $this->_load_view('default/article_create_view', $view_data);
     }
 
+    //设置文章图片
+    public function imgs(){
+        $this->_verify();
+        $view_data['module_name'] = '设置文章图片';
+
+        if($_POST) {
+            $object_id = $this->input->post('object_id');
+            $upload_path = $this->config->item('resource_upload_path');
+            if( ! file_exists($upload_path)) {
+                show_error('上传图片图灵不存在');
+            }
+
+            $upload_path_date = date('Y/m/d') . '/';
+            $upload_path = trim($upload_path, '/') . '/' . $upload_path_date;
+            if( ! file_exists($upload_path)) {
+                if( ! mkdir($upload_path, 0777, TRUE)) {
+                    show_error('创建上传图片路径失败');
+                }
+            }
+
+            $config = array(
+                'upload_path'       => $upload_path,
+                'allowed_types'     => 'jpg|png|gif',
+                'max_size'          => '1028',
+                'max_width'         => '1920',
+                'max_height'        => '1920',
+                );
+
+            $this->load->library('upload', $config);
+
+            if(! isset($_FILES) || ! is_array($_FILES) || ! isset($_FILES['files']) ||
+            ! is_array($_FILES['files'])) {
+                show_error('上传表单错误');
+            }
+
+            $temp = array(); 
+            $n = count($_FILES['files']['name']);
+            for($i = 0; $i < $n; $i++) {
+                $_FILES['file' . $i] = array(
+                    'name'      => $_FILES['files']['name'][$i],
+                    'type'      => $_FILES['files']['type'][$i],
+                    'tmp_name'  => $_FILES['files']['tmp_name'][$i],
+                    'error'     => $_FILES['files']['error'][$i],
+                    'size'      => $_FILES['files']['size'][$i],
+                    );
+            }
+
+            unset($_FILES['files']);
+
+            $titles = isset($_POST['titles']) ? $_POST['titles'] : array();
+            $summaries = isset($_POST['summaries']) ? $_POST['summaries'] : array();
+
+            $i = 0;
+            foreach($_FILES as $key => $files) {
+                if( ! $this->upload->do_upload($key)) {
+
+                    $view_data['imgs'] = $this->file_model->get_imgs_by_object_id(intval($object_id));
+                    $this->form_validation->set_error_array(array($this->upload->display_errors()));
+                    $this->_load_view('default/article_imgs_view', $view_data);
+                    return ;
+                }
+
+                $data = $this->upload->data();
+
+                $pathname = $upload_path_date . $data['file_name'];
+                $title = isset($titles[$i]) && ! empty($title[$i]) ? $titles[$i] : $data['file_name'];
+                $summary =isset($summaries[$i]) ? $summaries[$i] : '';
+                $extension = $data['file_ext'];
+                $size = $data['file_size'];
+                $width = $data['image_width'];
+                $height = $data['image_height'];
+                $object_type = 'article';
+                $object_id = intval($this->input->post('object_id'));
+                $added_by = cur_user_account();
+                $added_time = date(TIME_FORMAT);
+
+                $insert_file = array(
+                    'pathname'      => $pathname,
+                    'title'         => $title,
+                    'summary'       => $summary,
+                    'extension'     => $extension,
+                    'size'          => $size,
+                    'width'         => $width,
+                    'height'        => $height,
+                    'object_type'   => $object_type,
+                    'object_id'     => $object_id,
+                    'added_by'      => $added_by,
+                    'added_time'    => $added_time,
+                    );
+                $this->file_model->create($insert_file);
+                $i += 1;
+            }
+
+            redirect(site_url('c=post&m=imgs&object_id='. $object_id));
+        }
+
+        if(!isset($object_id)) {
+            $object_id = $this->input->get('object_id');
+            $_POST['object_id'] = $object_id;
+        }
+
+        if(empty($object_id) || !is_numeric($object_id)) {
+            $this->form_validation->set_error_array(array('文章ID不存在'));
+        }
+
+
+        $view_data['imgs'] = $this->file_model->get_imgs_by_object_id(intval($object_id));
+        $view_data['object_id'] = $object_id;
+        $this->_load_view('default/article_imgs_view', $view_data);
+
+    }
+
+    public function imgs_edit() {
+        $view_data['module_name'] = '图片修改';
+        $view_data['module_desc'] = '';
+        $view_data['post_url'] = site_url('c=post&m=imgs_edit');
+
+        if($_POST) {
+            $id = $this->input->post('id');
+            if(empty($id)) {
+                show_error('ID错误');
+            }
+
+            $title = $this->input->post('title', TRUE);
+            $summary = $this->input->post('summary');
+
+            $update_file = array(
+                'title'     => $title,
+                'summary'   => $summary,
+                );
+
+            if(isset($_FILES['file']) && isset($_FILES['file']['name']) && ! empty($_FILES['file']['name'])) {
+                $upload_path = $this->config->item('resource_upload_path');
+                $upload_path_date =  date('Y/m/d') . '/';
+                $upload_path = trim($upload_path) . '/' . $upload_path_date;
+
+                if(!file_exists($upload_path)) {
+                    if(!mkdir($upload_path, 0777, TRUE)) {
+                        show_error('创建上传图片路径失败');
+                    }
+                }
+
+                $upload_config = $this->config->item('upload_config');
+                $upload_config['upload_path'] = $upload_path;
+
+                $this->load->library('upload', $upload_config);
+                if($this->upload->do_upload('file')) {
+                    $data = $this->upload->data();
+                    $update_file['width'] = $data['image_width'];
+                    $update_file['height'] = $data['image_height'];
+                    $update_file['pathname'] = $upload_path_date . $data['file_name'];
+                    $update_file['extension'] = $data['file_ext'];
+                }else{
+                    $this->form_validation->set_error_array(array($this->upload->display_errors()));
+                    $this->_load_view('default/article_imgs_edit_view', $view_data);
+                    return ;
+                }
+            }
+            $img = $this->file_model->get_by_id(intval($id));
+            $this->file_model->update_by_id($update_file, intval($id));
+            set_flashalert('修改图片成功');
+            redirect(site_url('c=post&m=imgs&object_id=' . $img['object_id']));
+        }else{
+
+            $id = $this->input->get('id');
+            if(empty($id)) {
+                show_error('文件ID不存在');
+            }
+            $img = $this->file_model->get_by_id(intval($id));
+        }
+
+        $_POST = $img;
+        $this->_load_view('default/article_imgs_edit_view', $view_data);
+    }
+
+    //删除用户图片
+    public function del_img() {
+        $file_id = $this->input->get('file_id');
+        if(empty($file_id) || ! is_numeric($file_id)) {
+            show_error('文件ID错误');
+        }
+
+        $img = $this->file_model->get_by_id(intval($file_id));
+        if(empty($img)) {
+            show_error('图片不存在');
+        }
+
+        $absolute_path = $this->config->item('resource_upload_path');
+        $absolute_path = trim($absolute_path, '/') . '/' . $img['pathname'];
+        if(file_exists($absolute_path) && is_readable($absolute_path)) {
+            unlink($absolute_path);
+        }
+
+        $this->file_model->del_by_id($img['id']);
+
+        redirect(site_url('c=post&m=imgs&object_id='.$img['object_id']));
+        set_flashalert('删除图片成功');
+    }
+
 
     //讲文章设置为置顶
     public function setTop() {
@@ -264,6 +464,49 @@ class post extends MY_controller {
             set_flashalert('添加文章封面成功');
             redirect(site_url('c=post&m=index'));
         }
+    }
+
+    //v2 设置封面图片
+    public function set_cover_img() {
+        $file_id = $this->input->get('file_id');
+        if(empty($file_id) || ! is_numeric($file_id)) {
+            show_error('图片ID错误');
+        }
+
+        $img = $this->file_model->get_by_id(intval($file_id));
+        if(empty($img)) {
+            show_error('图片信息不存在');
+        }
+
+        $article = $this->article_model->get_by_id($img['object_id']);
+        if(empty($article)) {
+            show_error('文章不存在');
+        }
+
+        //取消所有的封面
+        $imgs = $this->file_model->get_imgs_by_object_id($img['object_id']);
+
+        $update_img = array(
+            'primary'    => 0,
+            );
+        if(is_array($imgs)) {
+            foreach($imgs as $v) {
+                $this->file_model->update_by_id($update_img, $v['id']);
+            }
+        }
+
+        $update_img = array(
+            'primary'    => 1,
+            );
+        $this->file_model->update_by_id($update_img, $img['id']);
+
+        $update_article = array(
+            'coverimg_path'     => $img['pathname'],
+            );
+        $this->article_model->update_by_id($update_article, $img['object_id']);
+        redirect(site_url('c=post&m=imgs&object_id=' . $img['object_id']));
+        set_flashalert('设置封面图片成功');
+
     }
 
 
@@ -423,6 +666,6 @@ class post extends MY_controller {
                     $this->form_validation->set_message('_hasCategory', $this->lang->line('error_category_required'));
                     return false;
             }
-    } 
+    }
 
 }

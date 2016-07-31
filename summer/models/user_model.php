@@ -209,6 +209,7 @@ class User_model extends CI_Model{
 		return $user;
 	}
 
+	//v2 通过用户名获取用户
 	public function get_by_account($account) {
 		$where = array(
 			'account'	=> $account,
@@ -218,6 +219,7 @@ class User_model extends CI_Model{
 		return $user;
 	}
 
+	//v2 用户登录
 	public function login($account, $password) {
 		$password = $this->create_password($password, $account);
 		$where = array(
@@ -238,6 +240,7 @@ class User_model extends CI_Model{
 
 		return $user;
 	}
+
 
 	public function update_by_id($user, $user_id) {
 		$where = array(

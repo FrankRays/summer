@@ -37,3 +37,4 @@ defined('ADMIN_SUPER')				OR define('ADMIN_SUPER', 'super');
 
 //表名称
 defined('TABLE_USER')				OR define('TABLE_USER', 'summer_user');
+defined('TABLE_FILE')				OR define('TABLE_FILE', 'summer_file');
