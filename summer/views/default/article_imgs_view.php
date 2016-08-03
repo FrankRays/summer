@@ -1,11 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ykjverx
- * Date: 2015/3/23
- * Time: 20:32
- */
 
+defined('APPPATH') || exit('forbidden to access');
 ?>
 
 <div class="admin-content" style="min-height:1400px;">

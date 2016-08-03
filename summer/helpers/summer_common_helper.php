@@ -13,7 +13,7 @@ if( ! function_exists('cur_user_id')) {
 			return FALSE;
 		}
 
-		if(isset($user['id']) && is_numeric($user['id'])) {
+		if(isset($user['id'])) {
 			return $user['id'];
 		}else{
 			return FALSE;
@@ -33,7 +33,7 @@ if( ! function_exists('cur_user_account')) {
 			return FALSE;
 		}
 
-		if(isset($user['account']) && is_numeric($user['account'])) {
+		if(isset($user['account'])) {
 			return $user['account'];
 		}else{
 			return FALSE;

@@ -12,7 +12,7 @@
       <div class="am-u-sm-12 am-u-md-6">
         <div class="am-btn-toolbar">
           <div class="am-btn-group am-btn-group-xs">
-            <a type="button" class="am-btn am-btn-default"  href="<?php echo site_url('c=post&m=save&category_id='. set_value('category_id', 0)); ?>"><span class="am-icon-plus"></span> 新增</a>
+            <a type="button" class="am-btn am-btn-default"  href="<?php echo site_url('c=post&m=article_create') ?>"><span class="am-icon-plus"></span> 新增</a>
            <!--  <button type="button" class="am-btn am-btn-default"><span class="am-icon-save"></span> 保存</button>
             <button type="button" class="am-btn am-btn-default"><span class="am-icon-archive"></span> 审核</button> -->
             <button id="summer-del-article-btn" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
@@ -78,7 +78,7 @@
               <td>
                 <div class="am-btn-toolbar">
                   <div class="am-btn-group am-btn-group-xs">
-                    <a href="<?php echo site_url('c=post&m=save&id=' . $article['id']) ?>" class="am-btn am-btn-default am-btn-xs am-text-secondary y-edit-article-btn"><span class="am-icon-pencil-square-o"></span> 编辑</a>
+                    <a href="<?php echo site_url('c=post&m=article_edit&article_id=' . $article['id']) ?>" class="am-btn am-btn-default am-btn-xs am-text-secondary y-edit-article-btn"><span class="am-icon-pencil-square-o"></span> 编辑</a>
                     <?php if ($article['status'] == 1) {?>
                       <a href="<?php echo site_url('c=post&m=changeStatus&id='.$article['id']) ?>" class="am-btn am-btn-default am-btn-xs am-text-success y-article-status-btn"><span class="am-icon-copy"></span> 发布</a>
                     <?php } else {?>

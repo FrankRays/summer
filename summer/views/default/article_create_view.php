@@ -10,7 +10,12 @@
     <div class="am-cf am-padding">
         <div class="am-fl am-cf">
             <strong class="am-text-primary am-text-lg"><?php echo $moduleName ?></strong> /
-            <small><?php echo $moduleDesc ?></small>
+            <small><?php echo get_module_path(
+                array(
+                    array('文章列表', site_url('c=post')),
+                    array('编辑文章', '#'),
+                    )
+            ) ?></small>
         </div>
     </div>
     <div class="am-g" >
@@ -31,7 +36,7 @@
             <div class="am-form-group redirect">
                 <label class="am-u-sm-2 am-form-label">转载自</label>
                 <div class="am-u-sm-6">
-                    <input name="redirect_come_from" type="text" value="<?php echo set_value('redirect_come_from') ?>" placeholder="转载自" />
+                    <input name="redirect_come_from" type="text" value="<?php echo set_value('redirect_come_from') ?>" placeholder="转载自" placeholder="中国青年网" />
                 </div>
                 <div class="am-u-sm-4"></div>
             </div>
@@ -39,7 +44,7 @@
             <div class="am-form-group redirect">
                 <label class="am-u-sm-2 am-form-label">转载连接</label>
                 <div class="am-u-sm-6">
-                    <input name="redirect_come_from_url" type="text" value="<?php echo set_value('redirect_come_from_url') ?>" placeholder="转载链接" />
+                    <input name="redirect_come_from_url" type="text" value="<?php echo set_value('redirect_come_from_url') ?>" placeholder="http://www.youth.cn" />
                 </div>
                 <div class="am-u-sm-4"></div>
             </div>
@@ -55,14 +60,7 @@
                 </div>
                 <div class="am-u-sm-4"></div>
             </div>
-
-            <div class="am-form-group no-redirect">
-                <label class="am-u-sm-2 am-form-label">发布者</label>
-                <div class="am-u-sm-6">
-                    <input type="text" name="come_from" value="<?php echo set_value('come_from', '') ?>" placeholder="请输入来稿消息" />
-                </div>
-                <div class="am-u-sm-4"></div>
-            </div>
+            
             <div class="am-form-group no-redirect">
                 <label class="am-u-sm-2 am-form-label">作者(投稿)</label>
                 <div class="am-u-sm-6">

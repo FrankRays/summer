@@ -19,6 +19,7 @@ class post extends MY_controller {
 		$this->browse();
 	}
 
+    //首页
 	public function browse() {
         $this->_verify();
 		$data['moduleName'] = '文章管理';
@@ -132,7 +133,7 @@ class post extends MY_controller {
                         'create_time'       => $create_time,
                         'create_date'       => $create_time,
                         'edit_time'         => $create_time,
-                        'publish_date'    => $create_time,
+                        'publish_date'      => $create_time,
                         ));
                     $insert_id = $this->article_model->create($save_article);
                     set_flashalert('添加文章成功, 去预览下你添加的文章是否正确吧！');
@@ -179,6 +180,160 @@ class post extends MY_controller {
 
         $categories = $this->article_cat_model->get_tree();
         $view_data['categories'] = $categories;
+        $this->_load_view('default/article_create_view', $view_data);
+    }
+
+
+    //v2 添加文章
+    public function article_create() {
+        $this->_verify();
+        $view_data['module_name'] = '添加文章';
+        $view_data['moduleName'] = $view_data['module_name'];
+
+        $view_data['categories'] = $this->article_cat_model->get_tree();
+
+        if($_POST) {
+            if($this->_check_form()) {
+                
+                $category_id = intval($this->input->post('category_id'));
+                $category = $this->article_cat_model->get_by_cat_id($category_id);
+                if($category == NULL) {
+                    show_error('文章分类不存在');
+                }
+
+                $title          = $this->input->post('title', TRUE);
+                $summary        = $this->input->post('summary', TRUE);
+                $content        = $this->input->post('content');
+                $author_name    = $this->input->post('author', TRUE);
+                $keywords       = $this->input->post('keywords', TRUE);
+                $publish_date   = $this->input->post('add_time');
+                $status         = $this->input->post('status');
+                $come_from      = $this->input->post('redirect_come_from');
+                $come_from_url  = $this->input->post('redirect_come_from_url');
+                $is_redirect    = empty($this->input->post('is_redirect')) ? NO : YES;
+                $create_time = date(TIME_FORMAT);
+
+                $insert_article = array(
+                    'title'         => $title,
+                    'category_id'   => $category['id'],
+                    'category_name' => $category['name'],
+                    'summary'       => $summary,
+                    'content'       => $content,
+                    'author_name'   => $author_name,
+                    'publisher_name'=> cur_user_account(),
+                    'publisher_id'  => cur_user_id(),
+                    'keywords'      => $keywords,
+                    'publish_date'  => $publish_date,
+                    'status'        => $status,
+                    'come_from'     => $come_from,
+                    'come_from_url' => $come_from_url,
+                    'create_time'       => $create_time,
+                    'create_date'       => $create_time,
+                    'publish_date'      => $create_time,
+                    );
+
+                $this->article_model->create($insert_article);
+                set_flashalert('添加文章成功');
+                redirect(site_url('c=post'));
+            }
+
+            $view_data['content'] = $_POST['content'];
+        }else{
+
+        }
+
+        $this->_load_view('default/article_create_view', $view_data);
+    }
+
+
+    //v2 编辑文章
+    public function article_edit() {
+        //检查admin 登录
+        $this->_verify();
+
+        $view_data['module_name'] = '编辑文章';
+        $view_data['moduleName'] = $view_data['module_name'];
+
+        $view_data['categories'] = $this->article_cat_model->get_tree();
+        if($_POST) {
+            if($this->_check_form()) {
+                $post = $this->input->post();
+
+                $category_id = intval($post['category_id']);
+                $category = $this->article_cat_model->get_by_cat_id($category_id);
+                if($category == NULL) {
+                    show_error('文章分类不存在');
+                }
+
+                $article_id = $this->input->post('id');
+                if(empty($article_id) || ! is_numeric($article_id)) {
+                    show_error('文章ID不存在');
+                }
+
+                $title          = $this->input->post('title', TRUE);
+                $summary        = $this->input->post('summary', TRUE);
+                $content        = $this->input->post('content');
+                $author_name    = $this->input->post('author', TRUE);
+                $keywords       = $this->input->post('keywords', TRUE);
+                $publish_date   = $this->input->post('add_time');
+                $status         = $this->input->post('status');
+                $come_from      = $this->input->post('redirect_come_from');
+                $come_from_url  = $this->input->post('redirect_come_from_url');
+                $is_redirect    = empty($this->input->post('is_redirect')) ? NO : YES;
+
+                $update_article = array(
+                    'title'         => $title,
+                    'category_id'   => $category['id'],
+                    'category_name' => $category['name'],
+                    'summary'       => $summary,
+                    'content'       => $content,
+                    'author_name'   => $author_name,
+                    'keywords'      => $keywords,
+                    'publish_date'  => $publish_date,
+                    'status'        => $status,
+                    'come_from'     => $come_from,
+                    'come_from_url' => $come_from_url,
+                    'is_redirect'   => $is_redirect,
+                    );
+
+                $this->article_model->update_by_id($update_article, intval($article_id));
+                set_flashalert('修改文章成功，去预览下你修改的文章是否正确吧');
+                redirect('c=post');
+            }
+
+        }else{
+
+            $article_id = $this->input->get('article_id');
+            if(empty($article_id) || ! is_numeric($article_id)) {
+                show_error('文章ID错误');
+            }
+
+            $article_id = intval($article_id);
+            $article = $this->article_model->get_by_id($article_id);
+
+            if(empty($article)) {
+                show_error('文章不存在');
+            }
+
+            $_POST = array_merge($_POST, 
+                array(
+                    'id'            => $article['id'],
+                    'title'         => $article['title'],
+                    'category_id'   => $article['category_id'],
+                    'summary'       => $article['summary'],
+                    'keywords'      => $article['keywords'],
+                    'come_from'     => $article['publisher_name'],
+                    'author'        => $article['author_name'],
+                    'content'       => $article['content'],
+                    'status'        => $article['status'],
+                    'add_time'      => $article['publish_date'],
+                    'is_redirect'   => array($article['is_redirect']),
+                    'redirect_come_from'        => $article['come_from'],
+                    'redirect_come_from_url'    => $article['come_from_url'],
+                    ));
+            $view_data['content'] = $article['content'];
+        }
+
         $this->_load_view('default/article_create_view', $view_data);
     }
 

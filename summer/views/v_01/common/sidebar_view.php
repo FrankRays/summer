@@ -32,6 +32,13 @@
                        <!--  <li><a href="admin-404.html"><span class="am-icon-bug"></span> 404</a></li> -->
                     </ul>
                 </li>
+                 <li class="admin-parent">
+                    <a class="am-cf" data-am-collapse="{target: '#photo-manage'}"><span class="am-icon-file"></span> 用户 <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
+                    <ul class="am-list am-collapse admin-sidebar-sub am-in" id="photo-manage">
+                        <li><a href="<?php echo site_url('c=user&m=index') ?>" class="am-cf"><span class="am-icon-check"></span>用户列表</a></li>
+                       <!--  <li><a href="admin-404.html"><span class="am-icon-bug"></span> 404</a></li> -->
+                    </ul>
+                </li>
                 <li><a href="<?php echo site_url('c=user&m=logout') ?>"><span class="am-icon-sign-out"></span> 注销</a></li>
             </ul>
 
