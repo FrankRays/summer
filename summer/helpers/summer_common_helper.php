@@ -55,5 +55,4 @@ if(!function_exists('get_module_path')) {
 		}
 		return $module_path_str;
 	}
-
 }

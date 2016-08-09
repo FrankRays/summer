@@ -38,3 +38,8 @@ defined('ADMIN_SUPER')				OR define('ADMIN_SUPER', 'super');
 //表名称
 defined('TABLE_USER')				OR define('TABLE_USER', 'summer_user');
 defined('TABLE_FILE')				OR define('TABLE_FILE', 'summer_file');
+defined('TABLE_SITE')				OR define('TABLE_SITE', 'summer_site');
+defined('TABLE_NAV')				OR define('TABLE_NAV', 'summer_nav');
+defined('TABLE_NAV_CAT')			OR define('TABLE_NAV_CAT', 'summer_nav_cat');
+defined('TABLE_ARTICLE_CAT')		OR define('TABLE_ARTICLE_CAT', 'summer_article_category');
+defined('TABLE_ARTICLE')			OR define('TABLE_ARTICLE', 'summer_article');	

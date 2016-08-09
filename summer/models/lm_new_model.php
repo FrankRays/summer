@@ -24,7 +24,6 @@ class lm_new_model extends CI_Model{
 				'isBlank'=>	false,
 				'type'	=> 'system'
 				);
-
 		}
 		//check if has nav section
 		$this -> db -> where('section', 'nav');

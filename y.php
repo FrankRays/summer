@@ -55,6 +55,9 @@
  */
 	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
 
+	//设置入口模式
+	define('ADMIN', TRUE);
+
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING

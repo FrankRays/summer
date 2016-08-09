@@ -23,6 +23,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
+
+
 $config['base_url'] = 'http://127.0.0.1:9999/xww';
 
 /*
@@ -35,7 +37,12 @@ $config['base_url'] = 'http://127.0.0.1:9999/xww';
 | variable so that it is blank.
 |
 */
-$config['index_page'] = 'y.php';
+
+if(defined('ADMIN')) {
+	$config['index_page'] = 'y.php';
+}else{
+	$config['index_page'] = 'index.php';
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -64,7 +71,12 @@ $config['uri_protocol']	= 'REQUEST_URI';
 |
 | https://codeigniter.com/user_guide/general/urls.html
 */
-$config['url_suffix'] = '';
+
+if(defined('ADMIN')) {
+	$config['url_suffix'] = '';
+}else{
+	$config['url_suffix'] = '.html';
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -186,7 +198,11 @@ $config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-';
 |
 */
 $config['allow_get_array'] = TRUE;
-$config['enable_query_strings'] = TRUE;
+if(defined('ADMIN')){
+	$config['enable_query_strings'] = TRUE;
+}else{
+	$config['enable_query_strings'] = FALSE;
+}
 $config['controller_trigger'] = 'c';
 $config['function_trigger'] = 'm';
 $config['directory_trigger'] = 'd';

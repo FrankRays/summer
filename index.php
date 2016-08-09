@@ -55,6 +55,8 @@
  */
 	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
 
+	//设置入口模式
+	define('FRONT', TRUE);
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING
@@ -114,7 +116,7 @@ switch (ENVIRONMENT)
  *
  * NO TRAILING SLASH!
  */
-	$application_folder = 'xww';
+	$application_folder = 'summer';
 
 /*
  *---------------------------------------------------------------

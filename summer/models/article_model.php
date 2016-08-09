@@ -237,6 +237,30 @@ class article_model extends CI_Model {
 			);
 	}
 
+	//v2获取前端文章列表分页
+	public function get_front_pages($limit = 20, $offset=0, $cond=array()) {
+		$where = array(
+			'is_delete'			=> NO,
+			'status'			=> YES,
+			);
+
+		$like = array();
+		$this->db->start_cache();
+		$this->db->from(TABLE_ARTICLE)->where($where);
+		$this->db->stop_cache();
+
+		$this->db->limit($limit, $offset)->order_by('publish_date desc, id asc');
+
+		$data_list = $this->db->get()->result_array();
+		$total_rows = $this->db->count_all_results();
+		$this->db->flush_cache();
+
+		return array(
+			'data_list'		=> $data_list,
+			'total_rows'	=> $total_rows,
+			);
+	}
+
 	//v2 根据首页ID获取文章
 	public function get_by_index_id($index_id) {
 		$where = array(
@@ -388,6 +412,54 @@ class article_model extends CI_Model {
 
 	public function updatePhoto($photo, $cond) {
 		return $this->updateArticle($photo, $cond);
+	}
+
+
+
+	//v2 得到下一篇地址
+	public function get_next_article($article_id) {
+		$where = array(
+			'id > ' 				=> $article_id,
+			'is_delete'				=> NO,
+			'status'				=> YES,
+			);
+
+		$article = $this->db->where($where)
+			->from(TABLE_ARTICLE)
+			->limit(1)
+			->order_by('id asc')
+			->get()
+			->row_array();
+
+		if(empty($article)) {
+			return '<a href="#" >最后一篇了</a>';
+		}else{
+			return '<a href="'.site_url('archive/' . $article['id']).'" >' .$article['title']. '</a>';
+		}
+	}
+
+	//v2 得到上一篇地址a标签
+	public function get_prev_article($article_id) {
+		$where = array(
+			'id < '					=> $article_id,
+			'is_delete'				=> NO,
+			'status'				=> YES,
+			);
+
+		$article = $this->db->where($where)
+			->from(TABLE_ARTICLE)
+			->limit(1)
+			->order_by('id desc')
+			->get()
+			->row_array();
+
+
+		if(empty($article)) {
+			return '<a href="#" >这是第一篇咯</a>';
+		}else{
+			return '<a href="'.site_url('archive/' . $article['id']).'" >' .$article['title']. '</a>';
+		}
+
 	}
 
 

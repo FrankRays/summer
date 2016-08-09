@@ -190,4 +190,27 @@ class Article_cat_model extends CI_Model {
 		// $cats_arr = $this->create_tree_a($cat['fid']);
 		return $cats_arr;
 	}
+
+	//v2 获取路径
+	public function get_nav_path($category_id){
+		$cat = $this->db->from(TABLE_ARTICLE_CAT)->where('id', $category_id)->get()->row_array();
+
+		$path = '<a href="' . site_url() . '" >首页</a> > ';
+		if(!empty($cat) && isset($cat['path'])) {
+			$path_arr = explode('-', $cat['path']);
+			if( ! empty($path_arr) && is_array($path_arr)) {
+				$this->load->helper('html');
+				foreach($path_arr as $k=>$v) {
+					if($v != 0) {
+						$cur_cat = $this->get_by_id($v);
+						$path .= '<a href="' . site_url('l/' . $cur_cat['id']) . '" >'.$cur_cat['name'].'</a> > ';
+					}
+				}
+			}
+
+			$path .= '<a href="' . site_url('l/' . $cat['id']) . '" >'.$cat['name'].'</a>';
+		}
+
+		return $path;
+	}
 }
