@@ -21,6 +21,8 @@ class Welcome extends MY_Controller {
 	}
 
 	public function archive() {
+		//如果是
+
 		$view_data = array();
 		$this->site_model->increase_site_hits();
 		
@@ -96,4 +98,34 @@ class Welcome extends MY_Controller {
 
 		$this->load->view('front/li_view', $view_data);
 	}
+
+	//文章赞 json 接口
+	public function do_like_ajax() {
+		$this->output->set_header('Content-Type:text/html;charset=utf-8');
+		$this->output->set_header('Content-type: application/json');
+		$article_id = $this->input->get('article_id');
+		if(empty($article_id)) {
+			echo '{"status" : 500, "message" : "文章ID不存在"}';
+			exit();
+		}else{
+			$article_id = intval($article_id);
+		}
+
+		$ip_addr = $this->input->ip_address();
+		$this->load->model('article_love_model');
+		if($this->article_love_model->is_love($article_id, $ip_addr)) {
+			echo '{"status" : 500, "message" : "你已经赞过了"}';
+		}else{
+			$this->article_love_model->increase_artilce_love($article_id, $ip_addr);
+			echo '{"status" : 200, "message" : "赞成功"}';
+		}
+	}
+
+	public function m_index() {
+		$view_data = array();
+		$this->load_model('slider_model');
+		$sliders = $this->slider_model->get_list(10, 0);
+		
+	}
+
 }

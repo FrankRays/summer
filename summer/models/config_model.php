@@ -34,11 +34,6 @@ class config_model extends CI_Model{
 		foreach ($slides as $key => $value) {
 			$slides[$key]['value'] = json_decode($value['value'], true);
 			$curValue = $slides[$key]['value']['picSrc'];
-			//Deal pictrue;
-			// $picSrc = substr($curValue, 0 ,intval(strrpos($curValue, '/')) + 1);
-			// $picSrc .= 'm_'.substr($curValue, intval(strrpos($curValue, '/')) + 1);
-			// $slides[$key]['value']['picSrc'] = $picSrc;
-			//Deal linkurl
 			if(empty($slides[$key]['value']['linkSrc'])){
 				$slides[$key]['value']['linkSrc'] = 'javascript:;';
 			}

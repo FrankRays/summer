@@ -19,7 +19,7 @@
                         <li><a href="<?php echo site_url('c=post') ?>" class="am-cf"><span class="am-icon-check"></span> 本地文章管理<!-- <span class="am-icon-star am-fr am-margin-right admin-icon-yellow"></span> --></a></li>
                         <li><a href="<?php echo site_url('c=article_index&m=index') ?>" class="am-cf"><span class="am-icon-check"></span>首页文章管理</a></li>
                         <li><a href="<?php echo site_url('c=article_category&m=index') ?>"><span class="am-icon-puzzle-piece"></span> 文章分类管理</a></li>
-                        <li><a href="<?php echo site_url('d=config&c=slider&m=index') ?>"><span class="am-icon-puzzle-piece"></span> 幻灯片管理</a></li>
+                        <li><a href="<?php echo site_url('c=slider&m=admin') ?>"><span class="am-icon-puzzle-piece"></span> 幻灯片管理</a></li>
                        <!--  <li><a href="admin-404.html"><span class="am-icon-bug"></span> 404</a></li> -->
                     </ul>
                 </li>
@@ -55,3 +55,4 @@
         </div>
     </div>
     <!-- sidebar end -->
+

@@ -485,10 +485,10 @@ class post extends MY_controller {
                 $this->load->library('upload', $upload_config);
                 if($this->upload->do_upload('file')) {
                     $data = $this->upload->data();
-                    $update_file['width'] = $data['image_width'];
-                    $update_file['height'] = $data['image_height'];
-                    $update_file['pathname'] = $upload_path_date . $data['file_name'];
-                    $update_file['extension'] = $data['file_ext'];
+                    $update_file['width']       = $data['image_width'];
+                    $update_file['height']      = $data['image_height'];
+                    $update_file['pathname']    = $upload_path_date . $data['file_name'];
+                    $update_file['extension']   = $data['file_ext'];
                 }else{
                     $this->form_validation->set_error_array(array($this->upload->display_errors()));
                     $this->_load_view('default/article_imgs_edit_view', $view_data);

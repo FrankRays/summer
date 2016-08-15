@@ -51,8 +51,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
-$route['archive/(:any)'] = 'welcome/archive/$1';
-$route['l/(:any)'] = 'welcome/li/$1';
+
+//桌面
+$route['archive/(:any)'] 		= 'welcome/archive/$1';
+$route['l/(:any)'] 				= 'welcome/li/$1';
+
+//移动端
+$route['m/archive/(:any)'] 		= 'welcome/m_archive/$1';
+$route['m/l/(:num)']			= 'welcome/m_l/$1';
+$route['m/index']				= 'welcome/m_index';
 
 $route['translate_uri_dashes'] = FALSE;
 

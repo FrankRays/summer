@@ -406,6 +406,58 @@ class file_model extends CI_Model{
 		return $fileList;
 	}
 
+	//v2 创建上传路径 [0]	=> relative, [1] => aboslute
+	public function create_upload_dir(){
+		$resource_upload_path 	= $this->config->item('resource_upload_path');
+		$relative_path			= date('Y/m/d') . '/';
+		$ab_path 				= trim($resource_upload_path) . '/' . $relative_path;
+
+		if(! file_exists($ab_path)) {
+			if(! mkdir($ab_path, 0777, TRUE)) {
+				show_error('创建上传图片路径失败');
+			}
+		}
+
+		return array($relative_path, $ab_path);
+	}
+
+	//upload_img 上传图片文件
+	public function upload_slider_img() {
+		if(! isset($_FILES['img_path'])) {
+			$this->form_validation->set_error_array(array('上传图片不能为空'));
+			return FALSE;
+		}
+
+		$upload_path_info = $this->create_upload_dir();
+		$upload_config 	= $this->config->item('upload_config');
+		$upload_config['upload_path'] = $upload_path_info[1];
+
+		$this->load->library('upload', $upload_config);
+		if($this->upload->do_upload('img_path')) {
+			$upload_data = $this->upload->data();
+			// $summary = $this->input->post('summary');
+			// if(empty($summary)) {
+			// 	$summary = '';
+			// }
+			// $insert_data = array(
+			// 	'pathname'		=> $upload_path_info[0],
+			// 	'title'			=> $this->input->post('title', TRUE),
+			// 	'summary'		=> $summary,
+			// 	'extension'		=> $upload_data['file_ext'],
+			// 	'size'			=> $upload_data['file_size'],
+			// 	'width'			=> $upload_data['image_width'],
+			// 	'height'		=> $upload_data['image_height'],
+			// 	'object_type'	=> 'slider',
+			// 	'object_id'		=>
+			// 	)
+			// 	
+			$upload_data['relative_path'] = $upload_path_info[0] . $upload_data['file_name'];
+			return $upload_data;
+		}else{
+            $this->form_validation->set_error_array(array($this->upload->display_errors()));
+            return FALSE;
+		}
+	}
 
 	//v2 更具objectid获取图片
 	public function get_imgs_by_object_id($object_id) {

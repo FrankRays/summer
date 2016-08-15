@@ -27,6 +27,7 @@ class MY_Controller extends CI_Controller{
 		$this->load->library('pagination');
 		$this->load->library('session');
 		$this->load->library('form_validation', $this->config->item('form_validation'));
+		$this->load->library('user_agent');
 
 		$this->load->model('lm_model');
 		$this->load->model('news_category_model');

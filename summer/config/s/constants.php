@@ -42,4 +42,6 @@ defined('TABLE_SITE')				OR define('TABLE_SITE', 'summer_site');
 defined('TABLE_NAV')				OR define('TABLE_NAV', 'summer_nav');
 defined('TABLE_NAV_CAT')			OR define('TABLE_NAV_CAT', 'summer_nav_cat');
 defined('TABLE_ARTICLE_CAT')		OR define('TABLE_ARTICLE_CAT', 'summer_article_category');
-defined('TABLE_ARTICLE')			OR define('TABLE_ARTICLE', 'summer_article');	
+defined('TABLE_ARTICLE')			OR define('TABLE_ARTICLE', 'summer_article');
+defined('TABLE_ARTICLE_LOVE')		OR define('TABLE_ARTICLE_LOVE', 'summer_article_love');
+defined('TABLE_SLIDER')				OR define('TABLE_SLIDER', 'summer_slider');

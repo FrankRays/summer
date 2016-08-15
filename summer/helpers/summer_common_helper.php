@@ -42,17 +42,31 @@ if( ! function_exists('cur_user_account')) {
 	}
 }
 
-
 //获取栏目面包屑导航
-
 if(!function_exists('get_module_path')) {
 	function get_module_path($module_array = array()) {
 		$module_path_str = '';
 		if(is_array($module_array)) {
 			foreach($module_array as $v) {
-				$module_path_str .= '<a href="' . $v[1] . '" >' . $v[0] . '</a> / ';
+				$module_path_str .= '<a href="' . $v[1] . '" >' . $v[0] . '</a> > ';
 			}
 		}
 		return $module_path_str;
+	}
+}
+
+
+//处理分页base_url
+if( ! function_exists('deal_page_base_url')) {
+	function deal_page_base_url() {
+		$CI = &get_instance();
+		$base_url_arr = array();
+		foreach($CI->input->get() as $k=>$v) {
+			if($k != 'offset') {
+				$base_url_arr[] = $k . '=' . $v;
+			}
+		}
+
+		return site_url(implode($base_url_arr, '&'));
 	}
 }
