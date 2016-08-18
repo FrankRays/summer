@@ -236,7 +236,7 @@ class MY_Controller extends CI_Controller{
 	//验证后端用户
 	protected function _verify($admin='common') {
 		$user = $this->session->userdata('user');
-		if(empty($user) || ! is_array($user) || ! isset($user['admin']) || $user['admin'] != $admin) {
+		if(empty($user) || ! is_array($user) || empty($user['account'])) {
 			redirect(site_url('c=user&m=login'));
 		}
 	}

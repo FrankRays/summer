@@ -21,6 +21,11 @@ class User extends MY_Controller {
 
 	// list page of user
 	public function index() {
+		get_sidebar();
+		$this->user_model->verify();
+		if(! $this->user_model->is_super()) {
+			show_error('你的权限不够');
+		}
 		$view_data['module_name'] = $view_data['module_desc'] = $this->user_config['module_name']['index'];
 
 		$offset = 0;
@@ -203,7 +208,6 @@ class User extends MY_Controller {
 				}
 
 				$this->session->set_userdata('user', $user);
-				// var_dump($this->session->userdata('user'));
 				redirect(site_url('c=post&m=index'));
 			}
 		}

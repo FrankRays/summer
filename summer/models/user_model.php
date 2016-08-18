@@ -242,6 +242,7 @@ class User_model extends CI_Model{
 	}
 
 
+	//v2 根据id更新用户
 	public function update_by_id($user, $user_id) {
 		$where = array(
 			'id'		=> $user_id,
@@ -257,4 +258,48 @@ class User_model extends CI_Model{
 		$this->db->where($where)->delete(TABLE_USER);
 	}
 
+
+	//v2判断是否为superadmin
+	public function is_super() {
+		$user = $this->session->userdata('user');
+		if(empty($user) || $user['admin'] != 'super') {
+			show_error('你的权限不够');
+			// if(isset($_SERVER['HTTP_REFERER'])) {
+			// 	redirect('c=user&m=login&referer='.urlencode($_SERVER['HTTP_REFERER']));
+			// }else{
+			// 	redirect('c=user&m=login');
+			// }
+		}else{
+			return TRUE;
+		}
+	}
+
+	//v2 judge if it is a common admin.
+	public function is_common() {
+		$user = $this->session->userdata('user');
+		if(is_array($user) && $user['admin'] == 'common') {
+			return TRUE;
+		}else{
+			return FALSE;
+		}
+	}
+
+	//v2 judge if is a admin ,包括common and super administrator
+	public function is_admin() {
+		$user = $this->session->userdata('user');
+		if(is_array($user) && ($user['admin'] == 'common' || $user['admin'] == 'common')) {
+			return TRUE;
+		}else{
+			return FALSE;
+		}
+	}
+
+	//v2 judge if it is a login status
+	public function verify() {
+		$user = $this->session->userdata('user');
+		if(empty($user) || ! is_array($user) || empty($user['account'])) {
+			redirect(site_url('c=user&m=login'));
+		}
+		return TRUE;
+	}
 }

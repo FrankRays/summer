@@ -88,3 +88,20 @@ if( ! function_exists('resource_url')) {
 		return $base_static_url;
 	}
 }
+
+
+if ( ! function_exists('sub_text_mb')) {
+	function sub_text_mb(&$str, $length) {
+		if(mb_strlen($str) > $length) {
+			return mb_substr($str, 0, $length) . '...';
+		}
+		return $str;
+	}
+}
+
+
+if( ! function_exists('archive_url')) {
+	function archive_url($id, $cid) {
+		return site_url('archive/' . $cid . '-' . $id);
+	}
+}

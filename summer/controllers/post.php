@@ -260,7 +260,7 @@ class post extends MY_controller {
                 $post = $this->input->post();
 
                 $category_id = intval($post['category_id']);
-                $category = $this->article_cat_model->get_by_cat_id($category_id);
+                $category = $this->article_cat_model->get_by_id($category_id);
                 if($category == NULL) {
                     show_error('文章分类不存在');
                 }

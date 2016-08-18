@@ -244,6 +244,14 @@ class article_model extends CI_Model {
 			'status'			=> YES,
 			);
 
+		if(isset($cond['is_top'])) {
+			$where['is_top'] = $cond['is_top'];
+		}
+
+		if(isset($cond['category_id'])) {
+			$where['category_id'] = $cond['category_id'];
+		}
+
 		$like = array();
 		$this->db->start_cache();
 		$this->db->from(TABLE_ARTICLE)->where($where);
@@ -260,6 +268,45 @@ class article_model extends CI_Model {
 			'total_rows'	=> $total_rows,
 			);
 	}
+
+	//v2 get front list by category id
+	public function get_front_list($list, $offset, $cid) {
+		$cond = array(
+			'category_id' 	=> $cid,
+			'is_top'		=> NO,
+			);
+		$page = $this->get_front_pages($list, $offset, $cond);
+		return $page['data_list'];
+	}
+
+	//v2 get front 
+
+	//v2 get hot
+	public function get_top_list($limit, $offset, $cid) {
+		$cond = array(
+			'category_id' 	=> $cid,
+			'is_top'		=> YES,
+			);
+		$page = $this->get_front_pages($limit, $offset, $cond);
+		$data_list = $page['data_list'];
+
+		if(count($data_list) == 0) {
+			$where = array(
+				'category_id'		=> $cid,
+				'is_delete'			=> NO,
+				'status'			=>YES,
+				);
+			$data_list = $this->db->from(TABLE_ARTICLE)
+						->select('id, title, category_name, category_id, publish_date, summary')
+						->where($where)
+						->limit($limit, $offset)
+						->order_by('publish_date desc, id asc')
+						->get()
+						->result_array();
+		}
+		return $data_list;
+	}
+
 
 	//v2 根据首页ID获取文章
 	public function get_by_index_id($index_id) {

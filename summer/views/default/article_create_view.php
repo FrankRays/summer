@@ -54,7 +54,7 @@
                 <div class="am-u-sm-6">
                     <select name="category_id" class="category-select">
                         <?php foreach($categories as $category){ ?>
-                            <option value="<?php echo $category['cat_id'] ?>" <?php echo set_select('category_id', $category['cat_id']) ?>><?php echo $category['name'] ?></option>
+                            <option value="<?php echo $category['id'] ?>" <?php echo set_select('category_id', $category['cat_id']) ?>><?php echo $category['name'] ?></option>
                         <?php } ?>
                     </select>
                 </div>

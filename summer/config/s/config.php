@@ -53,10 +53,55 @@ $config['form_validation']['error_suffix'] = '</p></div>';
 
 
 //静态路径配置和资源路径配置
-$config['static_base_path'] = 'http://127.0.0.1:9999/xww/statics/';
+$config['static_base_path']         = 'http://127.0.0.1:9999/xww/statics/';
 // $config['static_base_path'] = 'http://192.168.2.167/xww/statics/';
 
-$config['resource_base_path'] = 'http://127.0.0.1:9999/xww/resource/';
+$config['resource_base_path']       = 'http://127.0.0.1:9999/xww/resource/';
 // $config['resource_base_path'] = 'http://192.168.2.167/xww/resource/';
 //资源上传绝对路径
-$config['resource_upload_path'] = 'G:/ziyuan/project/xwwnews/resource/';
+$config['resource_upload_path']     = 'G:/ziyuan/project/xwwnews/resource/';
+
+//sidar link data and authority
+$config['sidebar_config'] = array(
+    array(
+        'href'      => 'c=main',
+        'label'     => '主面板',
+        'own'       => 'common'
+        ),
+    array(
+        'href'      => '',
+        'label'     =>  '内容',
+        'own'       => 'common',
+        'childern'  => array(
+                array(
+                    'href'      => 'c=post',
+                    'label'     => '本地文章',
+                    'own'       => 'common'
+                    ),
+                array(
+                    'href'      => 'c=article_index&m=index',
+                    'label'     => '首页文章',
+                    'own'       => 'common',
+                    ),
+                array(
+                    'href'      => 'c=slider&m=admin',
+                    'label'     => '幻灯片',
+                    'own'       => 'common',
+                    ),
+            ),
+        ),
+    array(
+        'href'      => '',
+        'label'     => '用户',
+        'own'       => 'common',
+        'childern'  => array(
+            array(
+                'href'      => 'c=user&m=admin',
+                'label'     => '用户列表',
+                'own'       => 'common',
+                ),
+            )
+        )
+
+    );
+
