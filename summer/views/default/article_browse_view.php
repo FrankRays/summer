@@ -12,9 +12,9 @@
       <div class="am-u-sm-12 am-u-md-6">
         <div class="am-btn-toolbar">
           <div class="am-btn-group am-btn-group-xs">
-            <a type="button" class="am-btn am-btn-default"  href="<?php echo site_url('c=post&m=article_create') ?>"><span class="am-icon-plus"></span> 新增</a>
-           <!--  <button type="button" class="am-btn am-btn-default"><span class="am-icon-save"></span> 保存</button>
-            <button type="button" class="am-btn am-btn-default"><span class="am-icon-archive"></span> 审核</button> -->
+            <a class="am-btn am-btn-default" href="<?php echo site_url('c=post&m=article_create') ?>"><span class="am-icon-plus"></span> 新增</a>
+            <a class="am-btn am-btn-default" href="<?php echo site_url('c=article_index&m=create_index_article') ?>"><span class="am-icon-plus"></span> 新增首页</a>
+            <a class="am-btn am-btn-default" href="<?php echo site_url('c=article_index&m=batch_fetch_index_article') ?>"><span class="am-icon-archive"></span> 批量新增首页</a>
             <button id="summer-del-article-btn" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
           </div>
         </div>
@@ -24,16 +24,16 @@
           <select name="category_id" id="y-article-category" class="category-select" style="width:250px;">
             <option value="option1">所有类别</option>
             <?php foreach ($categories as $category) {?>
-              <option value="<?php echo $category['cat_id']; ?>" <?php echo set_select('category_id', $category['cat_id']); ?>><?php echo $category['name']; ?></option>
+              <option value="<?php echo $category['id']; ?>" <?php echo set_select('category_id', $category['id']); ?>><?php echo $category['name']; ?></option>
             <?php }?>
           </select>
         </div>
       </div>
       <div class="am-u-sm-12 am-u-md-3">
         <div class="am-input-group am-input-group-sm">
-          <input type="text" class="am-form-field">
+          <input type="text" value="<?php echo $wq ?>" name="wq" class="am-form-field">
           <span class="am-input-group-btn">
-            <button class="am-btn am-btn-default" type="button">搜索</button>
+            <button id="article-search-btn" class="am-btn am-btn-default" type="button">搜索</button>
           </span>
         </div>
       </div>
@@ -59,15 +59,13 @@
           <?php foreach ($data_list as $article) {?>
             <tr>
               <td><input type="checkbox" value="<?=$article['id']?>" name="article_id" /></td>
-              <td style="width:20%"><a href="#"><?php echo $article['title']; ?></a></td>
+              <td style="width:20%"><a target="blank" href="<?php echo str_replace('y.php?', 'index.php/', site_url('archive/' . $article['category_id'] . '-' . $article['id']))  ?>.html"><?php echo $article['title']; ?></a></td>
               <td>
                 <?php if( ! empty($article['coverimg_path'])) { ?>
-                  <a target="blank" href="<?=base_url($article['coverimg_path'])?>" >
-                    <img src="<?=resource_url($article['coverimg_path'])?>" style="width:100px;" />      
+                  <a target="blank" href="<?php echo resource_url($article['coverimg_path'])?>" >
+                    <img src="<?php echo resource_url($article['coverimg_path'])?>" style="width:100px;" />      
                   </a>
-                 
                 <?php }else{ ?>
-
                   <a href="<?php echo site_url('c=post&m=imgs&object_id=' . $article['id']); ?>">添加</a>
                   <?php } ?>
               </td>
@@ -146,10 +144,12 @@ $(function(){
       document.location.href = href;
     });
 
-    var saveStatus = <?php echo $save_status ?>;
-    if(!!saveStatus) {
-      alert("<?php echo $save_message ?>");
-    }
+    $("#article-search-btn").on('click', function(e){
+      var wq = $("[name='wq']").get(0).value;
+      document.location.href= "<?php echo site_url('c=post&m=index') ?>" + "&wq=" + wq ;
+    });
+
+   <?php echo get_flash_alert() ?>
 })
 </script>
 <script type="text/javascript"></script>

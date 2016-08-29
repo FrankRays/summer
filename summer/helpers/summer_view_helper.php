@@ -102,6 +102,11 @@ if ( ! function_exists('sub_text_mb')) {
 
 if( ! function_exists('archive_url')) {
 	function archive_url($id, $cid) {
-		return site_url('archive/' . $cid . '-' . $id);
+		$CI = &get_instance();
+		if( ! $CI->agent->is_mobile()) {
+			return site_url('archive/' . $cid . '-' . $id);
+		}else{
+			return site_url('m/archive/' . $cid . '-' . $id);
+		}
 	}
 }

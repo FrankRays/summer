@@ -62,7 +62,7 @@ defined('APPPATH') || exit('no access');
   				<a class="news-more" href="javascript:;">更多</a>
   			</div>
   			<ul class="article_list clearfix">
-            <?php echo $date_archive_html ?>
+				<?php echo $date_archive_html ?>
 			</ul>
 		</div>
 	</div>
@@ -81,17 +81,6 @@ defined('APPPATH') || exit('no access');
         </ul>
         <p class="basePage">
             <?php echo $pager ?>
-           <!--  <a href="#">首页</a>
-            <a href="#">上一页</a>
-            <a class="curr">1</a>
-            <a href="#">2</a>
-            <a href="#">3</a>
-            <a href="#">...</a>
-            <a href="#">40</a>
-            <a href="#">41</a>
-            <a href="#">42</a>
-            <a href="#">下一页</a>
-            <a href="#">末页</a> -->
         </p>
     </div>
 </div>	

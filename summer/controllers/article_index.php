@@ -5,7 +5,6 @@ defined('BASEPATH') || exit('no direct script access allowed');
 //交院www主站新闻抓取管理
 class Article_index extends MY_Controller {
 
-
 	public function __construct(){
 		parent::__construct();
 
@@ -160,6 +159,65 @@ class Article_index extends MY_Controller {
 		}
 
 		return $summary;
+	}
+
+	public function create_index_article() {
+		if( ! $this->user_model->verify()) redirect('c=user&m=login');
+		$data_view['module_name'] 	= '新增首页文章';
+		$data_view['bread_path']	= get_module_path(array(
+			array('新闻列表',		site_url('c=post&m=index')),
+			array('新增首页新闻',	''),
+			));
+		$data_view['post_url']		= site_url('c=article_index&m=create_index_article');
+
+		$href = $this->input->post('href');
+		if($_POST && $this->_check_form()) {
+			if($this->article_model->create_index_article($href)) {
+				redirect(site_url('c=post&m=index'));
+			}else{
+				$this->form_validation->set_error_array(array('更新首页文章失败'));
+			}
+		}
+
+		$this->_load_view('default/article_index/create_index_article_view', $data_view);
+	}
+
+	public function batch_fetch_index_article() {
+		set_time_limit(100000);
+		$href = 'http://www.svtcc.edu.cn/front/list-13.html?pageNo=1&pageSize=10';
+		$this->article_model->get_index_artcile_list($href);
+		$href = 'http://www.svtcc.edu.cn/front/list-11.html?pageNo=1&pageSize=50';
+		$this->article_model->get_index_artcile_list($href);
+		$href = 'http://www.svtcc.edu.cn/front/list-16.html?pageNo=1&pageSize=50';
+		$this->article_model->get_index_artcile_list($href);
+		set_flashalert('批量获取首页文章成功');
+		redirect(site_url('c=post&m=index'));
+	}
+
+	private function _check_form() {
+		$this->form_validation->set_rules(array(
+			array(
+				'field'=>'href', 
+				'label'=>'文章链接', 
+				'rules'=>'required|valid_url|callback__valid_index_href',
+				),
+			));
+
+		$result = $this->form_validation->run();
+		if($result) {
+			return TRUE;
+		}else{
+			return FALSE;
+		}
+	}
+
+	public function _valid_index_href($str) {
+		if(strpos($str, 'http://www.svtcc.edu.cn/front/view-') !== FALSE) {
+			return TRUE;
+		}else{
+			$this->form_validation->set_message('_valid_index_href', '文章链接不正确');
+			return FALSE;
+		}
 	}
 
 	private function _change_article_imgsrc_to_absorlute_index($content) {

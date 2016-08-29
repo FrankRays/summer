@@ -6,7 +6,7 @@ defined('APPPATH') OR exit('forbidden to access');
     <div class="am-cf am-padding">
         <div class="am-fl am-cf">
             <strong class="am-text-primary am-text-lg"><?php echo $module_name ?></strong> /
-            <small><?php echo $module_name ?></small>
+            <small><?php echo $bread_path ?></small>
         </div>
     </div>
     <div class="am-g" >
@@ -33,6 +33,15 @@ defined('APPPATH') OR exit('forbidden to access');
                 <label class="am-u-sm-2 am-form-label">内容</label>
                 <div class="am-u-sm-6">
                     <textarea name="summary"><?php echo set_value('summary') ?></textarea>
+                </div>
+                <div class="am-u-sm-4"></div>
+            </div>
+            <div class="am-form-group">
+                <label class="am-u-sm-2 am-form-label">图片</label>
+                <div class="am-u-sm-6">
+                    <?php if(isset($article_image)) { ?>
+                    <img src="<?php echo resource_url($article_image['pathname']) ?>">
+                    <?php } ?>
                 </div>
                 <div class="am-u-sm-4"></div>
             </div>

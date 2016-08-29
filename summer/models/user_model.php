@@ -287,10 +287,10 @@ class User_model extends CI_Model{
 	//v2 judge if is a admin ,包括common and super administrator
 	public function is_admin() {
 		$user = $this->session->userdata('user');
-		if(is_array($user) && ($user['admin'] == 'common' || $user['admin'] == 'common')) {
+		if(is_array($user) && ($user['admin'] == 'common' || $user['admin'] == 'super')) {
 			return TRUE;
 		}else{
-			return FALSE;
+			redirect(site_url('c=user&m=login'));
 		}
 	}
 

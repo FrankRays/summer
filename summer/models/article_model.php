@@ -214,16 +214,27 @@ class article_model extends CI_Model {
 
 	//v2 获取分页
 	public function get_pages($offset=0, $limit=20, $cond=array()) {
-		$where = array();
+		$where = array(
+			'is_delete'		=> NO,
+			);
 		$like = array();
 
-		$where['is_delete'] = NO;
+		if(isset($cond['category_id'])) {
+			$where['category_id'] = $cond['category_id'];
+		}
+
+		$wq = $this->input->get('wq');
+		if(!empty($wq)) {
+			$like['title'] = $wq;
+		}
 
 		$this->db->start_cache();
 		$this->db->from('summer_article')
+			->select('id, title, category_name, category_id, publish_date, summary '
+					. ', coverimg_path, hits, love, author_name, status, is_top')
 			->where($where)
 			->like($like)
-			->order_by('create_time desc, sort asc');
+			->order_by('publish_date desc, id desc');
 		$this->db->stop_cache();
 
 		$this->db->limit($limit, $offset);
@@ -242,6 +253,7 @@ class article_model extends CI_Model {
 		$where = array(
 			'is_delete'			=> NO,
 			'status'			=> YES,
+			'publish_date <'	=> date(TIME_FORMAT),
 			);
 
 		if(isset($cond['is_top'])) {
@@ -252,14 +264,24 @@ class article_model extends CI_Model {
 			$where['category_id'] = $cond['category_id'];
 		}
 
+		if(isset($cond['start_date'])) {
+			$where['publish_date >'] = $cond['start_date'];
+		}
+
+		if(isset($cond['end_date'])) {
+			$where['publish_date <'] = $cond['end_date'];
+		}
+
 		$like = array();
 		$this->db->start_cache();
 		$this->db->from(TABLE_ARTICLE)->where($where);
 		$this->db->stop_cache();
 
-		$this->db->limit($limit, $offset)->order_by('publish_date desc, id asc');
+		$this->db->limit($limit, $offset)->order_by('publish_date desc, id desc');
 
-		$data_list = $this->db->get()->result_array();
+		$data_list = $this->db
+		->select('id, title, category_name, category_id, publish_date, summary, coverimg_path, hits, love')
+						->get()->result_array();
 		$total_rows = $this->db->count_all_results();
 		$this->db->flush_cache();
 
@@ -270,12 +292,12 @@ class article_model extends CI_Model {
 	}
 
 	//v2 get front list by category id
-	public function get_front_list($list, $offset, $cid) {
+	public function get_front_list($limit, $offset, $cid) {
 		$cond = array(
 			'category_id' 	=> $cid,
 			'is_top'		=> NO,
 			);
-		$page = $this->get_front_pages($list, $offset, $cond);
+		$page = $this->get_front_pages($limit, $offset, $cond);
 		return $page['data_list'];
 	}
 
@@ -295,12 +317,13 @@ class article_model extends CI_Model {
 				'category_id'		=> $cid,
 				'is_delete'			=> NO,
 				'status'			=>YES,
+				'publish_date <'	=> date(TIME_FORMAT),
 				);
 			$data_list = $this->db->from(TABLE_ARTICLE)
-						->select('id, title, category_name, category_id, publish_date, summary')
+						->select('id, title, category_name, category_id, publish_date, summary, coverimg_path')
 						->where($where)
 						->limit($limit, $offset)
-						->order_by('publish_date desc, id asc')
+						->order_by('publish_date desc, id desc')
 						->get()
 						->result_array();
 		}
@@ -312,7 +335,7 @@ class article_model extends CI_Model {
 	public function get_by_index_id($index_id) {
 		$where = array(
 			'index_id'	=> $index_id,
-			'is_delete' => 0,
+			'is_delete' => NO,
 			'type'		=> ARTICLE_TYPE_INDEX,
 			);
 		$this->db->from('summer_article')
@@ -464,7 +487,7 @@ class article_model extends CI_Model {
 
 
 	//v2 得到下一篇地址
-	public function get_next_article($article_id) {
+	public function get_next_article($article_id, $param = array()) {
 		$where = array(
 			'id > ' 				=> $article_id,
 			'is_delete'				=> NO,
@@ -478,15 +501,21 @@ class article_model extends CI_Model {
 			->get()
 			->row_array();
 
-		if(empty($article)) {
-			return '<a href="#" >最后一篇了</a>';
-		}else{
-			return '<a href="'.site_url('archive/' . $article['id']).'" >' .$article['title']. '</a>';
+		$a_str = '<a ';
+		if(isset($param['class'])) {
+			$a_str .= ' class="' . $param['class'] . '" ';
 		}
+		if(empty($article)) {
+			$a_str .= ' href="#" >最后一篇了</a>';
+		}else{
+			$a_str .= ' href="'.site_url('archive/' . $article['category_id'] . '-' . $article['id']).'" >下一篇：' .$article['title']. '</a>';
+		}
+
+		return $a_str;
 	}
 
 	//v2 得到上一篇地址a标签
-	public function get_prev_article($article_id) {
+	public function get_prev_article($article_id, $param = array()) {
 		$where = array(
 			'id < '					=> $article_id,
 			'is_delete'				=> NO,
@@ -500,14 +529,378 @@ class article_model extends CI_Model {
 			->get()
 			->row_array();
 
-
+		$a_str = '<a ';
+		if(isset($param['class'])) {
+			$a_str .= ' class="' . $param['class'] . '" ';
+		}
 		if(empty($article)) {
-			return '<a href="#" >这是第一篇咯</a>';
+			$a_str .= ' href="#" >第一篇咯</a>';
 		}else{
-			return '<a href="'.site_url('archive/' . $article['id']).'" >' .$article['title']. '</a>';
+			$a_str .= 'href="'.site_url('archive/' . $article['category_id'] . '-' . $article['id']).'" >上一篇：' .$article['title']. '</a>';
 		}
 
+		return $a_str;
 	}
 
+	public function get_week_hot() {
+
+		$where = array(
+			'is_delete'			=> NO,
+			'status'			=> YES,
+			'publish_date >'	=> date(DATE_FORMAT, time() - 24 * 3600 * 7),
+			'publish_date <'	=> date(TIME_FORMAT),
+			);
+
+		$articles = $this->db->select('title, id, category_id, category_name')
+						->from(TABLE_ARTICLE)
+						->where($where)
+						->order_by('hits desc')
+						->limit(5)
+						->get()
+						->result_array();
+
+		return $articles;
+	}
+
+	public function create_index_article($href) {
+        $this->load->model('article_cat_model');
+		$ch = curl_init();
+    	curl_setopt($ch, CURLOPT_URL, $href);
+    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    	$output = curl_exec($ch);
+    	curl_close($ch);
+
+    	if(empty($output)) {
+    		return FALSE;
+    	}
+
+    	preg_match('/<h3.*?>(.*?)<\/h3>/', $output, $title);
+        preg_match('/发布者：(.*?) &/', $output, $author_name);
+        preg_match('/点击数：(.*?) &/', $output, $hits);
+        preg_match('/发布时间：(\d{4}-\d{2}-\d{2})/', $output, $publish_date);
+        preg_match('/25px;">(.*?)<\/form>/is', $output, $content);
+        $content = isset($content[1]) ? $content[1] : '';
+        $content = preg_replace('/style="[\s\S]+?"/', '', $content);
+        $content = preg_replace('/<span\s*>/', '', $content);
+        $content = str_replace('</span>', '', $content);
+        $content = str_replace('<div>', '', $content);
+        $content = str_replace('</div>', '', $content);
+        $preged_num = 0;
+        if(! empty($content)) {
+        	$imgs = preg_match_all('<img.*?src="(.*?)".*?>', $content, $article_imgs);
+        }
+
+       
+
+        $index_category_id = 0;
+        $index_id = 0;
+        //view-11-96b6014b6e0543ffa477a48e0b4baba9.html
+        if(strpos($href, '-') !== FALSE) {
+        	$href_arr = explode('-', $href);
+        	if(is_array($href_arr) and count($href_arr) === 3) {
+        		$index_category_id 	= $href_arr[1];
+        		$index_id 			= substr($href_arr[2], 0, strpos($href_arr[2], '.'));
+        	}
+        }
+
+        $summary = '';
+        if(mb_strlen($content) > 80) {
+        	$summary = mb_substr($content, 0, 80);
+        	$summary = strip_tags($summary);
+        }
+
+        $category = $this->article_cat_model->get_by_cat_id($index_category_id);
+        $user = cur_user();
+        $create_time = date(TIME_FORMAT);
+
+        $index_article = array(
+        	'title'			=> isset($title[1]) ? $title[1] : '',
+        	'category_id'	=> ! empty($category) ? $category['id'] : 9999,
+        	'category_name'	=> ! empty($category) ? $category['name'] : '首页未找到分类',
+        	'publish_date'	=> isset($publish_date[1]) ? $publish_date[1] : $create_time,
+        	'author_name'	=> isset($author_name[1]) ? $author_name[1] : '',
+        	'author_id'		=> 1,
+        	'publisher_id'	=> $user['id'],
+        	'publisher_name'=> $user['realname'],
+        	'summary'		=> $summary,
+        	'keywords'		=> '',
+        	'content'		=> $content,
+        	'status'		=> YES,
+        	);
+
+
+        $old_index_artcile = $this->get_by_index_id($index_id);
+
+        if(empty($old_index_artcile)) {
+        	$index_article['create_time'] 	= $create_time;
+        	$index_article['hits']			= isset($hits[1]) ? $hits[1] : 0;
+        	$index_article['index_id']		= $index_id;
+        	$this->db->insert(TABLE_ARTICLE, $index_article);
+        	$object_id = $this->db->insert_id();
+        }else{
+        	$index_article['edit_time']		= $create_time;
+        	$this->db->where(array('id'=>$old_index_artcile['id']))
+        	->update(TABLE_ARTICLE, $index_article);
+        	$object_id = $old_index_artcile['id'];
+        }
+
+
+        if(empty($object_id)) {
+        	return FALSE;
+        }
+
+		$this->load->library('image_lib');
+		$this->load->library('Crawler');
+		$c = new Crawler();
+		$urls = array();
+		$has_down_img = array();
+		for($i=0; $i<count($article_imgs[1]); $i++) {
+			$where = array(
+				'object_id'		=> $object_id,
+				'index_url'		=> $article_imgs[1][$i],
+				);
+			$old_file = $this->db->from(TABLE_FILE)->where($where)->get()->row_array();
+			if( $old_file === NULL) {
+				$urls[] = 'http://www.svtcc.edu.cn' . $article_imgs[1][$i];
+			}else{
+				$has_down_img[] = $old_file;
+			}
+		}
+
+		// var_dump($urls);
+
+	    $resize_img_config = $this->config->item('resize_img_config');
+		$resource_upload_path = $this->config->item('resource_upload_path');
+		$responses = $c->asyn_request($urls);
+		foreach($responses as $url => $response) {
+			$upload_path = make_upload_dir();
+	        if($i = strrpos($url, '.')) {
+	        	$extension = strtolower(substr($url, $i));
+	        }else{
+	        	continue;
+	        }
+
+	        $filepath = $upload_path . get_random_file_name() . $extension;
+	        if($fp = fopen($filepath, 'a')) {
+		        fwrite($fp, $response);
+		        fclose($fp);
+	        }
+
+			$resize_img_config['source_image'] 	= $filepath;
+
+			$this->image_lib->initialize($resize_img_config);
+			$this->image_lib->resize();
+
+			$pathname = str_replace($resource_upload_path, '', $this->_get_thumb_path($filepath));
+			$relative_index_url = str_replace('http://www.svtcc.edu.cn', '', $url);
+			$insert_file = array(
+				'pathname'		=> $pathname,
+				'index_url'		=> $relative_index_url,
+				'extension'		=> $extension,
+				'object_id'		=> $object_id,
+				'added_by'		=> $user['id'],
+				'added_time'	=> $create_time,
+				'public'		=> 1,
+				);
+
+			$content  = str_replace($relative_index_url, resource_url($pathname), $content);
+
+			$this->db->insert(TABLE_FILE, $insert_file);
+		}
+
+		foreach($has_down_img as $v) {
+			$content = str_replace($v['index_url'], resource_url($v['pathname']), $content);
+		}
+
+		$this->db->where('id', $object_id)
+			          ->update(TABLE_ARTICLE, array('content' => $content));
+       
+        return TRUE;
+	}
+
+	public function get_index_artcile_list($href) {
+		$ch = curl_init();
+    	curl_setopt($ch, CURLOPT_URL, $href);
+    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    	$output = curl_exec($ch);
+    	curl_close($ch);
+
+        $list_preg_str  = '/newlist.png[\s\S]+?<\/a>/';
+
+        ///front/view-11-8693c5197cb64db9ac50cfa14acc6249.html
+        $href_preg_str 	= '/front\/view\-\d{2}\-(.*)\.html/';
+
+        $is_match = preg_match_all($list_preg_str, $output, $matches);
+
+        foreach($matches[0] as $v) {
+        	$is_match = preg_match($href_preg_str, $v, $href);
+        	$url = 'http://www.svtcc.edu.cn/' . $href[0];
+        	// var_dump($url);
+        	$this->create_index_article($url);
+        }
+	}
+
+	public function get_archive_html() {
+		$start_year = 2015;
+
+		$end_year = intval(date('Y'));
+		$end_month = intval(date('m'));
+
+		$archive_html = '';
+		for($i = $start_year; $i <= $end_year; $i++) {
+			if($i === $end_year) {
+				$end_month = intval(date('m'));
+			}else{
+				$end_month = 12;
+			}
+			for($j = 1; $j <= $end_month; $j++) {
+				$year_month = $i . '-' . sprintf('%02d', $j);
+				$archive_html .= '<li><a href="' . site_url('welcome/date_archive/' . $year_month) . '">'.$year_month.'</a></li>';
+			}
+		}
+
+		return $archive_html;
+	}
+
+	public function save_article_images() {
+
+		$object_id = $this->input->post('object_id');
+		if(empty($object_id)) {
+			show_error('保存图片ID不存在');
+		}
+
+		if(isset($_FILES['files']) and is_array($_FILES['files']['name'])
+				and count($_FILES['files']) > 0) {
+            $upload_config 			= $this->config->item('upload_config');
+            $resource_upload_path 	= $this->config->item('resource_upload_path');
+            $upload_path 			=make_upload_dir();
+            $upload_config['upload_path'] = $upload_path;
+            $this->load->library('upload', $upload_config);
+
+            $resize_img_config = $this->config->item('resize_img_config');
+			$this->load->library('image_lib');
+
+            $i = 0;
+            for($i = 0; $i < count($_FILES['files']['name']); $i++) {
+                $_FILES['file' . $i] = array(
+                    'name'      => $_FILES['files']['name'][$i],
+                    'type'      => $_FILES['files']['type'][$i],
+                    'tmp_name'  => $_FILES['files']['tmp_name'][$i],
+                    'error'     => $_FILES['files']['error'][$i],
+                    'size'      => $_FILES['files']['size'][$i],
+                    );
+            }
+
+            unset($_FILES['files']);
+
+			$titles 	= isset($_POST['titles']) ? $_POST['titles'] : array();
+            $summaries 	= isset($_POST['summaries']) ? $_POST['summaries'] : array();
+
+            foreach($_FILES as $k=>$v) {
+            	if($this->upload->do_upload($k)) {
+            		$upload_data = $this->upload->data();
+
+            		$resize_img_config['source_image'] = $upload_data['full_path'];
+            		$this->image_lib->initialize($resize_img_config);
+            		$this->image_lib->resize();
+
+            		$pathname 	= str_replace($resource_upload_path, '', $upload_data['full_path']);
+            		$pathname 	= str_replace($upload_data['file_ext'], '_thumb' . $upload_data['file_ext'], $pathname); 
+            		$title 		= isset($titles[$i]) && ! empty($title[$i]) ? $titles[$i] : $upload_data['file_name'];
+	                $summary 	= isset($summaries[$i]) ? $summaries[$i] : '';
+	                $added_by 	= cur_user_account();
+	                $added_time = date(TIME_FORMAT);
+
+	                $insert_file = array(
+	                    'pathname'      => $pathname,
+	                    'title'         => $title,
+	                    'summary'       => $summary,
+	                    'extension'     => $upload_data['file_ext'],
+	                    'size'          => $upload_data['file_size'],
+	                    'width'         => $upload_data['image_width'],
+	                    'height'        => $upload_data['image_height'],
+	                    'object_type'   => 'article',
+	                    'object_id'     => $object_id,
+	                    'added_by'      => $added_by,
+	                    'added_time'    => $added_time,
+	                    );
+	                $this->db->insert(TABLE_FILE, $insert_file);
+
+	                $i += 1;
+            	}else{
+            		 $this->form_validation->set_error_array(array($this->upload->display_errors()));
+            		 return FALSE;
+            	}
+            }
+		}
+
+		return TRUE;
+	}
+
+	//return the file array if success update
+	public function update_article() {
+		$file_id = $this->input->post('id');
+		if(empty($file_id)) {
+			show_error('文件ID不存在');
+		}
+
+		$where = array(
+			'id'			=> $file_id,
+			);
+		$old_file = $this->db->from(TABLE_FILE)->where($where)->get()->row_array();
+		if($old_file === NULL) {
+			show_error('修改文件不存在');
+		}
+
+		$this->form_validation->set_rules('title', '标题', 'required');
+
+		if(! $this->form_validation->run()) {
+			return FALSE;
+		}
+
+		$update_file['title'] 		= $this->input->post('title');
+		$update_file['summary']	= $this->input->post('summary');
+		if(empty($update_file['summary'])) {
+			$update_file['summary'] = '';
+		}
+		if(isset($_FILES['file']) and ! empty($_FILES['file']['name'])) {
+
+            $upload_config 			= $this->config->item('upload_config');
+            $resource_upload_path 	= $this->config->item('resource_upload_path');
+            $upload_path 			=make_upload_dir();
+            $upload_config['upload_path'] = $upload_path;
+            $this->load->library('upload', $upload_config);
+
+            if($this->upload->do_upload('file')) {
+            	$upload_data = $this->upload->data();
+
+	            $resize_img_config = $this->config->item('resize_img_config');
+	            $resize_img_config['source_image'] = $upload_data['full_path'];
+				$this->load->library('image_lib', $resize_img_config);
+				$this->image_lib->resize();
+
+				$pathname 	= str_replace($resource_upload_path, '', $upload_data['full_path']);
+            	$pathname 	= str_replace($upload_data['file_ext'], '_thumb' . $upload_data['file_ext'], $pathname);
+            	$update_file['pathname'] = $pathname;
+            }
+		}
+
+		$this->db->where('id', $old_file['id'])->update(TABLE_FILE, $update_file);
+		return $old_file;
+	}
+
+
+
+
+	private function _get_thumb_path($origin_path) {
+		$index = strrpos($origin_path, '.');
+		if($index !== FALSE) {
+			return substr($origin_path, 0, $index) . '_thumb' . substr($origin_path, $index);
+		}else{
+			return '';
+		}
+	}
 
 }

@@ -14,7 +14,8 @@ require('header_view.php');
                 </h1>
 				<div class="summer-article-archive-subtitle" style="padding-left:0px">
 	                <div class="summer-article-archive-subtitle-a">
-		                ·  <?=$article['publisher']?> · <?=$article['create_date'] ?>
+		                ·  <?php echo $article['author_name']?> · <?php echo substr($article['publish_date'], 5, 5) ?>
+		                · <?php echo $article['hits'] == 0 ? 3 : $article['hits'] ?>次阅读 ·
 	                </div>
 	                
 	            </div>
@@ -23,11 +24,14 @@ require('header_view.php');
 				</div>
 				<div class="summer-m-like cl">
 					<span class="summer-m-like-wrap">
-					<a href="javascript:;" id="summer-like-btn">
-						<i></i>
-					</a>
-				</span>
+						<a href="javascript:;" id="summer-like-btn">
+							<i></i>
+						</a>
+					</span>
 				</div>
+				<p class="summer-m-like-num cl">
+				已经有<?php echo $article['love'] == 0 ? 1 : $article['love'] ?>人点赞。
+				</p>
 			</div>
 		</div>
 	</div>
@@ -36,11 +40,34 @@ require('header_view.php');
 	<!-- //引入footer -->
 	<?php require('footer_view.php') ?>
 	<!-- //引入footer -->
-</body>
+
 
  <!-- jQuery -->
 <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
-
 <!-- Bootstrap  -->
 <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+	
+	$(function(){
+		$("#summer-like-btn").on('click', function(e){
+			$.ajax({
+				'url' : "<?php echo site_url('welcome/do_like_ajax').'?article_id='.$article['id'] ?>",
+				'type' : 'get',
+				'dataType' : 'json',
+				'success' : function(res, mes){
+					if(mes == 'success') {
+						alert(res.message);
+					}else{
+						alert('系统错误，请稍后重试');
+					}
+				}
+				}
+				)
+		});
+	});
+</script>
+
+</body>
+
 </html>

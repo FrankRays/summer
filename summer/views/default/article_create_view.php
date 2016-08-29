@@ -54,7 +54,7 @@
                 <div class="am-u-sm-6">
                     <select name="category_id" class="category-select">
                         <?php foreach($categories as $category){ ?>
-                            <option value="<?php echo $category['id'] ?>" <?php echo set_select('category_id', $category['cat_id']) ?>><?php echo $category['name'] ?></option>
+                            <option value="<?php echo $category['id'] ?>" <?php echo set_select('category_id', $category['id']) ?>><?php echo $category['name'] ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -95,7 +95,7 @@
             <div class="am-form-group no-redirect">
                 <label class="am-u-sm-2 am-form-label">发布时间</label>
                 <div class="am-u-sm-6">
-                    <input type="text" value="<?php echo set_value('add_time', date(DATE_FORMAT)) ?>" onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" placeholder="文章发布时间"  name="add_time"/>
+                    <input type="text" value="<?php echo set_value('publish_date', date(DATE_FORMAT)) ?>" onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" placeholder="文章发布时间"  name="publish_date"/>
                 </div>
                 <div class="am-u-sm-4"></div>
             </div>

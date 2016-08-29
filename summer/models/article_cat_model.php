@@ -33,6 +33,21 @@ class Article_cat_model extends CI_Model {
 		return $article_cat;
 	}
 
+	public function get_one_by_alias($alias) {
+		$where = array(
+			'status'		=> YES,
+			'is_delete'		=> NO,
+			'alias'			=> $alias,
+			);
+		$article_cat = $this->db
+				->from(TABLE_ARTICLE_CAT)
+				->where($where)
+				->get()
+				->row_array();
+
+		return $article_cat;
+	}
+
 	//v2 根据CATID 获取文章分类
 	public function get_by_cat_id($article_cat_id) {
 		$where = array(
@@ -203,12 +218,25 @@ class Article_cat_model extends CI_Model {
 				foreach($path_arr as $k=>$v) {
 					if($v != 0) {
 						$cur_cat = $this->get_by_id($v);
-						$path .= '<a href="' . site_url('l/' . $cur_cat['id']) . '" >'.$cur_cat['name'].'</a> > ';
+
+						$path .= '<a href="';
+						if( ! empty($cur_cat['alias'])) {
+							$path .= site_url('l/' . $cur_cat['alias']);
+						}else{
+							$path .= site_url('l/' . $cur_cat['id']);
+						}
+
+						$path .= '" >'.$cur_cat['name'].'</a> > ';
 					}
 				}
 			}
-
-			$path .= '<a href="' . site_url('l/' . $cat['id']) . '" >'.$cat['name'].'</a>';
+			$path .= '<a href="';
+			if( ! empty($cat['alias'])) {
+				$path .= site_url('l/' . $cat['alias']);
+			}else{
+				$path .= site_url('l/' . $cat['id']);
+			}
+			$path .= '" >'.$cat['name'].'</a>';
 		}
 
 		return $path;

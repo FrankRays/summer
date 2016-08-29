@@ -15,7 +15,7 @@
 
 <link rel="stylesheet" href="<?php echo base_url('/source/ft/xww/css/style_1018.css') ?>?version=summer_1101"  type"text/css" />
 <link rel="stylesheet" href="<?php echo base_url('/xww/third_party/foundation-icons/foundation-icons.css') ?>" type"text/css" />
-<script type="text/javascript" src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript" src="<?php echo static_url('js/h/jquery-1.8.3.min.js') ?>"></script>
 <script type="text/javascript" src="<?php echo base_url('/source/layer/layer.min.js') ?>"></script>
 <script type="text/javascript" src="<?php echo base_url('/source/layer/extend/layer.ext.js') ?>"></script>
 <script type="text/javascript" src="<?php echo base_url('/source/ft/xww/js/koala.min.1.5.js') ?>"></script>
@@ -26,7 +26,7 @@
 <div class="summer_container">
 <div id="header">
     <div id="header-box">
-        <h1><a href="javascript:;"><img src="<?php echo base_url('/source/ft/xww/images/logo.jpg')?>" /></a></h1>
+        <h1><a href="<?php echo site_url() ?>"><img src="<?php echo base_url('/source/ft/xww/images/logo.jpg')?>" /></a></h1>
         <p>新闻网</p>
     </div>
 </div>

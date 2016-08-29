@@ -13,13 +13,19 @@ $config['www_url_tzgg']	= 'http://www.svtcc.edu.cn/front/list-12.html';
 //文件上传config
 $config['upload_config'] = array(
         'allowed_types'     => 'jpg|png|gif',
-        'max_size'          => '2048',
-        'max_width'         => '1920',
-        'max_height'        => '1920',
+        'max_size'          => 20480,
+        'max_width'         => '2048',
+        'max_height'        => '2048',
+        'encrypt_name'      => TRUE,
+    ); 
+
+//image resize config
+$config['resize_img_config'] = array(
+    'image_library'     => 'gd2',
+    'create_thumb'      => TRUE,
+    'maintain_ratio'    => TRUE,
+    'width'             => 640,
     );
-
-
-
 
 //分页参数
 $config['page_config'] = array(
@@ -45,6 +51,29 @@ $config['page_config'] = array(
     'next_link' => '下一页',
     'last_link' => '最末页'
 );
+
+$config['front_page_config'] = array(
+            'per_page' => '20',
+            'query_string_segment' => 'offset',
+            'page_query_string' => true,
+            'full_tag_open' => '',
+            'full_tag_close' => '',
+            'first_tag_open' => '',
+            'first_tag_close' => '',
+            'last_tag_open' => '',
+            'last_tag_close' => '',
+            'cur_tag_open' => '<a class="curr">',
+            'cur_tag_close' => '</a>',
+            'next_tag_open' => '',
+            'next_tag_close' => '',
+            'prev_tag_open' => '',
+            'prev_tag_close' => '',
+            'num_tag_open' => '',
+            'num_tag_close' => '',
+            'first_link' => '第一页',
+            'prev_link' => '上一页',
+            'next_link' => '下一页',
+            );
 
 //表单验证配置
 $config['form_validation']['error_prefix'] = '<div class="am-alert am-alert-danger" data-am-alert>'.
@@ -79,11 +108,6 @@ $config['sidebar_config'] = array(
                     'own'       => 'common'
                     ),
                 array(
-                    'href'      => 'c=article_index&m=index',
-                    'label'     => '首页文章',
-                    'own'       => 'common',
-                    ),
-                array(
                     'href'      => 'c=slider&m=admin',
                     'label'     => '幻灯片',
                     'own'       => 'common',
@@ -93,12 +117,12 @@ $config['sidebar_config'] = array(
     array(
         'href'      => '',
         'label'     => '用户',
-        'own'       => 'common',
+        'own'       => 'super',
         'childern'  => array(
             array(
                 'href'      => 'c=user&m=admin',
                 'label'     => '用户列表',
-                'own'       => 'common',
+                'own'       => 'super',
                 ),
             )
         )

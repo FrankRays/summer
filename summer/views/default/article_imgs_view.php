@@ -47,7 +47,7 @@ defined('APPPATH') || exit('forbidden to access');
                 <?php foreach($imgs as $v): ?>
                         <tr>
                         <td><input name="file_id" type="checkbox" value="<?php echo $v['id'] ?>" /></td>
-                        <td><img style="width:200px;" src="<?php echo resource_url($v['pathname']) ?>" /></td>
+                        <td><a target="blank" href="<?php echo resource_url($v['pathname']) ?>"><img style="width:200px;" src="<?php echo resource_url($v['pathname']) ?>" /></a></td>
                         <td><?php echo $v['title'] ?></td>
                         <td><?php echo $v['summary'] ?></td>
                         <td>
@@ -64,7 +64,6 @@ defined('APPPATH') || exit('forbidden to access');
             </table>
         </div>
         <div class="am-u-12">
-
                 <?php echo validation_errors() ?>
         </div>
 

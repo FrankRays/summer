@@ -27,6 +27,7 @@ class Article_Love_Model extends CI_Model {
 		$insert_data = array(
 			'article_id'	=> $article_id,
 			'ip_addr'		=> $ip_addr,
+			'create_time'	=> date(TIME_FORMAT),
 			);
 
 		$this->db->insert(TABLE_ARTICLE_LOVE, $insert_data);

@@ -18,6 +18,11 @@ class User extends MY_Controller {
 
 	}
 
+	public function admin() {
+		$this->user_model->is_admin();
+		$this->index();
+	}
+
 
 	// list page of user
 	public function index() {
@@ -208,7 +213,7 @@ class User extends MY_Controller {
 				}
 
 				$this->session->set_userdata('user', $user);
-				redirect(site_url('c=post&m=index'));
+				redirect(site_url('c=main'));
 			}
 		}
 		$this->load->view('default/login_view');

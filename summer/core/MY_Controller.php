@@ -53,12 +53,7 @@ class MY_Controller extends CI_Controller{
 			// $this -> output -> enable_profiler(TRUE);
 		}
 
-		//分页配置文件
-		$this->_paginationConfig = $this->config->item('paginationConfig', 'snowConfig/admin');
-		$RTR =& load_class('Router', 'core');
-		// if($RTR->fetch_class() != "login"){
-		// 	 $this -> judgeLogin();
-		// }
+		date_default_timezone_set('Asia/Shanghai');
 	}
 
 	public function judgeLogin($login = FALSE){

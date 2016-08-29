@@ -24,6 +24,11 @@ class Site_Model extends CI_Model {
 		}
 	}
 
+	public function get_one_by_id($site_id) {
+		$site = $this->db->from(TABLE_SITE)->where(array('id'=>$site_id))->get()->row_array();
+		return $site;
+	}
+
 }
 
 

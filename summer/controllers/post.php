@@ -12,7 +12,7 @@ class post extends MY_controller {
         $this->load->model('article_cat_model');
         $this->load->model('article_model');
 		$this->load->model('file_model');
-
+        $this->load->model('user_model');
 	}
 
 	public function index() {
@@ -21,12 +21,9 @@ class post extends MY_controller {
 
     //首页
 	public function browse() {
-        $this->_verify();
+        if( ! $this->user_model->verify()) redirect('c=user&m=login');
 		$data['moduleName'] = '文章管理';
 		$data['moduleDesc'] = '管理多媒体文章信息';
-        //set flash session data
-        $data['save_status'] = isset($_SESSION['save_status']) ? $_SESSION['save_status'] : 0;
-        $data['save_message'] = isset($_SESSION['save_message']) ? $_SESSION['save_message'] : '';
 
 		$get = $this->input->get();
 
@@ -34,7 +31,7 @@ class post extends MY_controller {
         $category_id = 0;
         if( isset($get['category_id']) && is_numeric($get['category_id'])) {
             $category_id = intval($get['category_id']);
-            $_POST['category_id'] = $category_id;
+            $_POST['category_id'] = $category_id . '';
             $cond['category_id'] = $category_id;
         }
 
@@ -43,25 +40,20 @@ class post extends MY_controller {
             $offset = intval($get['offset']);
         }
 
-		$pgCfg = $this->config->item("page_config");
-		$page = $this->article_model->get_pages($offset, $pgCfg['per_page'], $cond);
-		$data['data_list'] = $page['data_list'];
-        $data['page'] = $page;
-		$categories = $this->article_cat_model->get_tree();
+		$page_config = $this->config->item("page_config");
+		$page = $this->article_model->get_pages($offset, $page_config['per_page'], $cond);
 
-        $data['categories'] = $categories;
-		if (isset($get['offset'])) {
-			unset($get['offset']);
-		}
-		$baseUrl = array();
-		foreach ($get as $key => &$value) {
-			$baseUrl[] = $key . '=' . $value;
-		}
-		$pgCfg['base_url'] = site_url(implode($baseUrl, '&'));
-		$pgCfg['total_rows'] = $page['total_rows'];
-		$this->pagination->initialize($pgCfg);
-		$data['pagination'] = $this->pagination->create_links();
-        $category = $this->news_category_model->getById($category_id);
+		$page_config['base_url'] = deal_page_base_url();
+		$page_config['total_rows'] = $page['total_rows'];
+		$this->pagination->initialize($page_config);
+
+		$data['pagination']         = $this->pagination->create_links();
+        $data['categories']         = $this->article_cat_model->get_tree();
+        $data['data_list']          = $page['data_list'];
+        $data['page']               = $page;
+        $data['category']           = $this->news_category_model->get_by_id($category_id);
+        $data['wq']                 = isset($_GET['wq']) ? $_GET['wq'] : '';
+
         $this->_load_view('default/article_browse_view', $data);
 	}
 
@@ -86,7 +78,7 @@ class post extends MY_controller {
                 $publisher_name = $this->input->post('come_from', TRUE);
                 $author_name = $this->input->post('author', TRUE);
                 $keywords = $this->input->post('keywords', TRUE);
-                $publish_date = $this->input->post('add_time');
+                $publish_date = $this->input->post('publish_date');
                 $create_date = $publish_date;
                 $status = $this->input->post('status');
                 $come_from = $this->input->post('redirect_come_from');
@@ -169,7 +161,7 @@ class post extends MY_controller {
                             'author'        => $article['author_name'],
                             'content'       => $article['content'],
                             'status'        => $article['status'],
-                            'add_time'      => $article['publish_date'],
+                            'publish_date'  => $article['publish_date'],
                             'is_redirect'   => array($article['is_redirect']),
                             'redirect_come_from'        => $article['come_from'],
                             'redirect_come_from_url'    => $article['come_from_url'],
@@ -196,7 +188,7 @@ class post extends MY_controller {
             if($this->_check_form()) {
                 
                 $category_id = intval($this->input->post('category_id'));
-                $category = $this->article_cat_model->get_by_cat_id($category_id);
+                $category = $this->article_cat_model->get_by_id($category_id);
                 if($category == NULL) {
                     show_error('文章分类不存在');
                 }
@@ -206,7 +198,7 @@ class post extends MY_controller {
                 $content        = $this->input->post('content');
                 $author_name    = $this->input->post('author', TRUE);
                 $keywords       = $this->input->post('keywords', TRUE);
-                $publish_date   = $this->input->post('add_time');
+                $publish_date   = $this->input->post('publish_date');
                 $status         = $this->input->post('status');
                 $come_from      = $this->input->post('redirect_come_from');
                 $come_from_url  = $this->input->post('redirect_come_from_url');
@@ -227,9 +219,8 @@ class post extends MY_controller {
                     'status'        => $status,
                     'come_from'     => $come_from,
                     'come_from_url' => $come_from_url,
-                    'create_time'       => $create_time,
-                    'create_date'       => $create_time,
-                    'publish_date'      => $create_time,
+                    'create_time'   => $create_time,
+                    'create_date'   => $create_time,
                     );
 
                 $this->article_model->create($insert_article);
@@ -237,7 +228,9 @@ class post extends MY_controller {
                 redirect(site_url('c=post'));
             }
 
-            $view_data['content'] = $_POST['content'];
+            if( isset($_POST['content'])) {
+                $view_data['content'] = $_POST['content'];
+            }
         }else{
 
         }
@@ -275,7 +268,7 @@ class post extends MY_controller {
                 $content        = $this->input->post('content');
                 $author_name    = $this->input->post('author', TRUE);
                 $keywords       = $this->input->post('keywords', TRUE);
-                $publish_date   = $this->input->post('add_time');
+                $publish_date   = $this->input->post('publish_date');
                 $status         = $this->input->post('status');
                 $come_from      = $this->input->post('redirect_come_from');
                 $come_from_url  = $this->input->post('redirect_come_from_url');
@@ -302,7 +295,6 @@ class post extends MY_controller {
             }
 
         }else{
-
             $article_id = $this->input->get('article_id');
             if(empty($article_id) || ! is_numeric($article_id)) {
                 show_error('文章ID错误');
@@ -326,7 +318,7 @@ class post extends MY_controller {
                     'author'        => $article['author_name'],
                     'content'       => $article['content'],
                     'status'        => $article['status'],
-                    'add_time'      => $article['publish_date'],
+                    'publish_date'  => $article['publish_date'],
                     'is_redirect'   => array($article['is_redirect']),
                     'redirect_come_from'        => $article['come_from'],
                     'redirect_come_from_url'    => $article['come_from_url'],
@@ -339,176 +331,69 @@ class post extends MY_controller {
 
     //设置文章图片
     public function imgs(){
-        $this->_verify();
+        if( ! defined('ADMIN') or ! $this->user_model->is_admin()) redirect(site_url('c=user&m=login'));
         $view_data['module_name'] = '设置文章图片';
 
         if($_POST) {
             $object_id = $this->input->post('object_id');
-            $upload_path = $this->config->item('resource_upload_path');
-            if( ! file_exists($upload_path)) {
-                show_error('上传图片图灵不存在');
+            if(empty($object_id) or ! is_numeric($object_id)) {
+                show_error('ID不存在');
+            }else{
+                $object_id = intval($object_id);
             }
-
-            $upload_path_date = date('Y/m/d') . '/';
-            $upload_path = trim($upload_path, '/') . '/' . $upload_path_date;
-            if( ! file_exists($upload_path)) {
-                if( ! mkdir($upload_path, 0777, TRUE)) {
-                    show_error('创建上传图片路径失败');
-                }
+            if($this->article_model->save_article_images()) {
+                redirect(site_url('c=post&m=imgs&object_id='. $object_id));
             }
-
-            $config = array(
-                'upload_path'       => $upload_path,
-                'allowed_types'     => 'jpg|png|gif',
-                'max_size'          => '1028',
-                'max_width'         => '1920',
-                'max_height'        => '1920',
-                );
-
-            $this->load->library('upload', $config);
-
-            if(! isset($_FILES) || ! is_array($_FILES) || ! isset($_FILES['files']) ||
-            ! is_array($_FILES['files'])) {
-                show_error('上传表单错误');
-            }
-
-            $temp = array(); 
-            $n = count($_FILES['files']['name']);
-            for($i = 0; $i < $n; $i++) {
-                $_FILES['file' . $i] = array(
-                    'name'      => $_FILES['files']['name'][$i],
-                    'type'      => $_FILES['files']['type'][$i],
-                    'tmp_name'  => $_FILES['files']['tmp_name'][$i],
-                    'error'     => $_FILES['files']['error'][$i],
-                    'size'      => $_FILES['files']['size'][$i],
-                    );
-            }
-
-            unset($_FILES['files']);
-
-            $titles = isset($_POST['titles']) ? $_POST['titles'] : array();
-            $summaries = isset($_POST['summaries']) ? $_POST['summaries'] : array();
-
-            $i = 0;
-            foreach($_FILES as $key => $files) {
-                if( ! $this->upload->do_upload($key)) {
-
-                    $view_data['imgs'] = $this->file_model->get_imgs_by_object_id(intval($object_id));
-                    $this->form_validation->set_error_array(array($this->upload->display_errors()));
-                    $this->_load_view('default/article_imgs_view', $view_data);
-                    return ;
-                }
-
-                $data = $this->upload->data();
-
-                $pathname = $upload_path_date . $data['file_name'];
-                $title = isset($titles[$i]) && ! empty($title[$i]) ? $titles[$i] : $data['file_name'];
-                $summary =isset($summaries[$i]) ? $summaries[$i] : '';
-                $extension = $data['file_ext'];
-                $size = $data['file_size'];
-                $width = $data['image_width'];
-                $height = $data['image_height'];
-                $object_type = 'article';
-                $object_id = intval($this->input->post('object_id'));
-                $added_by = cur_user_account();
-                $added_time = date(TIME_FORMAT);
-
-                $insert_file = array(
-                    'pathname'      => $pathname,
-                    'title'         => $title,
-                    'summary'       => $summary,
-                    'extension'     => $extension,
-                    'size'          => $size,
-                    'width'         => $width,
-                    'height'        => $height,
-                    'object_type'   => $object_type,
-                    'object_id'     => $object_id,
-                    'added_by'      => $added_by,
-                    'added_time'    => $added_time,
-                    );
-                $this->file_model->create($insert_file);
-                $i += 1;
-            }
-
-            redirect(site_url('c=post&m=imgs&object_id='. $object_id));
-        }
-
-        if(!isset($object_id)) {
+        }else{
             $object_id = $this->input->get('object_id');
-            $_POST['object_id'] = $object_id;
         }
 
-        if(empty($object_id) || !is_numeric($object_id)) {
-            $this->form_validation->set_error_array(array('文章ID不存在'));
+        if(empty($object_id) or ! is_numeric($object_id)) {
+            show_error('文章ID不存在');
+        }else{
+            $object_id = intval($object_id);
         }
 
-
-        $view_data['imgs'] = $this->file_model->get_imgs_by_object_id(intval($object_id));
+        $view_data['imgs']      = $this->file_model->get_imgs_by_object_id($object_id);
         $view_data['object_id'] = $object_id;
+        $_POST['object_id']     = $object_id;
         $this->_load_view('default/article_imgs_view', $view_data);
 
     }
 
     public function imgs_edit() {
-        $view_data['module_name'] = '图片修改';
-        $view_data['module_desc'] = '';
-        $view_data['post_url'] = site_url('c=post&m=imgs_edit');
+        if( ! defined('ADMIN') or ! $this->user_model->is_admin()) redirect(site_url('c=user&m=login'));
+        $view_data['module_name']   = '图片修改';
+        $view_data['post_url']      = site_url('c=post&m=imgs_edit');
 
         if($_POST) {
-            $id = $this->input->post('id');
-            if(empty($id)) {
-                show_error('ID错误');
+            $file = $this->article_model->update_article();
+            if($file !== FALSE) {
+                set_flashalert('修改图片成功');
+                redirect(site_url('c=post&m=imgs&object_id=' . $file['object_id']));
+                $id = $file['id'];
+            }else{
+                $id = $this->input->post('id');
             }
 
-            $title = $this->input->post('title', TRUE);
-            $summary = $this->input->post('summary');
-
-            $update_file = array(
-                'title'     => $title,
-                'summary'   => $summary,
-                );
-
-            if(isset($_FILES['file']) && isset($_FILES['file']['name']) && ! empty($_FILES['file']['name'])) {
-                $upload_path = $this->config->item('resource_upload_path');
-                $upload_path_date =  date('Y/m/d') . '/';
-                $upload_path = trim($upload_path) . '/' . $upload_path_date;
-
-                if(!file_exists($upload_path)) {
-                    if(!mkdir($upload_path, 0777, TRUE)) {
-                        show_error('创建上传图片路径失败');
-                    }
-                }
-
-                $upload_config = $this->config->item('upload_config');
-                $upload_config['upload_path'] = $upload_path;
-
-                $this->load->library('upload', $upload_config);
-                if($this->upload->do_upload('file')) {
-                    $data = $this->upload->data();
-                    $update_file['width']       = $data['image_width'];
-                    $update_file['height']      = $data['image_height'];
-                    $update_file['pathname']    = $upload_path_date . $data['file_name'];
-                    $update_file['extension']   = $data['file_ext'];
-                }else{
-                    $this->form_validation->set_error_array(array($this->upload->display_errors()));
-                    $this->_load_view('default/article_imgs_edit_view', $view_data);
-                    return ;
-                }
-            }
-            $img = $this->file_model->get_by_id(intval($id));
-            $this->file_model->update_by_id($update_file, intval($id));
-            set_flashalert('修改图片成功');
-            redirect(site_url('c=post&m=imgs&object_id=' . $img['object_id']));
         }else{
-
-            $id = $this->input->get('id');
-            if(empty($id)) {
-                show_error('文件ID不存在');
-            }
-            $img = $this->file_model->get_by_id(intval($id));
+            $id         = $this->input->get('id');
+            $object_id  = $this->input->get('object_id');
         }
 
+        if(empty($id)) {
+            show_error('文件ID不存在');
+        }
+
+        $img = $this->file_model->get_by_id(intval($id));
         $_POST = $img;
+
+        $view_data['bread_path']    = get_module_path(array(
+            array('文章列表', site_url('c=post&m=index')),
+            array('图片列表', site_url('c=post&m=imgs&object_id='.$img['object_id'])),
+            array('更新图片', ''),
+            ));
+        $view_data['article_image'] = $img;
         $this->_load_view('default/article_imgs_edit_view', $view_data);
     }
 

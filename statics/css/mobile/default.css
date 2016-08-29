@@ -290,6 +290,7 @@ body {
     zoom:1;
 }
 
+
 .summer-content-view img {
     max-width: none;
     width: calc(100% + ( 15px ) * 2 );
@@ -339,4 +340,12 @@ body {
     height: 0;
     clear: both;
     visibility: hidden;
+}
+
+.image-gallery {
+    max-height: 200px;
+}
+
+.summer-m-like-num {
+    font-size: 20px;
 }

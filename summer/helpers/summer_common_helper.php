@@ -26,7 +26,7 @@ if( ! function_exists('cur_user_id')) {
 if( ! function_exists('cur_user_account')) {
 
 	function cur_user_account() {
-		$CI = get_instance();
+		$CI = &get_instance();
 
 		$user = $CI->session->userdata('user');
 		if(empty($user)) {
@@ -39,6 +39,19 @@ if( ! function_exists('cur_user_account')) {
 			return FALSE;
 		}
 
+	}
+}
+
+if( ! function_exists('cur_user')) {
+	function cur_user() {
+		$CI = &get_instance();
+
+		$user = $CI->session->userdata('user');
+		if(empty($user) or ! isset($user['account'])) {
+			redirect('c=user&m=login');
+		}else{
+			return $user;
+		}
 	}
 }
 
@@ -102,5 +115,34 @@ if( ! function_exists('get_sidebar')) {
 		}
 
 		return $sidebar_str;
+	}
+}
+
+
+if( ! function_exists('make_upload_dir')) {
+
+	//return : absotute path of upload file on server
+	function make_upload_dir() {
+		$CI = &get_instance();
+		$upload_path = $CI->config->item('resource_upload_path');
+		if( ! file_exists($upload_path)) {
+			show_error('上传路径不存在');
+		}
+
+		$relative_path = date('Y/m/d/');
+		$upload_path = trim($upload_path, '/') . '/' . $relative_path;
+		if( ! file_exists($upload_path)) {
+			if( ! mkdir($upload_path, 0777, TRUE)) {
+				show_error('创建上传图片路径失败');
+			}
+		}
+
+		return $upload_path;		
+	}
+}
+
+if( ! function_exists('get_random_file_name')) {
+	function get_random_file_name() {
+		return time() . '_' . rand(0, 999);
 	}
 }

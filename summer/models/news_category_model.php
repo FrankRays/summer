@@ -197,7 +197,7 @@ class news_category_model extends CI_Model{
 			'id'		=> $category_id,
 			'is_delete'	=> NO,
 			);
-		return $this->db->from($this->table_name)->where($where)->get()->row_array();
+		return $this->db->from(TABLE_ARTICLE_CAT)->where($where)->get()->row_array();
 	}
 
 

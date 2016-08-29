@@ -15,9 +15,9 @@
       <div class="am-u-sm-12 am-u-md-6">
         <div class="am-btn-toolbar">
           <div class="am-btn-group am-btn-group-xs">
-            <a type="button" class="am-btn am-btn-default"  href="<?php echo site_url('d=config&c=slider&m=create') ?>"><span class="am-icon-plus"></span> 新增</a>
-            <button type="button" class="am-btn am-btn-default"><span class="am-icon-save"></span> 保存</button>
-            <button type="button" class="am-btn am-btn-default"><span class="am-icon-archive"></span> 审核</button>
+            <a type="button" class="am-btn am-btn-default"  href="<?php echo site_url('c=slider&m=create') ?>"><span class="am-icon-plus"></span> 新增</a>
+            <!-- <button type="button" class="am-btn am-btn-default"><span class="am-icon-save"></span> 保存</button>
+            <button type="button" class="am-btn am-btn-default"><span class="am-icon-archive"></span> 审核</button> -->
             <button id="slider-del-article-btn" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
           </div>
         </div>
@@ -52,10 +52,10 @@
           <?php foreach($data_list as $slider){ ?>
             <tr>
               <td><input type="checkbox" name="slider_id" value="<?php echo $slider['id']?> " /></td>
-              <td><?=$slider['id'] ?></td>
+              <td><?php echo $slider['id'] ?></td>
               <td style="width:30%"><a href="#"><?php echo $slider['title'] ?></a></td>
-              <td><img src="<?php echo resource_url($slider['img_path']) ?>" style="width:160px;width:90px;" /></td>
-              <td><?=$slider['href'] ?></td>
+              <td><a target="blank" href="<?php echo resource_url($slider['img_path']) ?>"><img src="<?php echo resource_url($slider['img_path']) ?>" style="width:160px;width:90px;" /></a></td>
+              <td><a href="<?php echo $slider['href'] ?>" target="blank" ><?php echo $slider['href'] ?></a></td>
               <td>
                 <div class="am-btn-toolbar">
                   <div class="am-btn-group am-btn-group-xs">

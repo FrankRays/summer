@@ -9,6 +9,7 @@ class Slider extends MY_Controller {
 
 		$this->load->model('slider_model');
 		$this->load->model('file_model');
+		$this->load->model('user_model');
 	}
 
 	public function index() {
@@ -46,36 +47,21 @@ class Slider extends MY_Controller {
 	}
 
 	public function create() {
-		if(!defined('ADMIN') || empty(cur_user_account())) redirect('c=user&m=login');
+		if( ! defined('ADMIN') or ! $this->user_model->is_admin()) redirect('c=user&m=login');
 		$view_data['module_name'] = '幻灯片添加';
 		$view_data['bread_path'] = get_module_path(array(
 			array('幻灯片列表', site_url('c=slider&m=admin')),
 		 	array('添加幻灯片', '#')));
 		$view_data['post_url'] = site_url('c=slider&m=create');
 
-		$upload_path_info = $this->file_model->create_upload_dir();
-		if($_POST && $this->_check_form() 
-			&& $upload_data = $this->file_model->upload_slider_img()) {
-
-			$insert_data = array(
-				'title'			=> $this->input->post('title', TRUE),
-				'href'			=> $this->input->post('title', TRUE),
-				'img_path'		=> $upload_data['relative_path'],
-				'create_time'	=> date(TIME_FORMAT),
-				'summary'		=> '',
-				'is_delete'		=> 0,
-				'cat_id'		=> 1,
-				);
-
-			$this->db->insert(TABLE_SLIDER, $insert_data);
-
-			if($this->db->insert_id()) {
-				set_flashalert('添加幻灯片成功');
-				redirect('c=slider&m=admin');
+		if($_POST) {
+			if($this->slider_model->create()) {
+				redirect(site_url('c=slider&m=admin'));
 			}else{
-				$this->form_validation->set_error_array(array('添加幻灯片失败'));
+				$this->form_validation->set_error_array(array('新增幻灯片失败'));
 			}
 		}
+
 		$this->_load_view('default/slider_form_view', $view_data);
 	}
 
@@ -93,49 +79,20 @@ class Slider extends MY_Controller {
 			$slider_id = $this->input->post('slider_id');
 		}
 		if(empty($slider_id)) {
-			show_error('幻灯片ID错误-------');
+			show_error('幻灯片ID错误');
 		}
 
 		$slider_id = intval($slider_id);
 
-		if($_POST && $this->_check_form()) {
-
-			$slider_id = $this->input->post('slider_id');
-			if(empty($slider_id) || ! is_numeric($slider_id)) {
-				show_error('幻灯片ID错误');
-			}else{
-				$slider_id = intval($slider_id);
-			}
-			$update_data = array(
-				'title'			=> $this->input->post('title', TRUE),
-				'href'			=> $this->input->post('href', TRUE),
-				'create_time'	=> date(TIME_FORMAT),
-				'summary'		=> '',
-				'is_delete'		=> 0,
-				'cat_id'		=> 1,
-				);
-
-			if(!empty($_FILES['img_path']['name']) && $upload_data = $this->file_model->upload_slider_img()) {
-				$update_data['img_path'] = $upload_data['relative_path'];
-			}
-
-			$where = array(
-				'id'		=> $slider_id,
-				);
-			$this->db->where($where)->update(TABLE_SLIDER, $update_data);
-
-			if($this->db->affected_rows()) {
+		if($_POST) {
+			if($this->slider_model->update()) {
 				set_flashalert('修改幻灯片成功');
 				redirect('c=slider&m=admin');
-			}else{
-				$this->form_validation->set_error_array(array('修改幻灯片失败'));
 			}
-
-		}else{
 		}
 
 		$where = array(
-			'is_delete'		=> NO,
+			'is_delete'		=> '0',
 			'id'			=> $slider_id,
 			);
 		$slider = $this->db->from(TABLE_SLIDER)->where($where)->get()->row_array();

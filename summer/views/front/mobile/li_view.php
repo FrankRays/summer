@@ -4,30 +4,7 @@ require('header_view.php');
 ?>
 
 	<div class="container">
-	  	<div class="row top-slider">
-	  		<div class="col-md-3 top-slider-container">
-				<div class="clearfix imgag-gallery-wrapper" >
-					<ul id="image-gallery" class="gallery list-unstyled cS-hidden">
-						<?php foreach($sliders as $k => $v){ ?>
-						<li data-thumb="<?php echo resource_url($v['img_path'])?> ">
-							<a href="<?php echo $v['href']?>"><img style="width:100%;max-height:200px;"  src="<?php echo resource_url($v['img_path'])?>" /></a>
-						</li>
-						<?php } ?>
-					</ul>
-					<ul class="image-gallery-title">
-						<?php foreach($sliders as $k=>$v) { ?>
-						<li class="summer-hidden">
-							<a href="<?php echo $v['href'] ?>"><?php echo $v['title']?></a>
-						</li>
-						<?php } ?>
-					</ul>
-				</div>
-	  			
-	  		</div>
-	  	</div>
-
-
-	    <div class="row">
+	    <div class="row" style="margin-top:20px;">
 	    	<div class="col-sm-12 summer-index-list-sm">
 				<?php foreach($articles as &$v) { ?>
 				<dl>
@@ -39,11 +16,11 @@ require('header_view.php');
 				    <?php if( ! empty($v['coverimg_path'])) { ?>
 						<dd class="m"><a href="<?php echo archive_url($v['id'], $v['category_id'])?>"><img src="<?php echo resource_url($v['coverimg_path']) ?>" alt="<?php echo $v['title'] ?>"></a></dd>
 				    <?php } ?>
-				    <dt class="zjj_title"><a href="<?php echo archive_url($v['id'], $v['category_id'])?>"><?=$v['title']?></a></dt>
+				    <dt class="zjj_title"><a href="<?php echo archive_url($v['id'], $v['category_id'])?>"><?php echo $v['title']?></a></dt>
 				    <dd class="cr_summary"><?php echo $v['summary']?></dd>
 				    <dd class="summer-index-tail">
-				            <span class="summer-index-like"><?php echo $v['love']?></span>
-				            <span class="summer-index-hits"><?php echo $v['hits']?></span>
+				            <span class="summer-index-like"><?=$v['love']?></span>
+				            <span class="summer-index-hits"><?=$v['hits']?></span>
 				    </dd>
 				</dl>
 				<?php } ?>
@@ -72,42 +49,8 @@ require('header_view.php');
 <!-- Bootstrap  -->
 <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-<!-- light slider js -->
-<script type="text/javascript" src="<?=static_url("plugins/lightslider/js/lightslider.js") ?>"></script>
-
 <script type="text/javascript">
 	$(document).ready(function() {
-
-		//init slider
-		var galleryTitles =  $(".image-gallery-title").find("li");
-		$('#image-gallery').lightSlider({
-			gallery:false,
-			item:1,
-			thumbItem:9,
-			slideMargin: 0,
-			speed:500,
-			auto:true,
-			loop:true,
-			pause:4000,
-			onBeforeStart : function($el) {
-			},
-			onSliderLoad: function($el) {
-				$('#image-gallery').removeClass('cS-hidden');
-				var i = $el.getCurrentSlideCount() - 1;
-				if(i >= 0) {
-					galleryTitles.eq(i).removeClass("summer-hidden");
-					galleryTitles.eq(i).siblings().addClass("summer-hidden");
-				}
-			},
-			onBeforeSlide : function($el, scene) {
-				var i = $el.getCurrentSlideCount() - 1;
-				if(i >= 0) {
-					galleryTitles.eq(i).removeClass("summer-hidden");
-					galleryTitles.eq(i).siblings().addClass("summer-hidden");
-				}
-			}
-		});
-
 
 		//load more news handle
 		var handling = 0;

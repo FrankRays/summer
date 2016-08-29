@@ -269,4 +269,56 @@ class Crawler {
         return $cur_news;
     }
 
+
+    public function asyn_request($urls) {
+        $length = count($urls);
+        $request_map = array();
+        $mh = curl_multi_init();
+        for($i = 0; $i<$length; $i++) {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $urls[$i]);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 120);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.130 Safari/537.36');
+            $request_map[$i] = $ch;
+            curl_multi_add_handle($mh, $ch);
+        }
+
+        $active = null;
+
+        do {
+            $mrc = curl_multi_exec($mh, $active);
+        } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+
+        $i = 0;
+        while ($active && $mrc == CURLM_OK) 
+        {   
+           // add this line
+           while (curl_multi_exec($mh, $active) === CURLM_CALL_MULTI_PERFORM);
+
+           if (curl_multi_select($mh) != -1) 
+           {   
+               do {
+                   $mrc = curl_multi_exec($mh, $active);
+               } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+           }   
+        }
+
+        var_dump(count($request_map));
+        $responses = array();
+        foreach($request_map as $ch) {
+            $info = curl_getinfo($ch);
+            $response = curl_multi_getcontent($ch);
+            $responses[$info['url']] = $response;
+        }
+
+
+        foreach($request_map as $ch) {
+            curl_multi_remove_handle($mh, $ch);
+        }
+        curl_multi_close($mh);
+
+        return $responses;
+    }
+
 }

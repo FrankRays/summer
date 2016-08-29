@@ -6,8 +6,8 @@ defined('APPPATH') OR exit('forbidden to access');
 <div class="admin-content">
     <div class="am-cf am-padding">
       <div class="am-fl am-cf">
-        <strong class="am-text-primary am-text-lg"><?=$module_name ?></strong> /
-        <small><?=$module_desc ?></small>
+        <strong class="am-text-primary am-text-lg"><?php echo $module_name ?></strong> /
+        <small><?php echo $module_desc ?></small>
       </div>
     </div>
     <div class="am-g">

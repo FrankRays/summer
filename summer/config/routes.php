@@ -55,11 +55,14 @@ $route['404_override'] = '';
 //桌面
 $route['archive/(:any)'] 		= 'welcome/archive/$1';
 $route['l/(:any)'] 				= 'welcome/li/$1';
+$route['notice']				= 'welcome/li/1';
+$route['photo_archive/(:num)']  = 'welcome/photo_archive/$1';
 
 //移动端
 $route['m/archive/(:any)'] 		= 'welcome/m_archive/$1';
-$route['m/l/(:num)']			= 'welcome/m_l/$1';
+$route['m/l/(:any)']			= 'welcome/m_l/$1';
 $route['m/index']				= 'welcome/m_index';
+$route['m/index/load_more_news']= 'welcome/m_load_more_news';
 
 $route['translate_uri_dashes'] = FALSE;
 
