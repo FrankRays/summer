@@ -106,7 +106,12 @@ if( ! function_exists('archive_url')) {
 		if( ! $CI->agent->is_mobile()) {
 			return site_url('archive/' . $cid . '-' . $id);
 		}else{
-			return site_url('m/archive/' . $cid . '-' . $id);
+			$photo_category_id = $CI->config->item('photo_category_id');
+			if( ! in_array(intval($cid), $photo_category_id)) {
+				return site_url('m/archive/' . $cid . '-' . $id);
+			} else {
+				return site_url('m/photo_archive/' . $id);
+			}
 		}
 	}
 }

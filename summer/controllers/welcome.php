@@ -64,9 +64,10 @@ class Welcome extends MY_Controller {
 
 			$article = $this->article_model->get_by_id($article_id);
 
-			if(empty($article_id)) {
+			if(empty($article)) {
 				show_404();
 			}
+			$this->article_model->increase_hit($article['id']);
 
 			$article['imgs'] 				= $this->file_model->get_imgs_by_object_id($article['id']);
 			$view_data['article'] 			= $article;
@@ -86,6 +87,10 @@ class Welcome extends MY_Controller {
 
 	public function photo_archive() {
 
+		if( $this->agent->is_mobile()) {
+			redirect(site_url(str_replace('welcome', 'm', $this->uri->ruri_string())));
+		}
+
 		$this->site_model->increase_site_hits();
 		$article_id = $this->uri->rsegment(3);
 
@@ -96,6 +101,11 @@ class Welcome extends MY_Controller {
 		}
 
 		$article = $this->article_model->get_by_id($article_id);
+		if(empty($article)) {
+			show_404();
+		}
+		$this->article_model->increase_hit($article['id']);
+
 		$photoes = $this->file_model->get_imgs_by_object_id($article_id);
 
 		$view_data['article'] 	= $article;
@@ -294,10 +304,32 @@ class Welcome extends MY_Controller {
 		if(empty($article)) {
 			show_404();
 		}
+		$this->article_model->increase_hit($article['id']);
 
-		$view_data['article'] = $article;
+		$view_data['article'] 	= $article;
 		$view_data['navs'] 		= $this->nav_model->get_mobile_nav(1, 10, 0);
 		$this->load->view('front/mobile/article_archive_view', $view_data);
+	}
+
+	public function m_photo_archive() {
+		$this->site_model->increase_site_hits();
+		$article_id = $this->uri->rsegment(3);
+		if(empty($article_id) || ! is_numeric($article_id)) {
+			show_404();
+		}
+
+		$article = $this->article_model->get_by_id($article_id);
+		if(empty($article)) {
+			show_404();
+		}
+		$this->article_model->increase_hit($article['id']);
+		$photoes = $this->file_model->get_imgs_by_object_id($article['id']);
+
+		$view_data['article'] 	= $article;
+		$view_data['photoes']	= $photoes;
+		$view_data['navs'] 		= $this->nav_model->get_mobile_nav(1, 10, 0);
+		
+		$this->load->view('front/mobile/m_photo_archive_view', $view_data);
 	}
 
 

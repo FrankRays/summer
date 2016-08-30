@@ -290,6 +290,10 @@ body {
     zoom:1;
 }
 
+.summer-content-view p {
+    margin-top:10px;
+}
+
 
 .summer-content-view img {
     max-width: none;

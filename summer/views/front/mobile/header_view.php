@@ -30,7 +30,7 @@
 	        <span class="icon-bar"></span>
 	        <span class="icon-bar"></span>
 	      </button>
-	      <a class="navbar-brand" href="<?=site_url('m/index')?>">新闻网</a>
+	      <a class="navbar-brand" href="<?=site_url('m/index')?>">四川交院新闻网</a>
 	    </div>
 
 	    <!-- Collect the nav links, forms, and other content for toggling -->

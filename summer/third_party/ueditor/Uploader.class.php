@@ -7,6 +7,7 @@
  * Time: 上午11: 32
  * UEditor编辑器通用上传类
  */
+defined('APPPATH') or exit('no access');
 class Uploader
 {
     private $fileField; //文件域名
@@ -61,7 +62,7 @@ class Uploader
             $this->upFile();
         }
 
-        $this->stateMap['ERROR_TYPE_NOT_ALLOWED'] = iconv('unicode', 'utf-8', $this->stateMap['ERROR_TYPE_NOT_ALLOWED']);
+        // $this->stateMap['ERROR_TYPE_NOT_ALLOWED'] = iconv('unicode', 'utf-8', $this->stateMap['ERROR_TYPE_NOT_ALLOWED']);
     }
 
     /**

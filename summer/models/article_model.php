@@ -892,6 +892,12 @@ class article_model extends CI_Model {
 	}
 
 
+	public function increase_hit($article_id) {
+		$this->db->query('update ' . TABLE_ARTICLE .
+		 ' set `hits`=`hits`+1 where `id`=' . intval($article_id));
+	}
+
+
 
 
 	private function _get_thumb_path($origin_path) {

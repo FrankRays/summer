@@ -9,6 +9,8 @@ class File extends MY_Controller {
 	public function __construct() {
 		parent::__construct();
 
+		$this->load->model('user_model');
+
 		$this->load->library('upload');
 		$this->load->library('image_lib');
 
@@ -64,32 +66,6 @@ class File extends MY_Controller {
 				$return['file_uri'] = str_replace(dirname(str_replace("\\", "/", APPPATH)), '', $thumbCfg['new_image']);
 				$return['file_uri'] = base_url($return['file_uri']);
 			}
-			// foreach($fileCfg['thumb'] as $v) {
-			// 	$thumbCfg['source_image'] = $file['full_path'];
-			// 	$thumbCfg['width'] = $v[0];
-			// 	$thumbCfg['height'] = $v[1];
-			// 	$thumbCfg['new_image'] = $imagePathInfo['dirname'] . '/' . $imagePathInfo['filename'] . '_';
-			// 	$thumbCfg['new_image'] .= $v[0] . 'x' . $v[1] . '.' . $imagePathInfo['extension'];
-			// 	$this->image_lib->initialize($thumbCfg);
-
-			// 	if( ! $this->image_lib->resize()) {
-			// 		//error immediatly return;
-			// 		$error = $this->image_lib->display_errors();
-			// 		echo '{"status":404, "message" :"'.$error.'" }"';
-			// 		return ;
-			// 	}else{
-			// 		//save the first thumb to return json
-			// 		if($index == 0) {
-			// 			$return['file_uri'] = str_replace(dirname(str_replace("\\", "/", APPPATH)), '', $thumbCfg['new_image']);
-			// 			$return['file_uri'] = base_url($return['file_uri']);
-			// 			$index = 1;
-			// 		}
-			// 		//clear the config of  the above thumb
-			// 		$this->image_lib->clear();
-			// 	}
-			// }
-
-			//if all success, the return most small thumb to show
 			$return['file_name'] = $file['file_name'];
 			$return['file_ext'] = $file['file_ext'];
 			echo json_encode($return);
@@ -99,6 +75,7 @@ class File extends MY_Controller {
 
 
 	function uEditorUpload(){
+		$this->user_model->is_admin();
 		//set utf8 http header
 		header("Content-Type: text/html; charset=utf-8");
 

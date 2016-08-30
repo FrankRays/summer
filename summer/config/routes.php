@@ -63,6 +63,7 @@ $route['m/archive/(:any)'] 		= 'welcome/m_archive/$1';
 $route['m/l/(:any)']			= 'welcome/m_l/$1';
 $route['m/index']				= 'welcome/m_index';
 $route['m/index/load_more_news']= 'welcome/m_load_more_news';
+$route['m/photo_archive/(:num)']= 'welcome/m_photo_archive/$1';
 
 $route['translate_uri_dashes'] = FALSE;
 

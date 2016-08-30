@@ -99,10 +99,11 @@ class MY_Controller extends CI_Controller{
 		$head = isset($data["head"]) ? $data["head"] : array();
 		$sidebar = isset($data["sidebar"]) ? $data["sidebar"] : array();
 		$foot = isset($data["foot"]) ? $data["foot"] : array();
-		$this->load->view($this->_header, $head);
-		$this->load->view($this->_sidebar, $sidebar);
+
+		$this->load->view('default/common/head_view', $head);
+		$this->load->view('default/common/sidebar_view', $sidebar);
 		$this->load->view($tplPath, $data);
-		$this->load->view($this->_footer, $foot);
+		$this->load->view('default/common/foot_view', $foot);
 	}
 
 	public function _load_view($tpl_path, $data=array()) {

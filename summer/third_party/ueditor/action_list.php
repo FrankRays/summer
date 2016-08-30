@@ -6,6 +6,7 @@
  * Time: 上午10:17
  */
 
+defined('APPPATH') or exit('no access');
 include "Uploader.class.php";
 
 /* 判断类型 */

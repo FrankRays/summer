@@ -5,7 +5,7 @@
  * Date: 14-04-14
  * Time: 下午19:18
  */
-
+defined('APPPATH') or exit('no access');
 set_time_limit(0);
 include("Uploader.class.php");
 

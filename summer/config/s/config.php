@@ -129,3 +129,6 @@ $config['sidebar_config'] = array(
 
     );
 
+
+
+$config['photo_category_id'] = array(5, 6, 8, 10);
