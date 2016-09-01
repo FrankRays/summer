@@ -66,7 +66,7 @@ class Slider extends MY_Controller {
 	}
 
 	public function edit() {
-		if(!defined('ADMIN') || empty(cur_user_account())) redirect('c=user&m=login');
+		$this->user_model->is_admin();
 		$view_data['module_name'] = '幻灯片编辑';
 		$view_data['bread_path'] = get_module_path(array(
 			array('幻灯片列表', site_url('c=slider&m=admin')),

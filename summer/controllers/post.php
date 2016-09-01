@@ -202,7 +202,12 @@ class post extends MY_controller {
                 $status         = $this->input->post('status');
                 $come_from      = $this->input->post('redirect_come_from');
                 $come_from_url  = $this->input->post('redirect_come_from_url');
-                $is_redirect    = empty($this->input->post('is_redirect')) ? NO : YES;
+                $redirect = $this->input->post('is_redirect');
+                if(empty($redirect)) {
+                    $is_redirect = '0';
+                }else{
+                    $is_redirect = '1';
+                }
                 $create_time = date(TIME_FORMAT);
 
                 $insert_article = array(
@@ -272,7 +277,9 @@ class post extends MY_controller {
                 $status         = $this->input->post('status');
                 $come_from      = $this->input->post('redirect_come_from');
                 $come_from_url  = $this->input->post('redirect_come_from_url');
-                $is_redirect    = empty($this->input->post('is_redirect')) ? NO : YES;
+                $is_redirect = $this->input->post('is_redirect');
+
+                $is_redirect    = empty($is_redirect) ? '0' : '1';
 
                 $update_article = array(
                     'title'         => $title,
