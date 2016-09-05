@@ -74,7 +74,7 @@ class Nav extends MY_Controller {
 				set_flashalert("保存成功");
 				redirect(site_url("c=nav&m=admin"));
 			}
-		} 
+		}
 
 		$id = $this->input->get_post('id', TRUE);
 		if(is_null($id) or ! is_numeric($id)) {

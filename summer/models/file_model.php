@@ -1,10 +1,12 @@
 <?php defined('BASEPATH') || exit('no direct access script allowed');
 
 
-class file_model extends CI_Model{
+class file_model extends MY_Model{
 
 	//table name
 	public $tableName = '';
+
+	public $table_name;
 	//filepaht
 	public $filePath = '';
 	//function __construct
@@ -13,6 +15,8 @@ class file_model extends CI_Model{
 
 		$this -> tableName = 'file';
 		$this -> filePath = dirname(BASEPATH).'/ysource/';
+
+		$this->table_name = TABLE_FILE;
 	}
 
 
@@ -460,12 +464,20 @@ class file_model extends CI_Model{
 	}
 
 	//v2 更具objectid获取图片
-	public function get_imgs_by_object_id($object_id) {
+	public function get_imgs_by_object_id($object_id, $is_top="unset") {
+
 		$where = array(
 			'object_id'		=> $object_id,
 			'object_type'	=> 'article',
-			'width <>'		=> 0,
 			);
+		
+		if($is_top !== "unset") {
+			if($is_top === FALSE) {
+				$where['primary'] = '0';
+			} else {
+				$where['primary'] = '1';
+			}
+		}
 
 		$files = $this->db->where($where)->from(TABLE_FILE)->get()->result_array();
 		return $files;
@@ -500,6 +512,20 @@ class file_model extends CI_Model{
 		$this->db->from(TABLE_FILE)->where($where)->delete();
 
 		return $this->db->affected_rows();
+	}
+
+	public function has_download($object_id, $image_url) {
+		$where = array(
+			'object_id'		=> $object_id,
+			'index_url'		=> $image_url,
+			);
+
+		$file = $this->db->from(TABLE_FILE)->where($where)->get()->row_array();
+		if(is_null($file)) {
+			return FALSE;
+		}else{
+			return $file;
+		}
 	}
 
 }

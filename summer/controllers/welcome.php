@@ -19,7 +19,8 @@ class Welcome extends MY_Controller {
 
 	public function index() {
 		if($this->agent->is_mobile()) {
-			redirect('m/index');
+			$this->m_index();
+			return ;
 		}
 		$this->site_model->increase_site_hits();
 
@@ -42,12 +43,19 @@ class Welcome extends MY_Controller {
 		$data_view['photolight']			= $this->article_model->get_front_list(10, 0, 8);
 		$data_view['radio']					= $this->article_model->get_front_list(10, 0, 11);
 
-		$this->load->view('front/welcome/index_823_view', $data_view);
+		//old index page exist
+		$data_view['college_media']			= $this->article_model->get_front_list(10, 0, 12);
+
+		// $this->load->view('front/welcome/index_823_view', $data_view);
+		$this->load->view('front/welcome/old_index_view', $data_view);
 	}
 
 	public function archive() {
+
+		//check mobile page
 		if($this->agent->is_mobile()) {
-			redirect(site_url(str_replace('welcome', 'm', $this->uri->ruri_string())));
+			$tis->m_archive();
+			return ;
 		}
 
 		$view_data = array();
@@ -85,6 +93,7 @@ class Welcome extends MY_Controller {
 
 		$this->load->view('front/welcome/archive_view', $view_data);
 	}
+
 
 	public function photo_archive() {
 

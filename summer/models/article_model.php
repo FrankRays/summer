@@ -280,7 +280,8 @@ class article_model extends CI_Model {
 		$this->db->limit($limit, $offset)->order_by('publish_date desc, id desc');
 
 		$data_list = $this->db
-		->select('id, title, category_name, category_id, publish_date, summary, coverimg_path, hits, love')
+		->select('id, title, category_name, category_id, index_id, '
+			.' publish_date, summary, coverimg_path, hits, love')
 						->get()->result_array();
 		$total_rows = $this->db->count_all_results();
 		$this->db->flush_cache();
@@ -320,7 +321,8 @@ class article_model extends CI_Model {
 				'publish_date <'	=> date(TIME_FORMAT),
 				);
 			$data_list = $this->db->from(TABLE_ARTICLE)
-						->select('id, title, category_name, category_id, publish_date, summary, coverimg_path')
+						->select('id, title, category_name, category_id,' . 
+						 ' publish_date, summary, coverimg_path, index_id')
 						->where($where)
 						->limit($limit, $offset)
 						->order_by('publish_date desc, id desc')
@@ -567,10 +569,11 @@ class article_model extends CI_Model {
 		$ch = curl_init();
     	curl_setopt($ch, CURLOPT_URL, $href);
     	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 20);
     	$output = curl_exec($ch);
     	curl_close($ch);
 
+    	//fetch page html fail
     	if(empty($output)) {
     		return FALSE;
     	}
@@ -588,10 +591,14 @@ class article_model extends CI_Model {
         $content = str_replace('</div>', '', $content);
         $preged_num = 0;
         if(! empty($content)) {
-        	$imgs = preg_match_all('<img.*?src="(.*?)".*?>', $content, $article_imgs);
+        	$is_success = preg_match_all('<img.*?src="(.*?)".*?>', $content, $article_imgs);
         }
 
-       
+        if(isset($article_imgs[1])) {
+        	$article_imgs = $article_imgs[1];
+        } else {
+        	$article_imgs = array();
+        }
 
         $index_category_id = 0;
         $index_id = 0;
@@ -645,68 +652,41 @@ class article_model extends CI_Model {
         	$object_id = $old_index_artcile['id'];
         }
 
-
         if(empty($object_id)) {
         	return FALSE;
         }
 
 		$this->load->library('image_lib');
-		$this->load->library('Crawler');
-		$c = new Crawler();
-		$urls = array();
+		$this->load->model('file_model');
+		$should_down_image_url = array();
 		$has_down_img = array();
-		for($i=0; $i<count($article_imgs[1]); $i++) {
-			$where = array(
-				'object_id'		=> $object_id,
-				'index_url'		=> $article_imgs[1][$i],
-				);
-			$old_file = $this->db->from(TABLE_FILE)->where($where)->get()->row_array();
-			if( $old_file === NULL) {
-				$urls[] = 'http://www.svtcc.edu.cn' . $article_imgs[1][$i];
+
+		//check if image has been download in this article\
+		foreach($article_imgs as $v) {
+			$old_file = $this->file_model->has_download($object_id, $v);
+
+			if($old_file === FALSE) {
+				$should_down_image_url[] = 'http://www.svtcc.edu.cn' . $v;
 			}else{
 				$has_down_img[] = $old_file;
 			}
 		}
 
-		// var_dump($urls);
+		//download image
+		$this->load->library('Crawler');
+		$responses = $this->crawler->asyn_request($should_down_image_url);
 
-	    $resize_img_config = $this->config->item('resize_img_config');
-		$resource_upload_path = $this->config->item('resource_upload_path');
-		$responses = $c->asyn_request($urls);
+		//save download image
 		foreach($responses as $url => $response) {
-			$upload_path = make_upload_dir();
-	        if($i = strrpos($url, '.')) {
-	        	$extension = strtolower(substr($url, $i));
-	        }else{
-	        	continue;
-	        }
+			$file = $this->_save_download_image($url, $response, $object_id);
 
-	        $filepath = $upload_path . get_random_file_name() . $extension;
-	        if($fp = fopen($filepath, 'a')) {
-		        fwrite($fp, $response);
-		        fclose($fp);
-	        }
-
-			$resize_img_config['source_image'] 	= $filepath;
-
-			$this->image_lib->initialize($resize_img_config);
-			$this->image_lib->resize();
-
-			$pathname = str_replace($resource_upload_path, '', $this->_get_thumb_path($filepath));
-			$relative_index_url = str_replace('http://www.svtcc.edu.cn', '', $url);
-			$insert_file = array(
-				'pathname'		=> $pathname,
-				'index_url'		=> $relative_index_url,
-				'extension'		=> $extension,
-				'object_id'		=> $object_id,
-				'added_by'		=> $user['id'],
-				'added_time'	=> $create_time,
-				'public'		=> 1,
-				);
-
-			$content  = str_replace($relative_index_url, resource_url($pathname), $content);
-
-			$this->db->insert(TABLE_FILE, $insert_file);
+			if($file !== FALSE) {
+				$index_content_image_url = $file["index_url"];
+				$content  = str_replace($index_content_image_url
+					, resource_url($file["pathname"]), $content);
+			}else{
+				continue;
+			}
 		}
 
 		foreach($has_down_img as $v) {
@@ -717,6 +697,52 @@ class article_model extends CI_Model {
 			          ->update(TABLE_ARTICLE, array('content' => $content));
        
         return TRUE;
+	}
+
+	private function _save_download_image($curl_url, $curl_response, $object_id) {
+		if(empty($curl_response)) {
+			return FALSE;
+		}
+	   
+	   	//save download image
+		$resource_upload_path = $this->config->item('resource_upload_path');
+		$save_dir_path = make_upload_dir();
+
+        if($i = strrpos($curl_url, '.')) {
+        	$extension = strtolower(substr(trim($curl_url, '"'), $i));
+        }else{
+        	return FALSE;
+        }
+
+        $filepath = $save_dir_path . get_random_file_name() . $extension;
+        if($fp = fopen($filepath, 'a')) {
+	        fwrite($fp, $curl_response);
+	        fclose($fp);
+        }
+
+        //resize image
+ 		$resize_img_config = $this->config->item('resize_img_config');
+		$resize_img_config['source_image'] 	= $filepath;
+		$this->image_lib->initialize($resize_img_config);
+		$this->image_lib->resize();
+
+		$pathname = str_replace($resource_upload_path, '', $this->_get_thumb_path($filepath));
+		$index_content_image_url = str_replace('http://www.svtcc.edu.cn', '', $curl_url);
+		$insert_file = array(
+			'pathname'		=> $pathname,
+			'index_url'		=> $index_content_image_url,
+			'extension'		=> $extension,
+			'object_id'		=> $object_id,
+			'added_by'		=> cur_user_id(),
+			'added_time'	=> date(TIME_FORMAT),
+			'public'		=> '1',
+			"object_type"	=> "article",
+			"primary"		=> '0',
+			);
+
+		$this->db->insert(TABLE_FILE, $insert_file);
+
+		return $insert_file;
 	}
 
 	public function get_index_artcile_list($href) {

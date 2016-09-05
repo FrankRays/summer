@@ -171,9 +171,11 @@ class Article_index extends MY_Controller {
 		$data_view['post_url']		= site_url('c=article_index&m=create_index_article');
 
 		$href = $this->input->post('href');
+
 		if($_POST && $this->_check_form()) {
 			if($this->article_model->create_index_article($href)) {
-				redirect(site_url('c=post&m=index'));
+				// redirect(site_url('c=post&m=index'));
+				echo "success";
 			}else{
 				$this->form_validation->set_error_array(array('更新首页文章失败'));
 			}
@@ -192,7 +194,7 @@ class Article_index extends MY_Controller {
 			$page_size = intval($page_size);
 		}
 
-		$href = 'http://www.svtcc.edu.cn/front/list-13.html?pageNo=1&pageSize=' . $page_size;
+		$href = 'http://www.svtcc.edu.cn/front/list-12.html?pageNo=1&pageSize=' . $page_size;
 		$this->article_model->get_index_artcile_list($href);
 		$href = 'http://www.svtcc.edu.cn/front/list-11.html?pageNo=1&pageSize=' . $page_size;
 		$this->article_model->get_index_artcile_list($href);

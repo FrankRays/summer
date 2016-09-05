@@ -351,17 +351,19 @@ class post extends MY_controller {
             if($this->article_model->save_article_images()) {
                 redirect(site_url('c=post&m=imgs&object_id='. $object_id));
             }
-        }else{
-            $object_id = $this->input->get('object_id');
         }
 
+        $object_id = $this->input->get_post("object_id");
         if(empty($object_id) or ! is_numeric($object_id)) {
             show_error('文章ID不存在');
         }else{
             $object_id = intval($object_id);
         }
 
-        $view_data['imgs']      = $this->file_model->get_imgs_by_object_id($object_id);
+        $images_top = $this->file_model->get_imgs_by_object_id($object_id, TRUE);
+        $images = $this->file_model->get_imgs_by_object_id($object_id, FALSE);
+        $images = array_merge($images_top, $images);
+        $view_data['imgs']      = $images;
         $view_data['object_id'] = $object_id;
         $_POST['object_id']     = $object_id;
         $this->_load_view('default/article_imgs_view', $view_data);
@@ -531,10 +533,10 @@ class post extends MY_controller {
         }
 
         //取消所有的封面
-        $imgs = $this->file_model->get_imgs_by_object_id($img['object_id']);
+        $imgs = $this->file_model->get_imgs_by_object_id($img['object_id'], TRUE);
 
         $update_img = array(
-            'primary'    => 0,
+            'primary'    => '0',
             );
         if(is_array($imgs)) {
             foreach($imgs as $v) {
@@ -543,7 +545,7 @@ class post extends MY_controller {
         }
 
         $update_img = array(
-            'primary'    => 1,
+            'primary'    => '1',
             );
         $this->file_model->update_by_id($update_img, $img['id']);
 
