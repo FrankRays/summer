@@ -15,12 +15,12 @@
         </div> 
         <div class="headline">
             <h1 title="<?php echo $article['title'] ?>"><?php echo $article['title'] ?></h1>
-            <span><?php echo substr($article['publish_date'], 0, 10) ?></span>
+            <span><?php echo substr($article['publish_date'], 0, 10) ?> · 浏览：<?php echo $article['hits'] ?>次</span>
         </div>
         <div class="actions cf">
-            <a href="#" hidefocus="true" class="vieworigin">原图</a>
+            <a href="javascript:;" hidefocus="true" class="vieworigin">赞</a>
             <div class="parting-line"></div>
-            <a href="#" hidefocus="true" class="comment js-tielink">评论 <span>( </span><b>598</b><span> )</span></a>
+            <a href="#" hidefocus="true" class="comment js-tielink">已有 <b><?php echo $article['love'] ?></b>人点赞</a>
         </div> 
 	</div>
 	<div class="f_scroll fl" style="margin-left:10%; margin-top:10px;">
@@ -47,6 +47,23 @@
 	<script type="text/javascript">
 
 		$(function(){
+			//点赞
+			$(".vieworigin").on('click', function(e){
+			$.ajax({
+				'url' : "<?php echo site_url('welcome/do_like_ajax').'?article_id='.$article['id'] ?>",
+				'type' : 'get',
+				'dataType' : 'json',
+				'success' : function(res, mes){
+					if(mes == 'success') {
+						alert(res.message);
+					}else{
+						alert('系统错误，请稍后重试');
+					}
+				}
+				}
+				)
+			});
+
 			$('.f_scroll').daqScroll({
 			    direction : "left",
 			    timeout : 5000,

@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') || exit('no direct script access allowed');
 
+//site name
+$config['site_name'] = '四川交通职业技术学院-新闻网';
+
 
 //svtcc主站，抓取新闻链接
 //学院新闻
@@ -82,10 +85,10 @@ $config['form_validation']['error_suffix'] = '</p></div>';
 
 
 //静态路径配置和资源路径配置
-$config['static_base_path']         = 'http://127.0.0.1:9999/xww/statics/';
+$config['static_base_path']         = 'http://test.news.svtcc.edu.cn:9999/statics/';
 // $config['static_base_path'] = 'http://192.168.2.167/xww/statics/';
 
-$config['resource_base_path']       = 'http://127.0.0.1:9999/xww/resource/';
+$config['resource_base_path']       = 'http://test.news.svtcc.edu.cn:9999/resource/';
 // $config['resource_base_path'] = 'http://192.168.2.167/xww/resource/';
 //资源上传绝对路径
 $config['resource_upload_path']     = 'G:/ziyuan/project/xwwnews/resource/';
@@ -104,7 +107,7 @@ $config['sidebar_config'] = array(
         'childern'  => array(
                 array(
                     'href'      => 'c=post',
-                    'label'     => '本地文章',
+                    'label'     => '文章',
                     'own'       => 'common'
                     ),
                 array(
@@ -116,19 +119,30 @@ $config['sidebar_config'] = array(
         ),
     array(
         'href'      => '',
+        'label'     => 'Config',
+        'own'       => 'super',
+        'childern'  => array(
+            array(
+                'href'      => 'c=nav&m=admin',
+                'label'     => 'Navigation',
+                'own'       => 'super',
+                ),
+            )
+        ),
+    array(
+        'href'      => '',
         'label'     => '用户',
         'own'       => 'super',
         'childern'  => array(
             array(
                 'href'      => 'c=user&m=admin',
-                'label'     => '用户列表',
+                'label'     => '用户',
                 'own'       => 'super',
                 ),
             )
         )
 
     );
-
 
 
 $config['photo_category_id'] = array(5, 6, 8, 10);

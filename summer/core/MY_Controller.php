@@ -15,7 +15,7 @@ class MY_Controller extends CI_Controller{
 		parent::__construct();
 
 		//加载
-		$this->config-> load('snowConfig/admin', TRUE);
+		$this->config->load('snowConfig/admin', TRUE);
 		$this->config->load('s/config');
 
 		$this->load->helper("url");

@@ -146,3 +146,19 @@ if( ! function_exists('get_random_file_name')) {
 		return time() . '_' . rand(0, 999);
 	}
 }
+
+
+if(! function_exists('back_get_front_site_url')) {
+
+	function back_get_front_site_url($url) {
+		$CI = &get_instance();
+		$CI->config->set_item('index_page', 'index.php');
+		$CI->config->set_item('enable_query_strings', FALSE);
+		$CI->config->set_item('url_suffix', '.html');
+		$site_url = site_url($url);
+		$CI->config->set_item('index_page', 'y.php');
+		$CI->config->set_item('enable_query_strings', TRUE);
+		$CI->config->set_item('url_suffix', '');
+		return $site_url;
+	}
+}

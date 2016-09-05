@@ -74,8 +74,8 @@
 	        <div class="indno_btn clearfix">
 	        	<a target="blank" href="http://www.svtcc.edu.cn/" class="indnotice_btn indnotice_btn01"></a>
 	        	<a target="blank" href="http://scjyyb.svtcc.edu.cn/" class="indnotice_btn indnotice_btn02"></a>
-	        	<a href="javascript:;" class="indnotice_btn indnotice_btn03"></a>
-	        	<a href="javascript:;" class="indnotice_btn indnotice_btn04"></a>
+	        	<a target="blank" href="http://weibo.com/u/5168125807" class="indnotice_btn indnotice_btn03"></a>
+	        	<a target="blank"href="<?php echo base_url('source/erwima.jpg') ?>" class="indnotice_btn indnotice_btn04"></a>
 	        </div>
 		</div>
 	</div>

@@ -26,6 +26,7 @@ class Welcome extends MY_Controller {
 		$data_view['navs'] 		= $this->nav_model->get_list(1, 10, 0);
 		$data_view['sliders']	= $this->slider_model->get_list(50, 0);
 
+		$data_view['title'] 				= $this->config->item('site_name');
 		$data_view['college_news_top'] 		= $this->article_model->get_top_list(1, 0, 2);
 		$data_view['college_news'] 			= $this->article_model->get_front_list(9, 0, 2);
 		$data_view['notice'] 				= $this->article_model->get_front_list(9, 0, 1);

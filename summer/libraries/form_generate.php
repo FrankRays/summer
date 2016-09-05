@@ -18,8 +18,74 @@ class Form_Generate {
 
 	public $input_close = '</div>';
 
-	public function __construct() {
+	public $form_config;
 
+	public $multiple_form = FALSE;
+
+	public $fields = array();
+
+	public $CI;
+
+	public function __construct($form_config = array()) {
+
+		$this->CI = &get_instance();
+
+		$this->inititalize($form_config);
+	}
+
+	public function inititalize($config) {
+
+		$default_form_config = array(
+			'multiple_form'		=> FALSE,
+			'action'			=> '',
+			"class"				=> '',
+			"id"				=> "",
+			"method"			=> "post",
+			);
+		
+		$this->form_config = array();
+		foreach($default_form_config as $k=>$v) {
+			if(isset($config[$k])) {
+				$this->form_config[$k] = $config[$k];
+			}else{
+				$this->form_config[$k] = $v;
+			}
+		}
+
+		if(isset($config['fields']) and is_array($config['fields'])) {
+			$this->fields = $config['fields'];
+		}
+
+		// if(isset($config['fields']) and is_array($config['fields'])) {
+		// 	$this->fileds = array();
+		// 	foreach($config['fields'] as $field) {
+
+		// 		$name = $field['name'];
+
+		// 		if(isset($field['value'])) {
+		// 			$value = $field['value'];
+		// 		}else{
+		// 			if(isset($field['default_value'])) {
+		// 				$value = $field['default_value'];
+		// 			}else{
+		// 				$value = '';
+		// 			}
+		// 		}
+
+		// 		$this->fileds[] = array(
+		// 			'name'	=> $name,
+		// 			'value'	=> $value
+		// 			);
+		// 	}
+		// }
+
+	}
+
+	public function set_value($name, $val) {
+		$fields = &$this->fields;
+		if(isset($fields[$name])) {
+			$fields[$name]['value'] = $val;
+		}
 	}
 
 	public function display($config, $data = array()) {
@@ -40,6 +106,150 @@ class Form_Generate {
 		}
 
 		return $form_str;
+	}
+
+
+	public function create_form($config = array()) {
+		$form_html = '';
+
+		$hiddeninputs = array();
+		foreach($this->fields as $name => $attr) {
+			if($attr['form_type'] == 'textinput') {
+				$form_html .= $this->_create_textinput($name, $attr);
+			} else if( $attr['form_type'] == 'radio') {
+				$form_html .= $this->_create_radio($attr);
+			} else if($attr['form_type'] == 'select') {
+				$form_html .= $this->_create_select($attr);
+			} else if($attr['form_type'] == "hiddeninput") {
+				$hiddeninputs[$attr['name']] = $attr['value'];
+			}
+		}
+
+		$form_html .= $this->_wrap_input('保存', form_submit('save', '保存'
+			, array('type'=>'submit', 'class'=>"am-btn am-btn-default am-radius")));
+		$form_html = $this->_wrap_form($form_html, $hiddeninputs);
+		return $form_html;
+	}
+
+	public function _create_textinput($field_name,  $attr) {
+		$input_html = '';
+
+		if(is_array($attr)) {
+
+			$input_html .= '<input type="text" name="' . $field_name . '" ';
+
+			if(isset($_POST[$field_name])) {
+				$input_html .= ' value="' . $_POST[$field_name]. '"';
+			}
+
+			$input_html .= ' />';
+
+			if(isset($attr['label'])) {
+				$input_html = $this->_wrap_input($attr['label'], $input_html);
+			} else {
+				return FALSE;
+			}
+		}
+
+		return $input_html;
+	}
+
+
+	/*
+	"target"	=> array(
+		"name"			=> "target",
+		"type"			=> "char",
+		"form_type"		=> "radio",
+		"label"			=> "链接到",
+		"selects"			=> array(
+			array("label"=>"站内", "val"=>'1', "default_checked"=>TRUE),
+			array("label"=>"站外", "val"=>'0',)
+			)
+		),
+	 */
+	public function _create_radio($params) {
+		$input_html = '';
+
+
+		if(isset($params['value'])) {
+			$value = $params['value'];
+		}else{
+			$radio_post = $this->CI->input->post($params['name']);
+			if($radio_post !== NULL) {
+				$value = $radio_post;
+			} else {
+				if(isset($params['default_value'])) {
+					$value = $params['default_value'];
+				}
+			}
+		}
+
+
+		if(is_array($params) and isset($params['selects'])
+			and is_array($params['selects'])) {
+			foreach($params['selects'] as $radio) {
+
+				if(isset($value) and $radio['value'] == $value) {
+					$checked = TRUE;
+				}else{
+					$checked = FALSE;
+				}
+
+				$attr = array(
+					'id'	=> $params['name'] . $radio['value'],
+					);
+				$input_html .= form_radio($params['name'], $radio['value'], $checked, $attr);
+				$input_html .= form_label($radio['label'], $attr['id']);
+				$input_html .= '&nbsp;&nbsp;&nbsp;&nbsp;';
+			}
+		}
+
+		$input_html = $this->_wrap_input($params['label'], $input_html);
+		return $input_html;
+	}
+
+	public function _create_select($params) {
+		$input_html = '';
+
+		if(is_array($params) and isset($params['options'])
+			and is_array($params['options'])) {
+
+			$options = array();
+			foreach($params['options'] as $v) {
+				$options[$v['id']] = $v['name'];
+			}
+
+			if(isset($params['selected']) and is_array($params['selected'])) {
+				$selected = $params['selected'];
+			}else{
+				$selected = array();
+			}
+			$input_html .= form_dropdown($params['name'], $options, $selected);
+		}
+
+		$input_html = $this->_wrap_input($params['label'], $input_html);
+		return $input_html;
+	}
+
+	public function _wrap_input($label, $input_html) {
+		return $this->input_wrap_open 
+		. $this->label_open 
+		. $label 
+		. $this->label_close 
+		. $this->input_open
+		. $input_html
+		. $this->input_close 
+		. $this->input_wrap_close;
+	}
+
+	public function _wrap_form($form_html, $hiddeninputs) {
+		$form_config = $this->form_config;
+
+		$action = site_url($this->form_config['action']);
+		unset($form_config['action']);
+		$form_html = form_open($action, $form_config, $hiddeninputs) . $form_html . '</form>';
+
+		return $form_html;
 	}
 
 	//表单前缀

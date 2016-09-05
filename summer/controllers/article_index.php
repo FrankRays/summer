@@ -184,11 +184,19 @@ class Article_index extends MY_Controller {
 
 	public function batch_fetch_index_article() {
 		set_time_limit(100000);
-		$href = 'http://www.svtcc.edu.cn/front/list-13.html?pageNo=1&pageSize=10';
+
+		$page_size = $this->input->get('page_size');
+		if(empty($page_size)) {
+			$page_size = 5;
+		}else{
+			$page_size = intval($page_size);
+		}
+
+		$href = 'http://www.svtcc.edu.cn/front/list-13.html?pageNo=1&pageSize=' . $page_size;
 		$this->article_model->get_index_artcile_list($href);
-		$href = 'http://www.svtcc.edu.cn/front/list-11.html?pageNo=1&pageSize=50';
+		$href = 'http://www.svtcc.edu.cn/front/list-11.html?pageNo=1&pageSize=' . $page_size;
 		$this->article_model->get_index_artcile_list($href);
-		$href = 'http://www.svtcc.edu.cn/front/list-16.html?pageNo=1&pageSize=50';
+		$href = 'http://www.svtcc.edu.cn/front/list-16.html?pageNo=1&pageSize=' . $page_size;
 		$this->article_model->get_index_artcile_list($href);
 		set_flashalert('批量获取首页文章成功');
 		redirect(site_url('c=post&m=index'));

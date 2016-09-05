@@ -65,6 +65,41 @@ class Article_cat_model extends CI_Model {
 
 	}
 
+	public function get_pair() {
+		$where = array(
+			'status'	=> '1',
+			'is_delete'	=> '0',
+			);
+
+		$cats = $this->db->select('id, name, fid')
+					->from(TABLE_ARTICLE_CAT)
+					->where($where)
+					->get()
+					->result_array();
+
+		$fid_cats = array();
+		foreach($cats as $v) {
+			$fid_cats[$v['fid']][] = $v;
+		}
+
+		$tree_cats = array();
+		$this->_get_pair_tree($fid_cats, 0, $tree_cats, 0);
+		return $tree_cats;
+	}
+
+	public function _get_pair_tree($fid_cats, $fid, &$cats, $level) {
+		if (! empty($fid_cats[$fid]) ) {
+			foreach($fid_cats[$fid] as $k => $v) {
+				$name = str_repeat('&nbsp;', $level * 2) . '|-' . $v['name'];
+				$cats[] = array(
+					'name'	=> $name, 
+					'id'	=> $v['id'],
+					);
+				$this->_get_pair_tree($fid_cats, $v['id'], $cats, $level + 2);
+			}
+		}
+	}
+
 	//v2 根据ID修改文章分类
 	public function update_by_id($article_cat, $article_cat_id) {
 		$where = array(
