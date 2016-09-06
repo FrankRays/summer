@@ -29,14 +29,14 @@ class Welcome extends MY_Controller {
 
 		$data_view['title'] 				= $this->config->item('site_name');
 		$data_view['college_news_top'] 		= $this->article_model->get_top_list(1, 0, 2);
-		$data_view['college_news'] 			= $this->article_model->get_front_list(9, 0, 2);
-		$data_view['notice'] 				= $this->article_model->get_front_list(9, 0, 1);
+		$data_view['college_news'] 			= $this->article_model->get_front_list(5, 0, 2);
+		$data_view['notice'] 				= $this->article_model->get_front_list(5, 0, 1);
 		$data_view['departnotice_top'] 		= $this->article_model->get_top_list(1, 0, 3);
-		$data_view['departnotice']			= $this->article_model->get_front_list(9, 0, 3);
+		$data_view['departnotice']			= $this->article_model->get_front_list(5, 0, 3);
 		$data_view['focushot_top']			= $this->article_model->get_top_list(1, 0, 4);
-		$data_view['focushot']				= $this->article_model->get_front_list(9, 0, 4);
+		$data_view['focushot']				= $this->article_model->get_front_list(5, 0, 4);
 		$data_view['read_top']				= $this->article_model->get_front_list(1, 0, 9);
-		$data_view['read']					= $this->article_model->get_front_list(9, 0, 9);
+		$data_view['read']					= $this->article_model->get_front_list(5, 0, 9);
 		$data_view['photo']					= $this->article_model->get_front_list(3, 0, 5);
 		$data_view['video']					= $this->article_model->get_front_list(3, 0, 6);
 		$data_view['reading'] 				= $this->article_model->get_front_list(3, 0, 10);
