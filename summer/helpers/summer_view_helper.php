@@ -73,7 +73,7 @@ if( ! function_exists('static_url')) {
 	//http://127.0.0.1:9999/xww/resource/2016/06/ecacfb95c2c15eaaf6e61648d709d6b8_960x640.jpg
 	function static_url($url='') {
 		$base_static_url = get_instance()->config->item('static_base_path');
-		$base_static_url .= $url;
+		$base_static_url .= $url . '?version=' . cms_version();
 		return $base_static_url;
 	}
 } 
