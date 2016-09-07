@@ -162,3 +162,10 @@ if(! function_exists('back_get_front_site_url')) {
 		return $site_url;
 	}
 }
+
+if( ! function_exists('cms_version')) {
+	function cms_version() {
+		$CI = &get_instance();
+		return $CI->config->item('cms_version');
+	}
+}

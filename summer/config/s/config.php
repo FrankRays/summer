@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') || exit('no direct script access allowed');
 
+$config['cms_version'] = '2.00a';
+
 //site name
 $config['site_name'] = '四川交通职业技术学院-新闻网';
 

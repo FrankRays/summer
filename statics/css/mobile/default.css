@@ -296,9 +296,10 @@ body {
 
 
 .summer-content-view img {
-    max-width: none;
+    /*max-width: none;
     width: calc(100% + ( 15px ) * 2 );
-    margin-left: -20px
+    margin-left: -20px*/
+    width: 100%;
 }
 
 .summer-m-like{

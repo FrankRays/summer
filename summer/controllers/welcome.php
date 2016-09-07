@@ -246,15 +246,22 @@ class Welcome extends MY_Controller {
 	}
 
 	public function m_index() {
+
 		$this->site_model->increase_site_hits();
+
 		$offset = $this->input->get('offset');
-		if(empty($offset)) {
+		if(empty($offset) or ! is_numeric($offset)) {
 			$offset = 0;
 		}
 
-		$page = $this->article_model->get_front_pages(20, $offset);
 
-		$data_view['navs'] 		= $this->nav_model->get_mobile_nav(1, 10, 0);
+		$page = $this->article_model->get_front_pages(20, $offset, array("is_top"=>0));
+		$top_article = $this->article_model->get_front_pages(5, 0, array("is_top"=>1));
+		
+		$page["data_list"] = array_merge_recursive($top_article["data_list"], $page["data_list"]);
+
+		$data_view['navs'] 		= $this->nav_model->get_mobile_nav(4, 10, 0);
+
 		$data_view['sliders']	= $this->slider_model->get_list(50, 0);
 		$data_view['articles'] 	= $page['data_list'];
 
@@ -287,7 +294,7 @@ class Welcome extends MY_Controller {
 
 		$view_data['articles'] 	= $articles;
 		$view_data['category'] 	= $category;
-		$view_data['navs'] 		= $this->nav_model->get_mobile_nav(1, 10, 0);
+		$view_data['navs'] 		= $this->nav_model->get_mobile_nav(4, 10, 0);
 
 		$this->load->view('front/mobile/li_view', $view_data);
 	}
@@ -317,7 +324,7 @@ class Welcome extends MY_Controller {
 		$this->article_model->increase_hit($article['id']);
 
 		$view_data['article'] 	= $article;
-		$view_data['navs'] 		= $this->nav_model->get_mobile_nav(1, 10, 0);
+		$view_data['navs'] 		= $this->nav_model->get_mobile_nav(4, 10, 0);
 		$this->load->view('front/mobile/article_archive_view', $view_data);
 	}
 
@@ -337,7 +344,7 @@ class Welcome extends MY_Controller {
 
 		$view_data['article'] 	= $article;
 		$view_data['photoes']	= $photoes;
-		$view_data['navs'] 		= $this->nav_model->get_mobile_nav(1, 10, 0);
+		$view_data['navs'] 		= $this->nav_model->get_mobile_nav(4, 10, 0);
 		
 		$this->load->view('front/mobile/m_photo_archive_view', $view_data);
 	}
