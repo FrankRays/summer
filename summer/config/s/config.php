@@ -113,7 +113,7 @@ $config['sidebar_config'] = array(
                     'own'       => 'common'
                     ),
                 array(
-                    'href'      => 'c=post&article_create',
+                    'href'      => 'c=post&m=article_create',
                     'label'     => 'create article',
                     'own'       => 'common'
                     ),

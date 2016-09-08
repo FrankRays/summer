@@ -232,7 +232,7 @@ class post extends MY_controller {
 
                 $this->article_model->create($insert_article);
                 set_flashalert('添加文章成功');
-                // redirect(site_url('c=post'));
+                redirect(site_url('c=post'));
             }
 
             if( isset($_POST['content'])) {
