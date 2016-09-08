@@ -40,7 +40,7 @@ defined('APPPATH') || exit('no access');
                     	<b>0<?php echo $i + 1 ?></b>
                 	</dd>
                     <dt>
-	                    <a href="<?php echo archive_url($v['id'], $v['category_id']) ?>"><?php echo $v['title'] ?></a>
+	                    <a href="<?php echo archive_url($v) ?>"><?php echo $v['title'] ?></a>
                 	</dt>
             </dl>
             <?php }else{ ?>
@@ -49,7 +49,7 @@ defined('APPPATH') || exit('no access');
                 <?php } ?>
 
                 <li>
-                    <a href="<?php echo archive_url($v['id'], $v['category_id']) ?>" class="clearfix">
+                    <a href="<?php echo archive_url($v) ?>" class="clearfix">
                         <span class="fl indbase_tit"><?php echo $v['title'] ?></span>
                     </a>
                 </li>
@@ -74,24 +74,13 @@ defined('APPPATH') || exit('no access');
         <ul class="baselist_ul clearfix">
             <?php foreach($articles as $v) { ?>
             <li>
-                <a class="fl" href="<?php echo archive_url($v['id'], $v['category_id']) ?>"><?php echo $v['title'] ?></a>
+                <a class="fl" href="<?php echo archive_url($v) ?>"><?php echo $v['title'] ?></a>
                 <span class="fr"><?php echo substr($v['publish_date'], 0, 11) ?></span>
             </li>
             <?php } ?>
         </ul>
         <p class="basePage">
             <?php echo $pager ?>
-           <!--  <a href="#">首页</a>
-            <a href="#">上一页</a>
-            <a class="curr">1</a>
-            <a href="#">2</a>
-            <a href="#">3</a>
-            <a href="#">...</a>
-            <a href="#">40</a>
-            <a href="#">41</a>
-            <a href="#">42</a>
-            <a href="#">下一页</a>
-            <a href="#">末页</a> -->
         </p>
     </div>
 </div>	

@@ -101,12 +101,25 @@ if ( ! function_exists('sub_text_mb')) {
 
 
 if( ! function_exists('archive_url')) {
-	function archive_url($id, $cid) {
+	function archive_url($id, $cid=0) {
 		$CI = &get_instance();
+		$photo_category_id = $CI->config->item('photo_category_id');
+
+		if(is_array($id)) {
+			$article = $id;
+			if($article["is_redirect"] == 1) {
+				return $article["come_from_url"];
+			}else{
+				if(in_array($article["category_id"], $photo_category_id)) {
+					return site_url("photo_archive/" . $article["id"]);
+				} else {
+					return site_url("archive/" . $article["category_id"] . '-' . $article["id"]);
+				}
+			}
+		}
 		if( ! $CI->agent->is_mobile()) {
 			return site_url('archive/' . $cid . '-' . $id);
 		}else{
-			$photo_category_id = $CI->config->item('photo_category_id');
 			if( ! in_array(intval($cid), $photo_category_id)) {
 				return site_url('m/archive/' . $cid . '-' . $id);
 			} else {

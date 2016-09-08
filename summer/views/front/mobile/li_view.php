@@ -14,9 +14,9 @@ require('header_view.php');
 
 				    </dt>
 				    <?php if( ! empty($v['coverimg_path'])) { ?>
-						<dd class="m"><a href="<?php echo archive_url($v['id'], $v['category_id'])?>"><img src="<?php echo resource_url($v['coverimg_path']) ?>" alt="<?php echo $v['title'] ?>"></a></dd>
+						<dd class="m"><a href="<?php echo archive_url($v)?>"><img src="<?php echo resource_url($v['coverimg_path']) ?>" alt="<?php echo $v['title'] ?>"></a></dd>
 				    <?php } ?>
-				    <dt class="zjj_title"><a href="<?php echo archive_url($v['id'], $v['category_id'])?>"><?php echo $v['title']?></a></dt>
+				    <dt class="zjj_title"><a href="<?php echo archive_url($v)?>"><?php echo $v['title']?></a></dt>
 				    <dd class="cr_summary"><?php echo $v['summary']?></dd>
 				    <dd class="summer-index-tail">
 				            <span class="summer-index-like"><?=$v['love']?></span>

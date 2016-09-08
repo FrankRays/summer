@@ -30,7 +30,7 @@ class Welcome extends MY_Controller {
 		$data_view['title'] 				= $this->config->item('site_name');
 		$data_view['college_news_top'] 		= $this->article_model->get_top_list(1, 0, 2);
 		$data_view['college_news'] 			= $this->article_model->get_front_list(5, 0, 2);
-		$data_view['notice'] 				= $this->article_model->get_front_list(5, 0, 1);
+		$data_view['notice'] 				= $this->article_model->get_front_list(4, 0, 1);
 		$data_view['departnotice_top'] 		= $this->article_model->get_top_list(1, 0, 3);
 		$data_view['departnotice']			= $this->article_model->get_front_list(5, 0, 3);
 		$data_view['focushot_top']			= $this->article_model->get_top_list(1, 0, 4);
@@ -40,11 +40,11 @@ class Welcome extends MY_Controller {
 		$data_view['photo']					= $this->article_model->get_front_list(3, 0, 5);
 		$data_view['video']					= $this->article_model->get_front_list(3, 0, 6);
 		$data_view['reading'] 				= $this->article_model->get_front_list(3, 0, 10);
-		$data_view['photolight']			= $this->article_model->get_front_list(10, 0, 8);
-		$data_view['radio']					= $this->article_model->get_front_list(10, 0, 11);
+		$data_view['photolight']			= $this->article_model->get_front_list(4, 0, 8);
+		$data_view['radio']					= $this->article_model->get_front_list(3, 0, 11);
 
 		//old index page exist
-		$data_view['college_media']			= $this->article_model->get_front_list(10, 0, 12);
+		$data_view['college_media']			= $this->article_model->get_front_list(4, 0, 7);
 
 		// $this->load->view('front/welcome/index_823_view', $data_view);
 		$this->load->view('front/welcome/old_index_view', $data_view);
@@ -98,7 +98,8 @@ class Welcome extends MY_Controller {
 	public function photo_archive() {
 
 		if( $this->agent->is_mobile()) {
-			redirect(site_url(str_replace('welcome', 'm', $this->uri->ruri_string())));
+			$this->m_photo_archive();
+			return ;
 		}
 
 		$this->site_model->increase_site_hits();
@@ -119,7 +120,7 @@ class Welcome extends MY_Controller {
 		$photoes = $this->file_model->get_imgs_by_object_id($article_id);
 
 		$view_data['article'] 	= $article;
-		$view_data['photoes'] 	= $photoes; 
+		$view_data['photoes'] 	= $photoes;
 
 		$this->load->view('front/welcome/photo_archive_view', $view_data);
 	}

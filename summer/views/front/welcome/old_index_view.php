@@ -184,7 +184,7 @@
 				<div id="home-col">
 					<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
 						" class="pic" >
-						<img src="<?php echo base_url($v['pic_src']) ?>" ></a>
+						<img src="<?php echo resource_url($v['coverimg_path']) ?>" ></a>
 					<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
 						" class="headline" >
 						<p>
@@ -216,12 +216,10 @@
 							<li class="active">
 								<h2><a target="_blank" href="<?php echo site_url('l/video') ?>" >影像交院</a></h2>
 								<div class="video-con">
-								<?php $i=-1;foreach($video as $v):$i++; ?>
+								<?php $i=0;foreach($video as $v):$i++; ?>
 									<div class="video<?php echo $i ?>">
-										<a title="<?php echo $v['title'] ?>
-											" href="
-											<?php echo archive_url($v['id'], $v['category_id']) ?>
-											">
+										<a title="<?php echo $v['title'] ?>" 
+										href="<?php echo archive_url($v['id'], $v['category_id']) ?>">
 											<img src="<?php echo resource_url($v['coverimg_path'])?>" /></a>
 									</div>
 								<?php endforeach ?>
@@ -231,7 +229,7 @@
 								<h2><a target="_blank" href="<?php echo site_url('l/radio') ?>" >微电台</a></h2>
 								<div>
 									<div class="video-con">
-								<?php $i=-1;foreach($radio as $v):$i++; ?>
+								<?php $i=0;foreach($radio as $v):$i++; ?>
 									<div class="video<?php echo $i ?>">
 										<a title="<?php echo $v['title'] ?>
 											" href="
@@ -275,7 +273,7 @@
 									<ul id="jygy-wrapper" class="notice institute-list">
 										<?php foreach ($college_media as $v) {?>
 										<li>
-											<a target="_blank" href="<?php echo archive_url($v['id'], $v['category_id']) ?>">
+											<a target="_blank" target="blank" href="<?php echo archive_url($v) ?>">
 												<?php echo $v['title'] ?></a>
 											<span><?php echo substr($v['publish_date'],0,10) ?></span>
 										</li>
@@ -309,7 +307,7 @@
 							</h2>
 							<div>
 								<div id="pic-news-con">
-								<?php $i=0;foreach($photo as $v){if($i>1)break;$i++ ?>
+								<?php $i=0;foreach($photo as $v){if($i>0)break;$i++ ?>
 									<div id="pic1">
 										<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
 											">
@@ -317,11 +315,11 @@
 										<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
 											">
 											<p  style="margin-top:5px;text-align:center;">
-												<?php echo $data['picnews'][0]['title']?></p>
+												<?php echo $v['title']?></p>
 										</a>
 									</div>
 								<?php } ?>
-									<?php if(isset($photo[2])){ foreach($data['picnews'] as $v){ ?>
+									<?php if(isset($photo[1])){unset($photo[0]); foreach($photo as $v){ ?>
 									<div id="pic2">
 										<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
 											">
@@ -335,7 +333,7 @@
 							<h2><a href="<?php echo site_url('l/reading') ?>">写意交院</a></h2>
 							<div>
 								<div id="pic-news-con">
-									<?php $i=0;foreach($reading as $v){if($i>1)break;$i++ ?>
+									<?php $i=0;foreach($reading as $v){if($i>0)break;$i++ ?>
 									<div id="pic1">
 										<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
 											">
@@ -343,11 +341,11 @@
 										<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
 											">
 											<p  style="margin-top:5px;text-align:center;">
-												<?php echo $data['picnews'][0]['title']?></p>
+												<?php echo $v['title']?></p>
 										</a>
 									</div>
 								<?php } ?>
-									<?php if(isset($reading[2])){ foreach($data['picnews'] as $v){ ?>
+									<?php if(isset($reading[1])){ unset($reading[0]); foreach($reading as $v){ ?>
 									<div id="pic2">
 										<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
 											">
@@ -376,12 +374,11 @@
 					<?php $i=0;foreach($read as $v){ if($i>1)break;$i++ ?>
 						<li>
 							<div class="newspaper">
-								<img src="<?php echo base_url('/source/mtjylogo.jpg')?>" /></div>
+								<img src="<?php echo static_url('images/read_top.png')?>" /></div>
 							<a target="blank" href="<?php echo archive_url($v['id'], $v['category_id']) ?>
 								">
 								<?php echo $v['title'] ?>
-								(
-								<?php echo substr($v['publish_date'], 0, 10)  ?>)</a>
+								(<?php echo substr($v['publish_date'], 0, 10)  ?>)</a>
 						</li>
 					<?php } ?>
 					</ul>
@@ -392,12 +389,11 @@
 					<ul style="clear:both" class="hot-newspaper">
 						<?php foreach($read as $v) { ?>
 						<li>
-							<a target="blank" href="<?php echo $v['link_url'] ?>
+							<a target="blank" href="<?php echo archive_url($v['id'], $v['category_id']) ?>
 								">
 								<?php echo $v['title'] ?></a>
 							<span>
-								(
-								<?php echo substr($v['publish_date'], 0, 10) ?>)</span>
+								(<?php echo substr($v['publish_date'], 0, 10) ?>)</span>
 						</li>
 						<?php }} ?></ul>
 				</div>
@@ -410,8 +406,7 @@
 				<a href="<?php echo  site_url('l/photolight') ?>" >视觉交院</a>
 			</h2>
 			<div id="more-wrap">
-				<a href="<?php echo site_url('l/photolight') ?>
-					">更多
+				<a href="<?php echo site_url('l/photolight') ?>">更多
 					<img src="<?php echo base_url('/source/ft/xww/images/triangle.jpg')?>"></a>
 			</div>
 		</div>
@@ -420,8 +415,7 @@
 				<tr>
 					<?php foreach($photolight as $v ) {?>
 					<td valign="top" class="pic-td" >
-						<a class="y-gyjy-img-wrap" href="<?php echo site_url('photo/archive/'.$v['news_id']) ?>
-							">
+						<a class="y-gyjy-img-wrap" target="blank" href="<?php echo archive_url($v) ?>">
 							<img alt="<?php echo $v['title'] ?>
 							" src="
 							<?php echo resource_url($v["coverimg_path"])?>" /></a>

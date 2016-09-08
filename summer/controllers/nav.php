@@ -45,10 +45,12 @@ class Nav extends MY_Controller {
 		if( ! empty($_POST)) {
 			var_dump($_POST);
 			if($this->nav_model->save()) {
-				echo '创建导航栏成功';
+				set_flashalert("创建导航栏成功");
 			}else {
-				echo '创建导航栏失败';
+				set_flashalert("创建导航栏失败");
 			}
+
+			redirect(site_url("c=nav&m=admin"));
 		}
 
 		$this->load->model('article_cat_model');

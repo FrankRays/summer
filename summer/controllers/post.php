@@ -178,7 +178,7 @@ class post extends MY_controller {
 
     //v2 添加文章
     public function article_create() {
-        $this->_verify();
+        $this->user_model->is_admin();
         $view_data['module_name'] = '添加文章';
         $view_data['moduleName'] = $view_data['module_name'];
 
@@ -186,8 +186,8 @@ class post extends MY_controller {
 
         if($_POST) {
             if($this->_check_form()) {
-                
                 $category_id = intval($this->input->post('category_id'));
+                
                 $category = $this->article_cat_model->get_by_id($category_id);
                 if($category == NULL) {
                     show_error('文章分类不存在');
@@ -202,7 +202,8 @@ class post extends MY_controller {
                 $status         = $this->input->post('status');
                 $come_from      = $this->input->post('redirect_come_from');
                 $come_from_url  = $this->input->post('redirect_come_from_url');
-                $redirect = $this->input->post('is_redirect');
+                $redirect       = $this->input->post('is_redirect');
+
                 if(empty($redirect)) {
                     $is_redirect = '0';
                 }else{
@@ -226,11 +227,12 @@ class post extends MY_controller {
                     'come_from_url' => $come_from_url,
                     'create_time'   => $create_time,
                     'create_date'   => $create_time,
+                    "is_redirect"   => $is_redirect,
                     );
 
                 $this->article_model->create($insert_article);
                 set_flashalert('添加文章成功');
-                redirect(site_url('c=post'));
+                // redirect(site_url('c=post'));
             }
 
             if( isset($_POST['content'])) {
