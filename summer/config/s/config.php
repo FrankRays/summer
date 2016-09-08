@@ -113,6 +113,11 @@ $config['sidebar_config'] = array(
                     'own'       => 'common'
                     ),
                 array(
+                    'href'      => 'c=post&article_create',
+                    'label'     => 'create article',
+                    'own'       => 'common'
+                    ),
+                array(
                     'href'      => 'c=slider&m=admin',
                     'label'     => '幻灯片',
                     'own'       => 'common',

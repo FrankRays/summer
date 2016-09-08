@@ -280,8 +280,8 @@ class article_model extends CI_Model {
 		$this->db->limit($limit, $offset)->order_by('publish_date desc, id desc');
 
 		$data_list = $this->db
-		->select('id, title, category_name, category_id, index_id, '
-			.' publish_date, summary, coverimg_path, hits, love')
+		->select('id, title, category_name, category_id, index_id, is_redirect, '
+			.' publish_date, summary, coverimg_path, hits, love, come_from, come_from_url')
 						->get()->result_array();
 		$total_rows = $this->db->count_all_results();
 		$this->db->flush_cache();
@@ -293,10 +293,10 @@ class article_model extends CI_Model {
 	}
 
 	//v2 get front list by category id
-	public function get_front_list($limit, $offset, $cid) {
+	public function get_front_list($limit, $offset, $cid, $is_top=0) {
 		$cond = array(
 			'category_id' 	=> $cid,
-			'is_top'		=> NO,
+			'is_top'		=> $is_top,
 			);
 		$page = $this->get_front_pages($limit, $offset, $cond);
 		return $page['data_list'];
@@ -322,7 +322,7 @@ class article_model extends CI_Model {
 				);
 			$data_list = $this->db->from(TABLE_ARTICLE)
 						->select('id, title, category_name, category_id,' . 
-						 ' publish_date, summary, coverimg_path, index_id')
+						 ' publish_date, summary, coverimg_path, index_id, is_redirect, come_from, come_from_url')
 						->where($where)
 						->limit($limit, $offset)
 						->order_by('publish_date desc, id desc')
@@ -553,7 +553,7 @@ class article_model extends CI_Model {
 			'publish_date <'	=> date(TIME_FORMAT),
 			);
 
-		$articles = $this->db->select('title, id, category_id, category_name')
+		$articles = $this->db->select('title, id, category_id, category_name, is_redirect, come_from, come_from_url')
 						->from(TABLE_ARTICLE)
 						->where($where)
 						->order_by('hits desc')
