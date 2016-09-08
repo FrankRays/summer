@@ -184,7 +184,7 @@
 				<div id="home-col">
 					<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
 						" class="pic" >
-						<img src="<?php echo base_url($v['pic_src']) ?>" ></a>
+						<img src="<?php echo resource_url($v['coverimg_path']) ?>" ></a>
 					<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
 						" class="headline" >
 						<p>

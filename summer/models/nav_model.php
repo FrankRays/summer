@@ -47,8 +47,6 @@ class Nav_Model extends MY_Model {
 		$insert_nav['cid'] = $nav_form['cid'];
 		$insert_nav['status'] = $nav_form['status'];
 
-		var_dump($insert_nav);
-
 		$id = $this->input->post('id', TRUE);
 		if(empty($id)) {
 			$this->db->insert(TABLE_NAV, $insert_nav);
