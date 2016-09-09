@@ -95,7 +95,7 @@ class Welcome extends MY_Controller {
 	}
 
 
-	public function photo_archive() {
+/*	public function photo_archive() {
 
 		if( $this->agent->is_mobile()) {
 			$this->m_photo_archive();
@@ -122,7 +122,75 @@ class Welcome extends MY_Controller {
 		$view_data['article'] 	= $article;
 		$view_data['photoes'] 	= $photoes;
 
-		$this->load->view('front/welcome/photo_archive_view', $view_data);
+		// $this->load->view('front/welcome/photo_archive_view', $view_data);
+		$this->load->view('front/welcome/old_photo_archive_view', $view_data);
+	}*/
+
+
+	public function photo_archive() {
+
+		if( $this->agent->is_mobile()) {
+			$this->m_photo_archive();
+			return ;
+		}
+
+		$this->site_model->increase_site_hits();
+		$article_id = $this->uri->rsegment(3);
+		$cur_image_index = $this->uri->rsegment(4);
+
+		if(empty($cur_image_index) or ! is_numeric($cur_image_index)) {
+			$cur_image_index = 0;
+		} else {
+			$cur_image_index = intval($cur_image_index);
+		}
+
+		if(empty($article_id) or ! is_numeric($article_id)) {
+			show_404();
+		}else{
+			$article_id = intval($article_id);
+		}
+
+		$article = $this->article_model->get_by_id($article_id);
+		if(empty($article)) {
+			show_404();
+		}
+		$this->article_model->increase_hit($article['id']);
+
+		$photoes = $this->file_model->get_imgs_by_object_id($article_id);
+
+		if($cur_image_index <= 0) {
+			$cur_image_index = 0;
+			if(count($photoes) == 1) {
+				$next_image_index = $pre_image_index = 0;
+			} else {
+				$pre_image_index = 0;
+				$next_image_index = $cur_image_index + 1;
+			}
+		} elseif ($cur_image_index >= (count($photoes) - 1)) {
+			$cur_image_index = count($photoes) - 1;
+			if(count($photoes) == 1) {
+				$next_image_index = $pre_image_index = 0;
+			} else {
+				$pre_image_index = $cur_image_index - 1;
+				$next_image_index =	$cur_image_index;
+			}
+		} else {
+			$pre_image_index = $cur_image_index - 1;
+			$next_image_index =	$cur_image_index + 1;
+		}
+
+		$view_data['article'] 	= $article;
+		$view_data['photoes'] 	= $photoes;
+		$view_data['navs'] 		= $this->nav_model->get_list(1, 11, 0);
+		$view_data['bread_path'] = $this->article_cat_model->get_nav_path($article['category_id']);
+		$view_data['cur_image'] = $photoes[$cur_image_index];
+		$view_data['pre_pic']	= site_url('photo_archive/' . $article['id'] . '/' . $pre_image_index);
+		$view_data['next_pic']	= site_url('photo_archive/' . $article['id'] . '/' . $next_image_index);
+		$view_data['cur_image_index'] 	= $cur_image_index;
+		$view_data['latest_images']		= $this->article_model->get_front_list(5, 0, $article['category_id']);
+
+		// $this->load->view('front/welcome/photo_archive_view', $view_data);
+		$this->load->view('front/welcome/old_photo_archive_view', $view_data);
 	}
 
 	public function li() {
