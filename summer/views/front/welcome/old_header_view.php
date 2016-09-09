@@ -32,8 +32,8 @@
 <div id="nav">
     <div id="nav-box">
         <ul>
-        <?php foreach($lmList as $v){ ?>
-            <li><a href="<?php echo $v['link_src'] ?>"><?php echo $v['name'] ?></a></li>
+        <?php foreach($navs as $v){ ?>
+            <li><a href="<?php echo $v['href'] ?>"><?php echo $v['label'] ?></a></li>
         <?php } ?>
         </ul>
     </div>

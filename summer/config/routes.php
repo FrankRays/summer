@@ -57,6 +57,7 @@ $route['archive/(:any)'] 		= 'welcome/archive/$1';
 $route['l/(:any)'] 				= 'welcome/li/$1';
 $route['notice']				= 'welcome/li/1';
 $route['photo_archive/(:num)']  = 'welcome/photo_archive/$1';
+$route['photo_archive/(:num)/(:num)']  = 'welcome/photo_archive/$1/$2';
 
 //移动端
 $route['m/archive/(:any)'] 		= 'welcome/m_archive/$1';
