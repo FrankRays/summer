@@ -309,10 +309,10 @@
 								<div id="pic-news-con">
 								<?php $i=0;foreach($photo as $v){if($i>0)break;$i++ ?>
 									<div id="pic1">
-										<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
+										<a href="<?php echo archive_url($v) ?>
 											">
 											<img src="<?php echo resource_url($v['coverimg_path'])?>" /></a>
-										<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
+										<a href="<?php echo archive_url($v) ?>
 											">
 											<p  style="margin-top:5px;text-align:center;">
 												<?php echo $v['title']?></p>
@@ -321,7 +321,7 @@
 								<?php } ?>
 									<?php if(isset($photo[1])){unset($photo[0]); foreach($photo as $v){ ?>
 									<div id="pic2">
-										<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
+										<a href="<?php echo archive_url($v) ?>
 											">
 											<img src="<?php echo resource_url($v['coverimg_path'])?>" /></a>
 									</div>
@@ -335,10 +335,10 @@
 								<div id="pic-news-con">
 									<?php $i=0;foreach($reading as $v){if($i>0)break;$i++ ?>
 									<div id="pic1">
-										<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
+										<a href="<?php echo archive_url($v) ?>
 											">
 											<img src="<?php echo resource_url($v['coverimg_path'])?>" /></a>
-										<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
+										<a href="<?php echo archive_url($v) ?>
 											">
 											<p  style="margin-top:5px;text-align:center;">
 												<?php echo $v['title']?></p>
@@ -347,7 +347,7 @@
 								<?php } ?>
 									<?php if(isset($reading[1])){ unset($reading[0]); foreach($reading as $v){ ?>
 									<div id="pic2">
-										<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
+										<a href="<?php echo archive_url($v) ?>
 											">
 											<img src="<?php echo resource_url($v['coverimg_path'])?>" /></a>
 									</div>
