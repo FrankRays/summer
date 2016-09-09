@@ -107,7 +107,7 @@
 					<a target="_blank" href="<?php echo "http://www.svtcc.edu.cn/front/view-11-".$v['index_id'].".html" ?>
 						" class="headline" >
 						<p>
-							<?php echo $v['title'] ?></p>
+							<?php echo sub_text_mb($v['title'], 25) ?></p>
 					</a>
 					<a target="_blank" href="<?php echo "http://www.svtcc.edu.cn/front/view-11-".$v['index_id'].".html" ?>
 						" class="desc" >
@@ -150,7 +150,7 @@
 					<a href="<?php echo "http://www.svtcc.edu.cn/front/view-16-".$v['index_id'].".html" ?>
 						" class="headline" >
 						<p>
-							<?php echo $v['title'] ?></p>
+							<?php echo sub_text_mb($v['title'], 25)?></p>
 					</a>
 					<a href="<?php echo "http://www.svtcc.edu.cn/front/view-16-".$v['index_id'].".html" ?>
 						" class="desc" >
@@ -188,7 +188,7 @@
 					<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
 						" class="headline" >
 						<p>
-							<?php echo $v['title'] ?></p>
+							<?php echo sub_text_mb($v['title'], 25) ?></p>
 					</a>
 					<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
 						" class="desc" >
