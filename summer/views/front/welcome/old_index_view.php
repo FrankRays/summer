@@ -341,8 +341,7 @@
 								<?php } ?>
 									<?php if(isset($reading[1])){ unset($reading[0]); foreach($reading as $v){ ?>
 									<div id="pic2">
-										<a href="<?php echo archive_url($v) ?>
-											">
+										<a href="<?php echo archive_url($v) ?>">
 											<img src="<?php echo resource_url($v['coverimg_path'])?>" /></a>
 									</div>
 									<?php }} ?>

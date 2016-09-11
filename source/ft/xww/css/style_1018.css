@@ -52,6 +52,7 @@ img {border:none;}
 }
 .institute-list li a:hover {color:#222222;}
 .institute-list li span {float:right; font-size:13px; color:#4E7797;}
+
 /*****  */
 #left-wrap {width:760px; height:707px;float:left;}
 #department-news {width:370px; height:440px;  float:left; margin-top:10px;}
@@ -86,7 +87,12 @@ img {border:none;}
 .hot-newspaper-pic li a {width:220px;color:#2B5Ccc; float:right; height:45px; display: block; font-size:12px; border-bottom:1px dashed #53718D;}
 .hot-newspaper-pic li a:hover{color:#224480;}
 .hot-newspaper li {height:24px;}
-.hot-newspaper li a {font-size:13px;color:#2b5ccc; float:left; overflow: hidden;}
+.hot-newspaper li a {font-size:13px;color:#2b5ccc; float:left; overflow: hidden;
+    width: 220px;
+    word-wrap: normal;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;}
 .hot-newspaper li a:hover{color:#224480;}
 .hot-newspaper li span {float:right; font-size:14px; color:#4E7797;}
 /***图片新闻*/
