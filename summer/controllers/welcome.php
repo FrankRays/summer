@@ -54,7 +54,7 @@ class Welcome extends MY_Controller {
 
 		//check mobile page
 		if($this->agent->is_mobile()) {
-			$tis->m_archive();
+			$this->m_archive();
 			return ;
 		}
 
