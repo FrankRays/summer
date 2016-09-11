@@ -137,7 +137,7 @@ class Slider extends MY_Controller {
 				array(
 					'field'		=> 'href',
 					'label'		=> '连接',
-					'rules'		=> 'required|valid_url',
+					'rules'		=> 'valid_url',
 					),
 				)
 			);
