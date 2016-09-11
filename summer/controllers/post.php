@@ -586,11 +586,6 @@ class post extends MY_controller {
                     'label'     => '跳转',
                     'rules'     => '',
                     ),
-                array(
-                    'field'     => 'summary',
-                    'label'     => '摘要',
-                    'rules'     => 'required',
-                    )
                 )
             );
 
