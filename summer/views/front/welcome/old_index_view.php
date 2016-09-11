@@ -250,11 +250,11 @@
 									<ul id="tzgg-wrapper" class="notice institute-list">
 										<?php foreach ($notice as $v) {?>
 										<li>
-											<a target="_blank" href="<?php echo archive_url($v['id'], $v['category_id']) ?>
+											<a href="<?php echo archive_url($v) ?>
 												">
 												<?php echo $v['title'] ?></a>
 											<span>
-												<?php echo substr($v['publish_date'],0,10) ?></span>
+												<?php echo $v['show_date'] ?></span>
 										</li>
 										<?php } ?>
 									</ul>
@@ -268,9 +268,8 @@
 									<ul id="jygy-wrapper" class="notice institute-list">
 										<?php foreach ($college_media as $v) {?>
 										<li>
-											<a target="_blank" target="blank" href="<?php echo archive_url($v) ?>">
-												<?php echo $v['title'] ?></a>
-											<span><?php echo substr($v['publish_date'],0,10) ?></span>
+											<?php echo $v['a_tag'] ?>
+											<span><?php echo $v['show_date'] ?></span>
 										</li>
 										<?php } ?>
 									</ul>
@@ -370,10 +369,10 @@
 						<li>
 							<div class="newspaper">
 								<img src="<?php echo static_url('images/read_top.png')?>" /></div>
-							<a target="blank" href="<?php echo archive_url($v['id'], $v['category_id']) ?>
+							<a target="blank" href="<?php echo archive_url($v) ?>
 								">
 								<?php echo $v['title'] ?>
-								(<?php echo substr($v['publish_date'], 0, 10)  ?>)</a>
+								(<?php echo $v['show_date']  ?>)</a>
 						</li>
 					<?php } ?>
 					</ul>
@@ -388,7 +387,7 @@
 								">
 								<?php echo $v['title'] ?></a>
 							<span>
-								(<?php echo substr($v['publish_date'], 0, 10) ?>)</span>
+								(<?php echo $v['show_date'] ?>)</span>
 						</li>
 						<?php }} ?></ul>
 				</div>

@@ -46,6 +46,12 @@ class Welcome extends MY_Controller {
 		//old index page exist
 		$data_view['college_media']			= $this->article_model->get_front_list(4, 0, 7);
 
+		foreach($data_view['read'] as &$v) {
+			if(mb_strlen($v['title']) >= 25) {
+				$v['title'] = mb_substr($v['title'], 0, 25) . '...';
+			}
+		}
+
 		// $this->load->view('front/welcome/index_823_view', $data_view);
 		$this->load->view('front/welcome/old_index_view', $data_view);
 	}
