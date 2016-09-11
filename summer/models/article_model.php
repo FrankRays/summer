@@ -15,6 +15,9 @@ class article_model extends CI_Model {
 		'title', 'author', 'editor', 'summary', 'keywords',
 		'content', 'pic_src', 'url_src', 'come_from', 'file_src',
 		'add_time', 'edit_time', 'hits', 'status', 'sort', 'is_delete', 'link', 'json_data');
+
+	public $front_select = 'id, title, category_name, category_id, index_id, is_redirect, '
+			.' publish_date, summary, coverimg_path, hits, love, come_from, come_from_url';
 	/**
 	 *构造方法
 	 */
@@ -279,12 +282,12 @@ class article_model extends CI_Model {
 
 		$this->db->limit($limit, $offset)->order_by('publish_date desc, id desc');
 
-		$data_list = $this->db
-		->select('id, title, category_name, category_id, index_id, is_redirect, '
-			.' publish_date, summary, coverimg_path, hits, love, come_from, come_from_url')
-						->get()->result_array();
+		$data_list = $this->db->select($this->front_select)
+		->get()->result_array();
 		$total_rows = $this->db->count_all_results();
 		$this->db->flush_cache();
+
+		$this->_deal_front_list($data_list);
 
 		return array(
 			'data_list'		=> $data_list,
@@ -301,8 +304,6 @@ class article_model extends CI_Model {
 		$page = $this->get_front_pages($limit, $offset, $cond);
 		return $page['data_list'];
 	}
-
-	//v2 get front 
 
 	//v2 get hot
 	public function get_top_list($limit, $offset, $cid) {
@@ -321,15 +322,34 @@ class article_model extends CI_Model {
 				'publish_date <'	=> date(TIME_FORMAT),
 				);
 			$data_list = $this->db->from(TABLE_ARTICLE)
-						->select('id, title, category_name, category_id,' . 
-						 ' publish_date, summary, coverimg_path, index_id, is_redirect, come_from, come_from_url')
+						->select($this->front_select)
 						->where($where)
 						->limit($limit, $offset)
 						->order_by('publish_date desc, id desc')
 						->get()
 						->result_array();
 		}
+
+		$this->_deal_front_list($data_list);
 		return $data_list;
+	}
+
+	public function _deal_front_list(&$data_list) {
+		foreach($data_list as &$v) {
+
+			//list a tag
+			$a_tag = '<a ';
+			if($v['is_redirect'] == 1) {
+				$a_tag .= 'target="blank" '. 'href="' . $v['come_from_url'] . '" ';
+			} else {
+				$a_tag .= 'href="' . archive_url($v) . '" ';
+			}
+			$a_tag .= ' title="' .$v['title'].'">' . $v['title'] . '</a>';
+			$v['a_tag'] = $a_tag;
+
+			//show_date
+			$v['show_date'] = substr($v['publish_date'], 5, 5);
+		}
 	}
 
 
