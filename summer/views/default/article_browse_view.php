@@ -149,7 +149,6 @@ $(function(){
       document.location.href= "<?php echo site_url('c=post&m=index') ?>" + "&wq=" + wq ;
     });
 
-   <?php echo get_flash_alert() ?>
 })
 </script>
-<script type="text/javascript"></script>
+   <?php echo get_flash_alert() ?>
