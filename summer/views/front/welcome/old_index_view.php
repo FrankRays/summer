@@ -90,10 +90,10 @@
 		<div id="institute-news">
 			<div id="institute-news-t">
 				<h2>
-					<a target="_blank" href="http://www.svtcc.edu.cn/front/list-11.html" >学院新闻</a>
+					<a  href="<?php echo site_url('l/collegenews') ?>" >学院新闻</a>
 				</h2>
 				<div id="more-wrap">
-					<a target="_blank" href="http://www.svtcc.edu.cn/front/list-11.html">
+					<a href="<?php echo site_url('l/collegenews') ?>">
 						更多
 						<img src="<?php echo base_url('/source/ft/xww/images/triangle.jpg')?>"></a>
 				</div>
@@ -101,16 +101,16 @@
 			<div id="institute-news-con">
 			<?php foreach($college_news_top as $v): ?>
 				<div id="home-col">
-					<a target="_blank" href="<?php echo "http://www.svtcc.edu.cn/front/view-11-".$v['index_id'].".html" ?>
+					<a  href="<?php echo archive_url($v) ?>
 						" class="pic" >
-						<img src="<?php echo resource_url($v['coverimg_path'])?>" ></a>
-					<a target="_blank" href="<?php echo "http://www.svtcc.edu.cn/front/view-11-".$v['index_id'].".html" ?>
-						" class="headline" >
-						<p>
-							<?php echo sub_text_mb($v['title'], 25) ?></p>
+						<img src="<?php echo resource_url($v['coverimg_path'])?>" >
 					</a>
-					<a target="_blank" href="<?php echo "http://www.svtcc.edu.cn/front/view-11-".$v['index_id'].".html" ?>
-						" class="desc" >
+					<a target="_blank" href="<?php echo archive_url($v) ?>" class="headline" >
+						<p>
+							<?php echo sub_text_mb($v['title'], 25) ?>
+						</p>
+					</a>
+					<a target="_blank" href="<?php echo archive_url($v) ?>" class="desc" >
 						<p>
 							<span>&nbsp;</span>
 						</p>
@@ -120,11 +120,9 @@
 				<ul class="institute-list">
 					<?php foreach($college_news as $v):?>
 					<li>
-						<a target="_blank" href="<?php echo "http://www.svtcc.edu.cn/front/view-11-".$v['index_id'].".html" ?>
-							" >
-							<?php echo $v['title'] ?></a>
+						<?php echo $v['a_tag'] ?>
 						<span>
-							<?php echo substr($v['publish_date'],0,10) ?></span>
+							<?php echo $v['show_date'] ?></span>
 					</li>
 					<?php endforeach ?>
 				</ul>
@@ -134,25 +132,25 @@
 			<div id="department-news">
 				<div id="department-news-t">
 					<h2>
-						<a target="_blank" href="http://www.svtcc.edu.cn/front/list-16.html" >系部动态</a>
+						<a target="_blank" href="<?php echo site_url('l/departnotice') ?>" >系部动态</a>
 					</h2>
 					<div id="more-wrap">
-						<a target="_blank" href="http://www.svtcc.edu.cn/front/list-16.html">
+						<a target="_blank" href="<?php echo site_url('l/departnotice') ?>">
 							更多
 							<img src="<?php echo base_url('/source/ft/xww/images/triangle.jpg')?>"></a>
 					</div>
 				</div>
 				<?php foreach($departnotice_top as $v): ?>
 				<div id="home-col">
-					<a href="<?php echo "http://www.svtcc.edu.cn/front/view-16-".$v['index_id'].".html" ?>
+					<a href="<?php echo archive_url($v) ?>
 						" class="pic" >
 						<img src="<?php echo resource_url($v['coverimg_path']) ?>" ></a>
-					<a href="<?php echo "http://www.svtcc.edu.cn/front/view-16-".$v['index_id'].".html" ?>
+					<a href="<?php echo archive_url($v) ?>
 						" class="headline" >
 						<p>
 							<?php echo sub_text_mb($v['title'], 25)?></p>
 					</a>
-					<a href="<?php echo "http://www.svtcc.edu.cn/front/view-16-".$v['index_id'].".html" ?>
+					<a href="<?php echo archive_url($v) ?>
 						" class="desc" >
 						<p>
 							<span>&nbsp;</span>
@@ -163,10 +161,9 @@
 				<ul class="institute-list">
 					<?php foreach($departnotice as $v){ ?>
 					<li>
-						<a target="_blank" href="<?php echo "http://www.svtcc.edu.cn/front/view-16-".$v['index_id'].".html" ?>">
-							<?php echo $v['title'] ?></a>
+						<?php echo $v['a_tag'] ?>
 						<span>
-							<?php echo substr($v['publish_date'],0,10) ?></span>
+							<?php echo $v['show_date'] ?></span>
 					</li>
 					<?php } ?></ul>
 			</div>
@@ -182,15 +179,15 @@
 				</div>
 				<?php foreach($focushot_top as $v): ?>
 				<div id="home-col">
-					<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
+					<a href="<?php echo archive_url($v) ?>
 						" class="pic" >
 						<img src="<?php echo resource_url($v['coverimg_path']) ?>" ></a>
-					<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
+					<a href="<?php echo archive_url($v) ?>
 						" class="headline" >
 						<p>
 							<?php echo sub_text_mb($v['title'], 25) ?></p>
 					</a>
-					<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
+					<a href="<?php echo archive_url($v) ?>
 						" class="desc" >
 						<p>
 							<span>&nbsp;</span>
@@ -201,11 +198,9 @@
 				<ul class="institute-list">
 					<?php foreach($focushot as $v){ ?>
 					<li>
-						<a href="<?php echo archive_url($v['id'], $v['category_id']) ?>
-							" >
-							<?php echo $v['title'] ?></a>
+						<?php echo $v['a_tag'] ?>
 						<span>
-							<?php echo substr($v['publish_date'],0,10) ?></span>
+							<?php echo $v['show_date'] ?></span>
 					</li>
 					<?php } ?></ul>
 			</div>
@@ -255,11 +250,11 @@
 									<ul id="tzgg-wrapper" class="notice institute-list">
 										<?php foreach ($notice as $v) {?>
 										<li>
-											<a target="_blank" href="<?php echo archive_url($v['id'], $v['category_id']) ?>
+											<a href="<?php echo archive_url($v) ?>
 												">
 												<?php echo $v['title'] ?></a>
 											<span>
-												<?php echo substr($v['publish_date'],0,10) ?></span>
+												<?php echo $v['show_date'] ?></span>
 										</li>
 										<?php } ?>
 									</ul>
@@ -273,9 +268,8 @@
 									<ul id="jygy-wrapper" class="notice institute-list">
 										<?php foreach ($college_media as $v) {?>
 										<li>
-											<a target="_blank" target="blank" href="<?php echo archive_url($v) ?>">
-												<?php echo $v['title'] ?></a>
-											<span><?php echo substr($v['publish_date'],0,10) ?></span>
+											<?php echo $v['a_tag'] ?>
+											<span><?php echo $v['show_date'] ?></span>
 										</li>
 										<?php } ?>
 									</ul>
@@ -347,8 +341,7 @@
 								<?php } ?>
 									<?php if(isset($reading[1])){ unset($reading[0]); foreach($reading as $v){ ?>
 									<div id="pic2">
-										<a href="<?php echo archive_url($v) ?>
-											">
+										<a href="<?php echo archive_url($v) ?>">
 											<img src="<?php echo resource_url($v['coverimg_path'])?>" /></a>
 									</div>
 									<?php }} ?>
@@ -375,10 +368,10 @@
 						<li>
 							<div class="newspaper">
 								<img src="<?php echo static_url('images/read_top.png')?>" /></div>
-							<a target="blank" href="<?php echo archive_url($v['id'], $v['category_id']) ?>
+							<a target="blank" href="<?php echo archive_url($v) ?>
 								">
 								<?php echo $v['title'] ?>
-								(<?php echo substr($v['publish_date'], 0, 10)  ?>)</a>
+								(<?php echo $v['show_date']  ?>)</a>
 						</li>
 					<?php } ?>
 					</ul>
@@ -393,7 +386,7 @@
 								">
 								<?php echo $v['title'] ?></a>
 							<span>
-								(<?php echo substr($v['publish_date'], 0, 10) ?>)</span>
+								(<?php echo $v['show_date'] ?>)</span>
 						</li>
 						<?php }} ?></ul>
 				</div>

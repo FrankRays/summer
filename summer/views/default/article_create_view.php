@@ -92,10 +92,10 @@
                 <div class="am-u-sm-2"></div>
             </div>
 
-            <div class="am-form-group no-redirect">
+            <div class="am-form-group">
                 <label class="am-u-sm-2 am-form-label">发布时间</label>
                 <div class="am-u-sm-6">
-                    <input type="text" value="<?php echo set_value('publish_date', date(DATE_FORMAT)) ?>" onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" placeholder="文章发布时间"  name="publish_date"/>
+                    <input type="text" value="<?php echo set_value('publish_date', date(TIME_FORMAT)) ?>" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" placeholder="文章发布时间"  name="publish_date"/>
                 </div>
                 <div class="am-u-sm-4"></div>
             </div>
