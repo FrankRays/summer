@@ -16,8 +16,7 @@ class article_model extends CI_Model {
 		'content', 'pic_src', 'url_src', 'come_from', 'file_src',
 		'add_time', 'edit_time', 'hits', 'status', 'sort', 'is_delete', 'link', 'json_data');
 
-	public $front_select = 'id, title, category_name, category_id, index_id, is_redirect, '
-			.' publish_date, summary, coverimg_path, hits, love, come_from, come_from_url';
+	public $front_select = 'id, title, category_name, category_id, index_id, is_redirect,  publish_date, summary, coverimg_path, hits, love, come_from, come_from_url';
 	/**
 	 *构造方法
 	 */
