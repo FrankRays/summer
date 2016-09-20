@@ -714,4 +714,109 @@ class post extends MY_controller {
             }
     }
 
+    /*
+http://localhost:9999/y.php?c=post&m=transfrom_data&old_table_name=www&new_table_name=xww&old_category_id=1&new_category_id=1
+    */
+    public function transfrom_data() {
+
+        $category_map = [
+        '11'=>'9',  //耕读交院
+        '1'=>'2',   //学院新闻
+        '10'=>'1',  //通知公告
+        '4'=>'3',   //系部动态
+        '2'=>'7',   //媒体交院
+        '3'=>'4',   //热点交院
+        '6'=>'6',   //影像交院
+        '7'=>'8',   //视觉交院
+        '8'=>'5',   //图说交院
+        '12'=>'10', //写意交院
+        '13'=>'11', //微电台
+        ];
+
+        $old_table_name = $this->input->get('old_table_name');
+        if(empty($old_table_name)) {
+            exit('old_table_name not exits');
+        }
+
+        $new_table_name = $this->input->get('new_table_name');
+        if(empty($new_table_name)) {
+            exit('new_table_name not exits');
+        }
+
+        $old_category_id = $this->input->get('old_category_id');
+        if(empty($old_category_id)) {
+            exit('old_category_id not exits');
+        }
+
+        $new_category_id = $this->input->get('new_category_id');
+        if(empty($new_category_id)) {
+            exit('new_category_id not exits');
+        }
+
+        $old_dsn = 'mysqli://root:@localhost/'.$old_table_name.'?char_set=utf8&dbcollat=utf8_general_ci';
+        $this->old_db = $this->load->database($old_dsn, TRUE);
+
+
+        $where = [
+        'is_delete' => '0',
+        'status'    => '1',
+        'category_id'   => $old_category_id,
+        ];
+        $total_rows = $this->old_db->select('count(*) as total_rows')->where($where)->from('news')->get()->row_array();
+        $total_rows = $total_rows['total_rows'];
+
+        $step = 100;
+        if(($total_rows % $step) == 0) {
+            $n = $total_rows / $step;
+        } else {
+            $n = ($total_rows / $step) + 1;
+        }
+
+        $old_category = $this->old_db->from('news_category')->where('id', $old_category_id)->get()->row_array();
+        if(empty($old_category)) {
+            exit('old category not exit');
+        }
+
+        $new_category = $this->db->from('summer_article_category')->where('id', $new_category_id)->get()->row_array();
+        if(empty($new_category)) {
+            exit('new category not exit');
+        }
+
+        for($i=0; $i < $n; $i++) {
+            $offset = $i * $step;
+            $articles = $this->old_db->from('news')->where($where)->get()->result_array();
+            foreach($articles as $article) {
+                $this->_transform_data($article, $new_category);
+            }
+        }
+
+    }
+
+    private function _transform_data($article, $category) {
+        $article = $this->db->from('summer_article')->where('title', $article['title'])->get()->row_array();
+        if(!empty($article)) {
+            return ;
+        }
+        $create_time = date('Y-m-d H:i:s', $article['add_time']);
+        $new_article = [
+            'title'     => $article['title'],
+            'content'   => $article['content'],
+            'publish_date'=>$create_time,
+            'create_time'=> $create_time,
+            'love'      => $article['zan'],
+            'is_delete' => $article['is_delete'],
+            'status'    => $article['status'],
+            'category_id'   => $category['id'],
+            'category_name' => $category['name'],
+        ];
+
+        if($category['id'] == 7) {
+            $new_article['is_redirect'] = '1';
+        } else {
+            $new_article['is_redirect'] = '0';
+        }
+
+        $this->db->insert('summer_article', $new_article);
+    }
+
 }

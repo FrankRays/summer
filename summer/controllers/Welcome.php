@@ -455,14 +455,15 @@ class Welcome extends MY_Controller {
 			return;
 		}
 		foreach($news as &$v) {
+			$href = site_url('archive/' . $v['category_id'] . '-' . $v['id']);
 			$return_str .= '<dl><dt class="artitle_author_date"><div class="summer-index-cat">';
 			$return_str .= $v['category_name'] . '</div><div class="summer-index-date">';
 			$return_str .= $v['publish_date'] . '</div></dt>';
 			if( ! empty($v['cover_img'])) {
-				$return_str .= '<dd class="m"><a href="'.site_url('m/archive/'.$v['id']).'">';
+				$return_str .= '<dd class="m"><a href="'.$href.'">';
 				$return_str .= '<img src="'.resource_url($v['cover_img']).'" alt="'.$v['title'].'"></a></dd>';
 			}
-			$return_str .= '<dt class="zjj_title"><a href="'.site_url('m/archive/'.$v['id']).'">'.$v['title'].'</a></dt>';
+			$return_str .= '<dt class="zjj_title"><a href="'.$href.'">'.$v['title'].'</a></dt>';
 			$return_str .= '<dd class="cr_summary">'.$v['summary'].'</dd>';
 			$return_str .= '<dd class="summer-index-tail"><span class="summer-index-like">'
 						.$v['love'].
