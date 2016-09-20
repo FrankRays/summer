@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
 	<meta charset="UTF-8">
-	<title>交院-新闻网</title>
+	<title><?php echo isset($title) ? $title : '' ?>交院新闻网</title>
 	<link rel="stylesheet" href="<?php echo static_url('css/h/style.css') ?>">
 	<script src="<?php echo static_url('js/h/jquery-1.8.3.min.js') ?>"></script>
 </head>

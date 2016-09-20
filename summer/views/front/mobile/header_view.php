@@ -4,10 +4,11 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
   <head>
+  	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>四川交通职业技术学院新闻网</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">  
+    <title><?php echo isset($title) ? $title : '' ?>四川交院新闻网</title>
 
     <!-- Bootstrap -->
 	<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">

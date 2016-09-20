@@ -94,6 +94,7 @@ class Welcome extends MY_Controller {
 			= $this->article_model->get_prev_article($article['id'], array('class' => 'p-essay previous-essay'));
 			$view_data['week_hot']			= $this->article_model->get_week_hot();
 			$view_data['date_archive_html'] = $this->article_model->get_archive_html();
+			$view_data['title']		= $article['title'] . '-' . $article['category_name'] . '-';
 		}
 
 		$this->load->view('front/welcome/archive_view', $view_data);
@@ -193,12 +194,17 @@ class Welcome extends MY_Controller {
 		$view_data['next_pic']	= site_url('photo_archive/' . $article['id'] . '/' . $next_image_index);
 		$view_data['cur_image_index'] 	= $cur_image_index;
 		$view_data['latest_images']		= $this->article_model->get_front_list(5, 0, $article['category_id']);
+		$view_data['title']		= $category['name'] . '-';
 
 		// $this->load->view('front/welcome/photo_archive_view', $view_data);
 		$this->load->view('front/welcome/old_photo_archive_view', $view_data);
 	}
 
 	public function li() {
+		if($this->agent->is_mobile()) {
+			$this->m_l();
+			return ;
+		}
 		$this->site_model->increase_site_hits();
 		$category_id = $this->uri->rsegment(3);
 		$offset = $this->input->get('offset');
@@ -369,6 +375,7 @@ class Welcome extends MY_Controller {
 		$view_data['articles'] 	= $articles;
 		$view_data['category'] 	= $category;
 		$view_data['navs'] 		= $this->nav_model->get_mobile_nav(4, 10, 0);
+		$view_data['title'] 	= $category['name'] . '-';
 
 		$this->load->view('front/mobile/li_view', $view_data);
 	}
@@ -399,6 +406,8 @@ class Welcome extends MY_Controller {
 
 		$view_data['article'] 	= $article;
 		$view_data['navs'] 		= $this->nav_model->get_mobile_nav(4, 10, 0);
+		$view_data['title']		= $article['title'] . '-' . $article['category_name'] . '-';
+
 		$this->load->view('front/mobile/article_archive_view', $view_data);
 	}
 
@@ -419,6 +428,7 @@ class Welcome extends MY_Controller {
 		$view_data['article'] 	= $article;
 		$view_data['photoes']	= $photoes;
 		$view_data['navs'] 		= $this->nav_model->get_mobile_nav(4, 10, 0);
+		$view_data['title']		= $article['title'] . '-' . $article['category_name'] . '-';
 		
 		$this->load->view('front/mobile/m_photo_archive_view', $view_data);
 	}

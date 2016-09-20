@@ -7,7 +7,7 @@
 <meta name="description" content="四川交通职业技术学院新闻网，校内网，通知，活动，公告，最新动态，校内服务。">
 <meta name="keywords" content="四川交通职业技术学院,新闻,交通,职业技术,大学,AtoB,snow0x01">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title><?php echo isset($title) ? $title : ''; ?>新闻网-news-四川交通职业技术学院新闻网</title>
+<title><?php echo isset($title) ? $title : ''; ?>交院新闻网</title>
 <!-- Set render engine for 360 browser -->
 <meta name="renderer" content="webkit">
 <!-- No Baidu Siteapp-->
