@@ -296,7 +296,7 @@ class article_model extends CI_Model {
 
 	//v2 get front list by category id
 	public function get_front_list($limit, $offset, $cid, $is_top=0) {
-		$cond = ['category_id' 	=> $cid];
+		$cond = array('category_id'=> $cid);
 		if($is_top !== FALSE) {
 			$cond['is_top'] = $is_top;
 		}
