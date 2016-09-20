@@ -33,7 +33,6 @@ class Welcome extends MY_Controller {
 		$data_view['notice'] 				= $this->article_model->get_front_list(4, 0, 1);
 		$data_view['departnotice_top'] 		= $this->article_model->get_top_list(1, 0, 3);
 		$data_view['departnotice']			= $this->article_model->get_front_list(5, 0, 3);
-		$data_view['focushot_top']			= $this->article_model->get_top_list(1, 0, 4);
 		$data_view['focushot']				= $this->article_model->get_front_list(5, 0, 4);
 		$data_view['read_top']				= $this->article_model->get_front_list(1, 0, 9);
 		$data_view['read']					= $this->article_model->get_front_list(5, 0, 9);
@@ -463,7 +462,7 @@ class Welcome extends MY_Controller {
 				$return_str .= '<dd class="m"><a href="'.$href.'">';
 				$return_str .= '<img src="'.resource_url($v['cover_img']).'" alt="'.$v['title'].'"></a></dd>';
 			}
-			$return_str .= '<dt class="zjj_title"><a href="'.$href.'">'.$v['title'].'</a></dt>';
+			$return_str .= '<dt class="zjj_title"><a href="'.$href	.'">'.$v['title'].'</a></dt>';
 			$return_str .= '<dd class="cr_summary">'.$v['summary'].'</dd>';
 			$return_str .= '<dd class="summer-index-tail"><span class="summer-index-like">'
 						.$v['love'].

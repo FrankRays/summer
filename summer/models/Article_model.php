@@ -296,10 +296,10 @@ class article_model extends CI_Model {
 
 	//v2 get front list by category id
 	public function get_front_list($limit, $offset, $cid, $is_top=0) {
-		$cond = array(
-			'category_id' 	=> $cid,
-			'is_top'		=> $is_top,
-			);
+		$cond = ['category_id' 	=> $cid];
+		if($is_top !== FALSE) {
+			$cond['is_top'] = $is_top;
+		}
 		$page = $this->get_front_pages($limit, $offset, $cond);
 		return $page['data_list'];
 	}

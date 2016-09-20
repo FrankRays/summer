@@ -170,14 +170,14 @@
 			<div id="society-news">
 				<div id="society-news-t">
 					<h2>
-						<a target="_blank" href="<?php echo site_url('l/focushot') ?>" >热点交院</a>
+						<a target="_blank" href="<?php echo site_url('l/read') ?>" >耕读交院</a>
 					</h2>
 					<div id="more-wrap">
-						<a href="<?php echo site_url('l/focushot') ?>">更多
+						<a href="<?php echo site_url('l/read') ?>">更多
 							<img src="<?php echo base_url('/source/ft/xww/images/triangle.jpg')?>"></a>
 					</div>
 				</div>
-				<?php foreach($focushot_top as $v): ?>
+				<?php foreach($read_top as $v): ?>
 				<div id="home-col">
 					<a href="<?php echo archive_url($v) ?>
 						" class="pic" >
@@ -196,7 +196,7 @@
 				</div>
 			<?php endforeach ?>
 				<ul class="institute-list">
-					<?php foreach($focushot as $v){ ?>
+					<?php foreach($read as $v){ ?>
 					<li>
 						<?php echo $v['a_tag'] ?>
 						<span>
@@ -354,17 +354,16 @@
 			<div id="media-jy">
 				<div id="media-jy-t" style="margin-bottom:15px;">
 					<h2>
-						<a href="<?php echo site_url('l/read')?>" >耕读交院</a>
+						<a href="<?php echo site_url('l/focushot')?>" >热点交院</a>
 					</h2>
 					<div id="more-wrap">
-						<a href="<?php echo site_url('l/read') ?>
-							">更多
-							<img src="<?php echo base_url('/source/ft/xww/images/triangle.jpg')?>"></a>
+						<a href="<?php echo site_url('l/focushot') ?>">更多
+						<img src="<?php echo base_url('/source/ft/xww/images/triangle.jpg')?>"></a>
 					</div>
 				</div>
 				<div id="media-jy-list" >
 					<ul class="hot-newspaper-pic">
-					<?php $i=0;foreach($read as $v){ if($i>1)break;$i++ ?>
+					<?php $i=0;foreach($focushot as $v){ if($i>1)break;$i++ ?>
 						<li>
 							<div class="newspaper">
 								<img src="<?php echo static_url('images/read_top.png')?>" /></div>
@@ -376,14 +375,13 @@
 					<?php } ?>
 					</ul>
 					<?php
-					if(count($read) > 2) {
-						$read = array_slice($read, 2);
+					if(count($focushot) > 2) {
+						$focushot = array_slice($focushot, 2);
 					?>
 					<ul style="clear:both" class="hot-newspaper">
-						<?php foreach($read as $v) { ?>
+						<?php foreach($focushot as $v) { ?>
 						<li>
-							<a target="blank" href="<?php echo archive_url($v['id'], $v['category_id']) ?>
-								">
+							<a target="blank" href="<?php echo archive_url($v['id'], $v['category_id']) ?>">
 								<?php echo $v['title'] ?></a>
 							<span>
 								(<?php echo $v['show_date'] ?>)</span>
