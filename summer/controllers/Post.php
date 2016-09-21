@@ -41,7 +41,17 @@ class post extends MY_controller {
         }
 
 		$page_config = $this->config->item("page_config");
+
+        $cond['is_top'] = '0';
 		$page = $this->article_model->get_pages($offset, $page_config['per_page'], $cond);
+
+        //get the top article
+        if($offset == 0) {
+            $top_article = $this->article_model->get_admin_top_list(NULL);
+            $page['data_list'] = array_merge($top_article, $page['data_list']);
+        }
+
+        // var_dump($top_article);
 
 		$page_config['base_url'] = deal_page_base_url();
 		$page_config['total_rows'] = $page['total_rows'];

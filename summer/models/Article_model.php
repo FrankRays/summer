@@ -225,6 +225,10 @@ class article_model extends CI_Model {
 			$where['category_id'] = $cond['category_id'];
 		}
 
+		if(isset($cond['is_top'])) {
+			$where['is_top'] = $cond['is_top'];
+		}
+
 		$wq = $this->input->get('wq');
 		if(!empty($wq)) {
 			$like['title'] = $wq;
@@ -305,11 +309,14 @@ class article_model extends CI_Model {
 	}
 
 	//v2 get hot
-	public function get_top_list($limit, $offset, $cid) {
+	public function get_top_list($limit, $offset, $cid=0) {
 		$cond = array(
-			'category_id' 	=> $cid,
 			'is_top'		=> YES,
 			);
+
+		if($cid != 0) {
+			$cond['category_id'] = $cid;
+		}
 		$page = $this->get_front_pages($limit, $offset, $cond);
 		$data_list = $page['data_list'];
 
@@ -331,6 +338,25 @@ class article_model extends CI_Model {
 
 		$this->_deal_front_list($data_list);
 		return $data_list;
+	}
+
+
+	public function get_admin_top_list($limit, $offset = 0){
+		$where = array();
+		$category_id = $this->input->get('category_id');
+		if(! empty($category_id)) {
+			$where['category_id'] = $category_id;
+		}
+
+		$where['is_top'] = '1';
+
+		if($limit !== NULL) {
+			$this->db->limit($limit, $offset);
+		}
+
+		$articles = $this->db->select('id, title, publish_date, category_name, category_id, author_name, is_top, status, hits')
+		->from($this->table_name)->where($where)->get()->result_array();
+		return $articles;
 	}
 
 	public function _deal_front_list(&$data_list) {
