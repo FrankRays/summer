@@ -41,3 +41,6 @@ insert into summer_site values (null, 0);
 -- 给site 添加站点名字字段
 ALTER TABLE `summer_site` ADD `name` varchar(255) NOT NULL DEFAULT '';
 UPDATE `summer_site` set `name`='四川交通职业技术学院新闻网';
+
+-- 2.01
+ALTER TABLE `summer_user` ADD `article_cate_access` varchar(255) NOT NULL DEFAULT '';

@@ -2,7 +2,7 @@
 
 defined('APPPATH') OR exit('forbbiden to access');
 
-class Form_Generate {
+class Form_generate {
 
 	public $form = array();
 
@@ -30,10 +30,10 @@ class Form_Generate {
 
 		$this->CI = &get_instance();
 
-		$this->inititalize($form_config);
+		$this->initialize($form_config);
 	}
 
-	public function inititalize($config) {
+	public function initialize($config) {
 
 		$default_form_config = array(
 			'multiple_form'		=> FALSE,

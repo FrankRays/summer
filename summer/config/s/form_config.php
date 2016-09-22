@@ -1,7 +1,7 @@
 <?php 
-
 defined('APPPATH') or exit('no access');
 
+//navigation form configuration
 $config['nav_form'] = array(
 	'class'		=> 'am-form am-form-horizontal',
 	'action'	=> 'c=nav&m=create',
@@ -65,3 +65,20 @@ $config['nav_form']['fields'] = array(
 					)
 				),
 			);
+
+
+//user form
+$config['user_form'] = array(
+	'class'		=> 'am-form am-form-horizontal',
+	'action'	=> 'c=nav&m=create',
+	);
+$config['user_form']['fields'] = array(
+	'id'		=> array('name'=>'id','type'=> 'int','value'=> '','form_type'=> 'hiddeninput',),
+	'account'	=> array('name'=>'account', 'type'=>'string', 'value'=>'', 'form_type'=>'textinput', 'label'=>'账号'),
+	'password1'	=> array('name'=>'password1', 'type'=>'password', 'value'=>'', 'form_type'=>'password', 'label'=>'密码'),
+	'password2'	=> array('name'=>'password2', 'type'=>'password', 'value'=>'', 'form_type'=>'password', 'label'=>'重复密码'),
+	'nickname'	=> array('name'=>'nickname', 'type'=>'string', 'value'=>'', 'form_type'=>'textinput', 'label'=>'昵称'),
+	'realname'	=> array('name'=>'realname', 'type'=>'string', 'value'=>'', 'form_type'=>'textinput', 'label'=>'真实姓名'),
+	'email'	=> array('name'=>'email', 'type'=>'string', 'value'=>'', 'form_type'=>'textinput', 'label'=>'邮箱'),
+	'mobile'	=> array('name'=>'mobile', 'type'=>'string', 'value'=>'', 'form_type'=>'textinput', 'label'=>'电话'),
+	);

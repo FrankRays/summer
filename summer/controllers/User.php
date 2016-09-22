@@ -27,10 +27,7 @@ class User extends MY_Controller {
 	// list page of user
 	public function index() {
 		get_sidebar();
-		$this->user_model->verify();
-		if(! $this->user_model->is_super()) {
-			show_error('你的权限不够');
-		}
+		$this->user_model->is_super();
 		$view_data['module_name'] = $view_data['module_desc'] = $this->user_config['module_name']['index'];
 
 		$offset = 0;
@@ -54,6 +51,9 @@ class User extends MY_Controller {
 
 	//添加用户
 	public function create() {
+		$this->user_model->is_admin()
+		$this->user_model->is_super();
+
 		$view_data['module_name'] = $this->user_config['module_name']['create'];
 		$view_data['post_url'] = site_url('c=user&m=create');
 
@@ -66,8 +66,14 @@ class User extends MY_Controller {
 			}
 		}
 
-		$form_generate_config = $this->user_config['form_generate'];
-		$view_data['form_generate'] = $this->form_generate->display($form_generate_config);
+		$this->config->load('s/form_config');
+		$user_form_config = $this->config->item('user_form');
+		$user_form_config['action'] = site_url('c=nav&m=create');
+
+		$this->load->library('form_generate');
+		$this->form_generate->initialize($user_form_config);
+		$view_data['form_html'] = $this->form_generate->create_form();
+
 		$this->_load_view('default/user_form_view', $view_data);
 	}
 

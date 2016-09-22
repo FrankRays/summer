@@ -2,7 +2,10 @@
 
 
 class User_model extends CI_Model{
+
 	private $tableName = 'user';
+
+	public $table_name;
 
 	private $salt = 'asdfg';
 
@@ -18,7 +21,7 @@ class User_model extends CI_Model{
 	public function __contruct(){
 		parent::__contruct();
 
-
+		$this->table_name = TABLE_USER;
 	}
 
 	public function _doSha1($password){
@@ -153,6 +156,22 @@ class User_model extends CI_Model{
 		$realname = $this->input->post('realname', TRUE);
 		$nickname = $this->input->post('nickname', TRUE);
 
+		//check form validation
+		$has_account = $this->db->from($this->table_name)->where(array('account'=>$account))->get()->row_array();
+		if($has_account) {
+			$this->form_validate->set_error_array(array('该账号已经存在'));
+			return FALSE;
+		}
+
+		$this->config->load('s/form_config');
+		$user_form_config = $this->config->item('user_form');
+		$user_form_field_config = $user_form_config['fields'];
+		foreach($user_form_field_config as $v) {
+			if(isset($v['rules'])) {
+				$this->form_validate->set_rules($v['name'], $v['label'], $v['rules']);
+			}
+		}
+		
 		//
 		$admin = 'common';
 		$email = $this->input->post('email', TRUE);
@@ -264,11 +283,6 @@ class User_model extends CI_Model{
 		$user = $this->session->userdata('user');
 		if(empty($user) || $user['admin'] != 'super') {
 			show_error('你的权限不够');
-			// if(isset($_SERVER['HTTP_REFERER'])) {
-			// 	redirect('c=user&m=login&referer='.urlencode($_SERVER['HTTP_REFERER']));
-			// }else{
-			// 	redirect('c=user&m=login');
-			// }
 		}else{
 			return TRUE;
 		}
