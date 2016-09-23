@@ -75,9 +75,9 @@
 	               <span class="art_publish">发布：<?php echo substr($article['publish_date'], 0, 10) ?></span>
 	            </div>
            </div>
-           <div class="art_summary">
+           <!-- <div class="art_summary">
                 <span class="zy">摘要：</span><?php echo $article['summary'] ?>
-            </div>
+            </div> -->
            <div class="atr_con">
                <?php echo $article['content'] ?>
            </div>
