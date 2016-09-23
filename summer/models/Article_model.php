@@ -403,6 +403,10 @@ class article_model extends CI_Model {
 					->get()
 					->row_array();					
 
+
+		//replace the file a link from content
+		$content = preg_replace('/"(.*)\.(docx)/', 'http://www.svtcc.edu.cn$1.doc', $article['content']);
+		$article['content'] = $content;
 		return $article;
 	}
 
