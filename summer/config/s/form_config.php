@@ -74,11 +74,19 @@ $config['user_form'] = array(
 	);
 $config['user_form']['fields'] = array(
 	'id'		=> array('name'=>'id','type'=> 'int','value'=> '','form_type'=> 'hiddeninput',),
-	'account'	=> array('name'=>'account', 'type'=>'string', 'value'=>'', 'form_type'=>'textinput', 'label'=>'账号'),
-	'password1'	=> array('name'=>'password1', 'type'=>'password', 'value'=>'', 'form_type'=>'password', 'label'=>'密码'),
-	'password2'	=> array('name'=>'password2', 'type'=>'password', 'value'=>'', 'form_type'=>'password', 'label'=>'重复密码'),
-	'nickname'	=> array('name'=>'nickname', 'type'=>'string', 'value'=>'', 'form_type'=>'textinput', 'label'=>'昵称'),
-	'realname'	=> array('name'=>'realname', 'type'=>'string', 'value'=>'', 'form_type'=>'textinput', 'label'=>'真实姓名'),
-	'email'	=> array('name'=>'email', 'type'=>'string', 'value'=>'', 'form_type'=>'textinput', 'label'=>'邮箱'),
-	'mobile'	=> array('name'=>'mobile', 'type'=>'string', 'value'=>'', 'form_type'=>'textinput', 'label'=>'电话'),
+	'article_cate_access'	=> array('name'=>'article_cate_access', 'type'=>'string', 'form_type'=>'select', 'label'=>'文章分类权限'),
+	'account'	=> array('name'=>'account', 'type'=>'string', 'value'=>'', 'form_type'=>'textinput', 'label'=>'账号'
+		, 'rules'=>'required|min_length[4]|max_length[16]'),
+	'password'	=> array('name'=>'password', 'type'=>'string', 'value'=>'', 'form_type'=>'textinput', 'label'=>'密码'
+		, 'rules'=>'required|min_length[6]|max_length[32]'),
+	'repassword'=> array('name'=>'repassword', 'type'=>'string', 'value'=>'', 'form_type'=>'textinput', 'label'=>'重复密码'
+		, 'rules'=>'matches[password]'),
+	'nickname'	=> array('name'=>'nickname', 'type'=>'string', 'value'=>'', 'form_type'=>'textinput', 'label'=>'昵称'
+		,'rules'=>'required'),
+	'realname'	=> array('name'=>'realname', 'type'=>'string', 'value'=>'', 'form_type'=>'textinput', 'label'=>'真实姓名'
+		, 'rules'=>'required'),
+	'email'	=> array('name'=>'email', 'type'=>'string', 'value'=>'', 'form_type'=>'textinput', 'label'=>'邮箱'
+		, 'rules'=>'required|valid_email'),
+	'mobile'	=> array('name'=>'mobile', 'type'=>'string', 'value'=>'', 'form_type'=>'textinput', 'label'=>'电话'
+		, 'rules'=>'required|is_natural'),
 	);

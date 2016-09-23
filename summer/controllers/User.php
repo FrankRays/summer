@@ -51,24 +51,22 @@ class User extends MY_Controller {
 
 	//添加用户
 	public function create() {
-		$this->user_model->is_admin()
+		$this->user_model->is_admin();
 		$this->user_model->is_super();
 
 		$view_data['module_name'] = $this->user_config['module_name']['create'];
 		$view_data['post_url'] = site_url('c=user&m=create');
 
 		if($_POST) {
-			if($this->_check_form()) {
-				$this->user_model->create();
-				set_flashalert($this->lang->line('user_create_success'));
-				redirect(site_url('c=user&m=index'));
-				return ;
+			if($this->user_model->create()) {
+				// set_flashalert($this->lang->line('user_create_success'));
+				// redirect(site_url('c=user&m=index'));
 			}
 		}
 
 		$this->config->load('s/form_config');
 		$user_form_config = $this->config->item('user_form');
-		$user_form_config['action'] = site_url('c=nav&m=create');
+		$user_form_config['action'] = 'c=user&m=create';
 
 		$this->load->library('form_generate');
 		$this->form_generate->initialize($user_form_config);
@@ -233,18 +231,6 @@ class User extends MY_Controller {
 		}else{
 			redirect(site_url('c=user&m=login'));
 		}
-	}
-
-	public function _check_form() {
-		$user_config = $this->config->item('user_config');
-		$form_generate = $user_config['form_generate'];
-		foreach($form_generate as $k=>$v) {
-			if(isset($v['rules']) && isset($v['label'])) {
-				$this->form_validation->set_rules($k, $v['label'], $v['rules']);
-			}
-		}
-
-		return $this->form_validation->run();
 	}
 
 	public function _get_page_base_url() {

@@ -122,6 +122,8 @@ class Form_generate {
 				$form_html .= $this->_create_select($attr);
 			} else if($attr['form_type'] == "hiddeninput") {
 				$hiddeninputs[$attr['name']] = $attr['value'];
+			} else if($attr['form_type'] == 'password') {
+				$form_html .= $this->_create_password($name, $attr);
 			}
 		}
 
@@ -149,6 +151,23 @@ class Form_generate {
 			} else {
 				return FALSE;
 			}
+		}
+
+		return $input_html;
+	}
+
+	public function _create_password($name, $attr) {
+		$input_html = '';
+		if(is_array($attr)) {
+			$input_html .= '<input type="password" name="' . $name . '" ';
+
+			if(isset($_POST[$name])) {
+				$input_html .= ' value="'. $_POST[$name] . '" ';
+			}
+
+			$input_html .= " />";
+
+			$input_html = $this->_wrap_input($attr['label'], $input_html);
 		}
 
 		return $input_html;
@@ -229,6 +248,20 @@ class Form_generate {
 
 		$input_html = $this->_wrap_input($params['label'], $input_html);
 		return $input_html;
+	}
+
+	public function set_select_options($field_name, $options) {
+		if(is_array($options) and is_string($field_name)) {
+			if(isset($this->fields[$field_name]) and is_array($this->fields[$field_name])
+				and $this->fields[$field_name]['form_type'] == 'select') {
+				$this->fields[$field_name]['options'] = array();
+				foreach($options as $value => $label) {
+					$this->fields[$options]['options'][$key] = $options;
+				}
+			} else {
+				return FALSE;
+			}
+		}
 	}
 
 	public function _wrap_input($label, $input_html) {

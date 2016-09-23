@@ -1,11 +1,9 @@
 <?php  if(! defined('BASEPATH')) exit('no direct script access allowd');
 
 
-class User_model extends CI_Model{
+class User_model extends MY_Model{
 
 	private $tableName = 'user';
-
-	public $table_name;
 
 	private $salt = 'asdfg';
 
@@ -150,29 +148,35 @@ class User_model extends CI_Model{
 
 	//v2,创建用户
 	public function create() {
-		$account = $this->input->post('account', TRUE);
-		$password = $this->input->post('password1');
-		$password = $this->create_password($password, $account);
-		$realname = $this->input->post('realname', TRUE);
-		$nickname = $this->input->post('nickname', TRUE);
-
 		//check form validation
-		$has_account = $this->db->from($this->table_name)->where(array('account'=>$account))->get()->row_array();
-		if($has_account) {
-			$this->form_validate->set_error_array(array('该账号已经存在'));
+		$this->load->library('form_validation');
+		$this->config->load('s/form_config');
+		$this->load->model('article_cat_model');
+		$user_form_config = $this->config->item('user_form');
+		$user_form_field_config = $user_form_config['fields'];
+
+		foreach($user_form_field_config as $v) {
+			if(isset($v['rules']) and isset($v['name']) and isset($v['rules'])) {
+				$this->form_validation->set_rules($v['name'], $v['label'], $v['rules']);
+			}
+		}
+
+		$is_success = $this->form_validation->run();
+		if( ! $is_success) {
 			return FALSE;
 		}
 
-		$this->config->load('s/form_config');
-		$user_form_config = $this->config->item('user_form');
-		$user_form_field_config = $user_form_config['fields'];
-		foreach($user_form_field_config as $v) {
-			if(isset($v['rules'])) {
-				$this->form_validate->set_rules($v['name'], $v['label'], $v['rules']);
-			}
+		$account = $this->input->post('account', TRUE);
+		$has_account = $this->db->from(TABLE_USER)->where(array('account'=>$account))->get()->row_array();
+		if($has_account) {
+			$this->form_validation->set_error_array(array('该账号已经存在'));
+			return FALSE;
 		}
-		
-		//
+
+		$password = $this->input->post('password');
+		$password = $this->create_password($password, $account);
+		$realname = $this->input->post('realname', TRUE);
+		$nickname = $this->input->post('nickname', TRUE);
 		$admin = 'common';
 		$email = $this->input->post('email', TRUE);
 		$mobile = $this->input->post('mobile', TRUE);

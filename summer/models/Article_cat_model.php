@@ -66,6 +66,7 @@ class Article_cat_model extends CI_Model {
 	}
 
 	public function get_pair() {
+		
 		$where = array(
 			'status'	=> '1',
 			'is_delete'	=> '0',
