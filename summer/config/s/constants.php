@@ -45,3 +45,7 @@ defined('TABLE_ARTICLE_CAT')		OR define('TABLE_ARTICLE_CAT', 'summer_article_cat
 defined('TABLE_ARTICLE')			OR define('TABLE_ARTICLE', 'summer_article');
 defined('TABLE_ARTICLE_LOVE')		OR define('TABLE_ARTICLE_LOVE', 'summer_article_love');
 defined('TABLE_SLIDER')				OR define('TABLE_SLIDER', 'summer_slider');
+defined('TABLE_ROLE')				OR define('TABLE_ROLE', 'summer_role');
+defined('TABLE_ROLEUSER')			OR define('TABLE_ROLEUSER', 'summer_roleuser');
+defined('TABLE_ACCESS')				OR define('TABLE_ACCESS', 'summer_access');
+defined('TABLE_MODULE')				OR define('TABLE_MODULE', 'summer_module');

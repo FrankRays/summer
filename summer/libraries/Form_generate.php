@@ -111,19 +111,36 @@ class Form_generate {
 
 	public function create_form($config = array()) {
 		$form_html = '';
-
 		$hiddeninputs = array();
 		foreach($this->fields as $name => $attr) {
-			if($attr['form_type'] == 'textinput') {
-				$form_html .= $this->_create_textinput($name, $attr);
-			} else if( $attr['form_type'] == 'radio') {
-				$form_html .= $this->_create_radio($attr);
-			} else if($attr['form_type'] == 'select') {
-				$form_html .= $this->_create_select($attr);
-			} else if($attr['form_type'] == "hiddeninput") {
-				$hiddeninputs[$attr['name']] = $attr['value'];
-			} else if($attr['form_type'] == 'password') {
-				$form_html .= $this->_create_password($name, $attr);
+			switch ($attr['form_type']) {
+				case 'textinput':
+					$form_html .= $this->_create_textinput($name, $attr);
+					break;
+				case 'radio':
+					$form_html .= $this->_create_radio($attr);
+					break;
+				case 'select':
+					$form_html .= $this->_create_select($attr);
+					break;
+				case 'multiselect':
+					$form_html .= $this->_create_multiselect($attr);
+					break;
+				case 'hiddeninput':
+					$value = $this->CI->input->get_post($attr['name']);
+					if(!empty($value)) {
+						$hiddeninputs[$attr['name']] = $value;
+					} else {
+						$hiddeninputs[$attr['name']] = $attr['value'];
+					}
+					
+					break;
+				case 'password':
+					$form_html .= $this->_create_password($name, $attr);
+					break;
+				default:
+					# code...
+					break;
 			}
 		}
 
@@ -143,6 +160,19 @@ class Form_generate {
 			if(isset($_POST[$field_name])) {
 				$input_html .= ' value="' . $_POST[$field_name]. '"';
 			}
+
+			$extra = '';
+			if(isset($attr['attr']) and is_array($attr['attr'])) {
+				foreach ($attr['attr'] as $key => $value) {
+					if(is_int($key)) {
+						$extra .= ' ' . $value . ' ';
+					} else if(is_string($key)) {
+						$extra .= ' ' . $key . '="' . $value . '"';
+					}
+				}
+			}
+
+			$input_html .= $extra;
 
 			$input_html .= ' />';
 
@@ -227,7 +257,7 @@ class Form_generate {
 		return $input_html;
 	}
 
-	public function _create_select($params) {
+	public function _create_select($params, $muti=FALSE) {
 		$input_html = '';
 
 		if(is_array($params) and isset($params['options'])
@@ -241,13 +271,36 @@ class Form_generate {
 			if(isset($params['selected']) and is_array($params['selected'])) {
 				$selected = $params['selected'];
 			}else{
-				$selected = array();
+				if(isset($_POST[$params['name']]) and is_array($_POST[$params['name']])) {
+					$selected = $_POST[$params['name']];
+				} else {
+					$selected = array();
+				}
 			}
-			$input_html .= form_dropdown($params['name'], $options, $selected);
+
+			$extra = '';
+			if(isset($params['attr']) and is_array($params['attr'])) {
+				foreach ($params['attr'] as $key => $value) {
+					if(is_int($key)) {
+						$extra .= ' ' . $value . ' ';
+					} else if(is_string($key)) {
+						$extra .= ' ' . $key . '="' . $value . '"';
+					}
+				}
+			}
+			if($muti == TRUE) {
+				$input_html .= form_multiselect($params['name'] . '[]', $options, $selected, $extra);
+			} else {
+				$input_html .= form_dropdown($params['name'], $options, $selected, $extra);
+			}
 		}
 
 		$input_html = $this->_wrap_input($params['label'], $input_html);
 		return $input_html;
+	}
+
+	public function _create_multiselect($params) {
+		return $this->_create_select($params, TRUE);
 	}
 
 	public function set_select_options($field_name, $options) {

@@ -135,6 +135,8 @@ class Article_cat_model extends CI_Model {
 					->get()
 					->result_array();
 
+		
+
 		$cats_arr = $this->create_tree_a();
 		return $cats_arr;
 	}
@@ -148,8 +150,20 @@ class Article_cat_model extends CI_Model {
 			->get()
 			->result_array();
 
+			$filter_cats = array();
+			$this->load->model('user_model');
+			if( ! $this->user_model->_is_super()) {
+				$user = $this->user_model->get_cur_user();
+				foreach($cats as $cat) {
+					if(in_array($cat['id'], $user['article_cate_access'])) {
+						$filter_cats[] = $cat;
+					}
+				}
+			}
+
+
 		$new_cats = array();
-		foreach($cats as $item) {
+		foreach($filter_cats as $item) {
 			$new_cats[$item['fid']][] = $item;
 		}
 

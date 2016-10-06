@@ -96,21 +96,27 @@ if( ! function_exists('get_sidebar')) {
 		$index = 0;
 		foreach($sidebar_config as $v) {
 			if( ! isset($v['childern'])) {
-				$sidebar_str .= '<li><a href="'.site_url($v['href']).'">' . $v['label'] . '</a>';
-			}else{
-				$sidebar_str .= '<li><a class="am-cf" data-am-collapse="{target: \'listtarge'.$index.'\'}" >';
-				$sidebar_str .= $v['label'];
-				$sidebar_str .= '</a>';
-				if(isset($v['childern']) && is_array($v['childern'])) {
-					$sidebar_str .= '<ul class="am-list am-collapse admin-sidebar-sub am-in" id="collapse-nav">';
-					foreach($v['childern'] as $v2) {
-						$sidebar_str .= '<li><a href="'.site_url($v2['href']).'" class="am-cf">';
-						$sidebar_str .= $v2['label'];
-						$sidebar_str .= '</a></li>';
-					}
-					$sidebar_str .= '</ul>';
+				if($user['admin'] == 'super' or $v['own'] == 'common') {
+					$sidebar_str .= '<li><a href="'.site_url($v['href']).'">' . $v['label'] . '</a>';
 				}
-				$sidebar_str .= '</li>';
+			}else{
+				if($user['admin'] == 'super' or $v['own'] == 'common') {
+					$sidebar_str .= '<li><a class="am-cf" data-am-collapse="{target: \'listtarge'.$index.'\'}" >';
+					$sidebar_str .= $v['label'];
+					$sidebar_str .= '</a>';
+					if(isset($v['childern']) && is_array($v['childern'])) {
+						$sidebar_str .= '<ul class="am-list am-collapse admin-sidebar-sub am-in" id="collapse-nav">';
+						foreach($v['childern'] as $v2) {
+							if($user['admin'] == 'super' or $v['own'] == 'common') {
+								$sidebar_str .= '<li><a href="'.site_url($v2['href']).'" class="am-cf">';
+								$sidebar_str .= $v2['label'];
+								$sidebar_str .= '</a></li>';
+							}
+						}
+						$sidebar_str .= '</ul>';
+					}
+					$sidebar_str .= '</li>';
+				}
 			}
 		}
 

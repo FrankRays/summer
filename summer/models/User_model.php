@@ -7,6 +7,8 @@ class User_model extends MY_Model{
 
 	private $salt = 'asdfg';
 
+	public $login_url;
+
 	//我为我自己代言
 	const salty = 'Lasia';
 
@@ -20,6 +22,8 @@ class User_model extends MY_Model{
 		parent::__contruct();
 
 		$this->table_name = TABLE_USER;
+
+		$this->login_url = site_url('c=user&m=login');
 	}
 
 	public function _doSha1($password){
@@ -173,10 +177,17 @@ class User_model extends MY_Model{
 			return FALSE;
 		}
 
+		$article_cate_access = $this->input->post('article_cate_access');
+		if( ! is_array($article_cate_access)) {
+			$this->form_validation->set_error_array(array('未选择帐号管理文章类别'));
+			return ;
+		}
+
+
 		$password = $this->input->post('password');
 		$password = $this->create_password($password, $account);
 		$realname = $this->input->post('realname', TRUE);
-		$nickname = $this->input->post('nickname', TRUE);
+		$nickname = $this->input->post('nickname', TRUE);	
 		$admin = 'common';
 		$email = $this->input->post('email', TRUE);
 		$mobile = $this->input->post('mobile', TRUE);
@@ -196,7 +207,9 @@ class User_model extends MY_Model{
 			'ip'			=> $ip,
 			'join'			=> $join,
 			'last'			=> $join,
+			'article_cate_access'=> json_encode($article_cate_access),
 			);
+
 		$this->db->insert(TABLE_USER, $user);
 		return $this->db->insert_id();
 	}
@@ -264,6 +277,27 @@ class User_model extends MY_Model{
 		return $user;
 	}
 
+	public function check_account_password($account, $password) {
+		$password = $this->create_password($password, $account);
+		$where = array(
+			'account' => $account,
+			'password'	=> $password,
+			);
+
+		$user = $this->db->where($where)->from(TABLE_USER)->get()->row_array();
+		if(!empty($user)) {
+			return $user;
+		}
+
+		$where = array(
+			'email'	=> $account,
+			'password'	=> $password,
+			);
+		$user = $this->db->where($where)->from(TABLE_USER)->get()->row_array();
+
+		return $user;
+	}
+
 
 	//v2 根据id更新用户
 	public function update_by_id($user, $user_id) {
@@ -274,11 +308,80 @@ class User_model extends MY_Model{
 		return $this->db->affected_rows();	
 	}
 
-	public function del_by_id($id) {
-		$where = array(
-			'id'	=> $id,
+	public function update_user() {
+		$this->load->library('form_validation');
+		$this->config->load('s/form_config');
+		$this->load->model('article_cat_model');
+
+		$user_form_config = $this->config->item('user_form');
+		$user_form_field_config = $user_form_config['fields'];
+		unset($user_form_field_config['account']);
+		unset($user_form_field_config['password']);
+		unset($user_form_field_config['repassword']);
+
+		$this->form_validation->set_rules('id', '文章ID', 'required');
+		foreach($user_form_field_config as $v) {
+			if(isset($v['rules']) and isset($v['name']) and isset($v['rules'])) {
+				$this->form_validation->set_rules($v['name'], $v['label'], $v['rules']);
+			}
+		}
+
+		$is_success = $this->form_validation->run();
+		if( ! $is_success) {
+			return FALSE;
+		}
+
+
+		$id = $this->input->post('id');
+		$user = $this->get_by_id(intval($id));
+		if(empty($user)) {
+			$this->form_validation->set_error_array(array('用户不存在'));
+			return FALSE;
+		}
+
+		$article_cate_access = $this->input->post('article_cate_access');
+		if( ! is_array($article_cate_access)) {
+			$this->form_validation->set_error_array(array('未选择帐号管理文章类别'));
+			return ;
+		}
+
+
+		$nickname = $this->input->post('nickname', TRUE);
+		$realname = $this->input->post('realname', TRUE);
+		$email = $this->input->post('email', TRUE);
+		$mobile = $this->input->post('mobile', TRUE);
+		$article_cate_access = json_encode($article_cate_access);
+
+		$update_user = array(
+			'nickname'	=> $nickname,
+			'realname'	=> $realname,
+			'email'		=> $email,
+			'mobile'	=> $mobile,
+			'article_cate_access'=>$article_cate_access,
 			);
-		$this->db->where($where)->delete(TABLE_USER);
+
+		$this->db->where('id', intval($id))->update(TABLE_USER, $update_user);
+		return TRUE;
+	}
+
+	public function delete_user() {
+		$ids = $this->input->post('ids');
+		if(is_null($ids) or ! is_array($ids) or count($ids) <= 0) {
+			echo json_encode(array('status'=>500, 'message'=>'未选择要重置密码的用户'));
+			return FALSE; 
+		}
+
+		foreach($ids as $id) {
+			$cur_user = $this->get_by_id(intval($id));
+
+			if($cur_user['admin'] == 'super') {
+				continue;
+			}
+
+			$this->db->where('account', $cur_user['account'])->delete(TABLE_USER);
+		}
+
+		return TRUE;
 	}
 
 
@@ -288,6 +391,15 @@ class User_model extends MY_Model{
 		if(empty($user) || $user['admin'] != 'super') {
 			show_error('你的权限不够');
 		}else{
+			return TRUE;
+		}
+	}
+
+	public function _is_super() {
+		$user = $this->session->userdata['user'];
+		if(empty($user) or $user['admin'] != 'super') {
+			return FALSE;
+		} else {
 			return TRUE;
 		}
 	}
@@ -313,11 +425,154 @@ class User_model extends MY_Model{
 		}
 	}
 
+	public function is_admin_redirect($redirect_url='') {
+		$user = $this->session->userdata('user');
+		if( ! empty($user) and is_array($user) and ($user['admin'] == 'common' 
+			or $user['admin'] == 'super') and defined('ADMIN')) {
+			return TRUE;
+		} else {
+			if($redirect_url == '') {
+				$redirect_url = site_url('c=user&m=login');
+			}
+			redirect($redirect_url);
+		}
+	}
+
 	//v2 judge if it is a login status
 	public function verify() {
 		$user = $this->session->userdata('user');
 		if(empty($user) || ! is_array($user) || empty($user['account'])) {
 			redirect(site_url('c=user&m=login'));
+		}
+		return TRUE;
+	}
+
+	public function get_cur_user() {
+		$user = $this->session->userdata('user');
+		if(empty($user)) {
+			return FALSE;
+		} else {
+			return $user;
+		}
+	}
+
+	public function has_article_privilege($category_id) {
+		if($this->user_model->_is_super()) {
+			return TRUE;
+		} else {
+			$user = $this->user_model->get_cur_user();
+			if(in_array($category_id, $user['article_cate_access'])) {
+				return TRUE;
+			} else {
+				return FALSE;
+			}
+		}
+	}
+
+	public function lock_user() {
+		$ids = $this->input->post('ids');
+		if($ids == null or ! is_array($ids) or count($ids) <= 0) {
+			echo json_encode(array('status'=>500, 'message'=>'未选择要锁定的用户'));
+			return ;
+		}
+
+		$update_user = array(
+			'locked'	=> '2300-01-01 00:00:00',
+			);
+
+		foreach($ids as $v) {
+			$this->db->where('id', intval($v))->update(TABLE_USER, $update_user);
+		}
+	}
+
+	public function unlock_user() {
+		$ids = $this->input->post('ids');
+		if($ids == null or ! is_array($ids) or count($ids) <= 0) {
+			echo json_encode(array('status'=>500, 'message'=>'未选择要解锁的用户'));
+			return ;
+		}
+
+		$update_user = array(
+			'locked'	=> '0000-00-00 00:00:00',
+			);
+
+		foreach($ids as $v) {
+			$this->db->where('id', intval($v))->update(TABLE_USER, $update_user);
+		}
+	}
+
+	public function change_password() {
+		$old_password = $this->input->post('old_password');
+		$new_password = $this->input->post('new_password');
+		$re_new_passowrd = $this->input->post('re_new_passowrd');
+
+		$this->config->load('s/form_config');
+		$change_password_form_config = $this->config->item('change_password_form');
+
+		foreach($change_password_form_config['fields'] as $v) {
+			if(isset($v['rules'])) {
+				$this->form_validation->set_rules($v['name'], $v['label'], $v['rules']);
+			}
+		}
+
+		if(! $this->form_validation->run()) {
+			return FALSE;
+		}
+
+		$user = $this->get_cur_user();
+		if(empty($user)) {
+			$this->form_validation->set_error_array(array('未登陆'));
+			redirect('c=user&m=login');
+		}
+
+		$is_success = $this->check_account_password($user['account'], $old_password);
+		if(empty($is_success)) {
+			$this->form_validation->set_error_array(array('密码错误'));
+			return FALSE;
+		}
+
+
+		$update_user = array(
+			'password'	=> $this->create_password($new_password, $user['account']),
+			);
+
+		$this->db->where('id', $user['id'])->update(TABLE_USER, $update_user);
+		return TRUE;
+	}
+
+
+	public function logout() {
+		session_destroy();
+		$referer = $this->input->server('HTTP_REFERER');
+		if(!empty($referer)) {
+			redirect(site_url('c=user&m=login&referer=' . urlencode($referer)));
+		}else{
+			redirect(site_url('c=user&m=login'));
+		}
+	}
+
+	public function set_default_password() {
+		$ids = $this->input->post('ids');
+		if($ids == null or ! is_array($ids) or count($ids) <= 0) {
+			echo json_encode(array('status'=>500, 'message'=>'未选择要重置密码的用户'));
+			return FALSE;
+		}
+
+		foreach($ids as $id) {
+			$cur_user = $this->get_by_id(intval($id));
+			if(empty($cur_user)) {
+				continue;
+			}
+
+			if($cur_user['admin'] == 'super') {
+				continue;
+			}
+
+			$update_user = array(
+				'password'	=> $this->create_password('123456', $cur_user['account']),
+				);
+
+			$this->db->where('account', $cur_user['account'])->update(TABLE_USER, $update_user);
 		}
 		return TRUE;
 	}

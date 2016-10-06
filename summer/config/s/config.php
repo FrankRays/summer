@@ -139,13 +139,14 @@ $config['sidebar_config'] = array(
     array(
         'href'      => '',
         'label'     => '用户',
-        'own'       => 'super',
+        'own'       => 'common',
         'childern'  => array(
             array(
                 'href'      => 'c=user&m=admin',
                 'label'     => '用户',
                 'own'       => 'super',
                 ),
+            array('href'=>'c=user&m=change_password', 'label'=>'修改密码', 'own'=>'common'),
             )
         )
 

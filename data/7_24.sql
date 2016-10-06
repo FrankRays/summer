@@ -42,5 +42,41 @@ insert into summer_site values (null, 0);
 ALTER TABLE `summer_site` ADD `name` varchar(255) NOT NULL DEFAULT '';
 UPDATE `summer_site` set `name`='四川交通职业技术学院新闻网';
 
--- 2.01
+
+-------------------------------------- 2.01 --------------------------------------
+
+--增加用户文章访问权限字段
 ALTER TABLE `summer_user` ADD `article_cate_access` varchar(255) NOT NULL DEFAULT '';
+
+-- 角色表
+CREATE TABLE `xww`.`summer_role` ( 
+  `id` INT NOT NULL AUTO_INCREMENT , 
+  `rolename` VARCHAR(255) NOT NULL , 
+  PRIMARY KEY (`id`)) 
+ENGINE = MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+-- 角色用户映射表
+CREATE TABLE `xww`.`summer_roleuser` ( 
+  `id` INT NOT NULL AUTO_INCREMENT , 
+  `role_id` INT NOT NULL , `user_id` INT NOT NULL , 
+  `create_time` DATETIME NOT NULL , PRIMARY KEY (`id`)) 
+)ENGINE = MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+-- 权限表
+CREATE TABLE `xww`.`summer_module` ( 
+  `id` INT NOT NULL AUTO_INCREMENT , 
+  `modulename` VARCHAR(255) NOT NULL , 
+  `mvc_url` VARCHAR(255) NOT NULL , 
+  `extra` VARCHAR(255) NOT NULL , 
+  PRIMARY KEY (`id`)) 
+ENGINE = MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+--权限映射表
+CREATE TABLE `xww`.`summer_access` ( 
+  `id` INT NOT NULL AUTO_INCREMENT , 
+  `roleid` INT NOT NULL , 
+  `moduleid` INT NOT NULL , 
+  PRIMARY KEY (`id`), 
+  INDEX (`roleid`), 
+  INDEX (`moduleid`)) 
+ENGINE = MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;

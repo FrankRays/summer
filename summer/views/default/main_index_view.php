@@ -1,7 +1,4 @@
-<?php
-
-defined('APPPATH') OR exit('forbidden to access');
-?>
+<?php defined('APPPATH') OR exit('forbidden to access'); ?>
 <div class="admin-content">
     <div class="am-cf am-padding">
         <div class="am-fl am-cf">

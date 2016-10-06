@@ -74,7 +74,7 @@ $config['user_form'] = array(
 	);
 $config['user_form']['fields'] = array(
 	'id'		=> array('name'=>'id','type'=> 'int','value'=> '','form_type'=> 'hiddeninput',),
-	'article_cate_access'	=> array('name'=>'article_cate_access', 'type'=>'string', 'form_type'=>'select', 'label'=>'文章分类权限'),
+	'article_cate_access'	=> array('name'=>'article_cate_access', 'type'=>'string', 'form_type'=>'multiselect', 'label'=>'文章分类权限', 'attr'=>array('mutiple', 'data-am-selected')),
 	'account'	=> array('name'=>'account', 'type'=>'string', 'value'=>'', 'form_type'=>'textinput', 'label'=>'账号'
 		, 'rules'=>'required|min_length[4]|max_length[16]'),
 	'password'	=> array('name'=>'password', 'type'=>'string', 'value'=>'', 'form_type'=>'textinput', 'label'=>'密码'
@@ -89,4 +89,18 @@ $config['user_form']['fields'] = array(
 		, 'rules'=>'required|valid_email'),
 	'mobile'	=> array('name'=>'mobile', 'type'=>'string', 'value'=>'', 'form_type'=>'textinput', 'label'=>'电话'
 		, 'rules'=>'required|is_natural'),
+	);
+
+//change user password form config
+$config['change_password_form'] = array(
+	'class' 	=>'am-form am-form-horizontal',
+	'action'	=> 'c=user&m=change_password',
+	'fields'	=> array(
+		'old_password'	=> array('name'=>'old_password', 'form_type'=>'password', 'value'=>'', 'label'=>'旧密码', 
+			'rules'=>'required|min_length[4]|max_length[16]'),
+		'new_password'	=> array('name'=>'new_password', 'form_type'=>'password', 'value'=>'', 'label'=>'新密码',
+			'rules'=>'required|min_length[4]|max_length[16]'),
+		're_new_passowrd'=> array('name'=>'re_new_passowrd', 'form_type'=>'password', 'value'=>'', 'label'=>'重复新密码',
+			'rules'=>'required|min_length[4]|max_length[16]'),
+		),
 	);
