@@ -128,3 +128,17 @@ if( ! function_exists('archive_url')) {
 		}
 	}
 }
+
+if( ! function_exists('datetime_compare')) {
+	function datetime_compare($datetime_a, $datetime_b) {
+		$timestamp_a = strtotime($datetime_a);
+		$timestamp_b = strtotime($datetime_b);
+		if($timestamp_a > $timestamp_b) {
+			return 1;
+		} elseif($timestamp_a < $timestamp_b) {
+			return -1;
+		} else {
+			return 0;
+		}
+	}
+}

@@ -22,7 +22,7 @@
       <div class="am-u-sm-12 am-u-md-3">
         <div class="am-form-group">
           <select name="category_id" id="y-article-category" class="category-select" style="width:250px;">
-            <option value="option1">所有类别</option>
+            <option value=" ">所有类别</option>
             <?php foreach ($categories as $category) {?>
               <option value="<?php echo $category['id']; ?>" <?php echo set_select('category_id', $category['id']); ?>><?php echo $category['name']; ?></option>
             <?php }?>
@@ -76,12 +76,18 @@
               <td>
                 <div class="am-btn-toolbar">
                   <div class="am-btn-group am-btn-group-xs">
+                  <?php if(p_article_show($article['category_id'])): ?>
                     <a href="<?php echo site_url('c=post&m=article_edit&article_id=' . $article['id']) ?>" class="am-btn am-btn-default am-btn-xs am-text-secondary y-edit-article-btn"><span class="am-icon-pencil-square-o"></span> 编辑</a>
+                  <?php endif ?>
+
+                  <?php if(p_article_show($article['category_id'])): ?>
                     <?php if ($article['status'] == 1) {?>
                       <a href="<?php echo site_url('c=post&m=changeStatus&id='.$article['id']) ?>" class="am-btn am-btn-default am-btn-xs am-text-success y-article-status-btn"><span class="am-icon-copy"></span> 发布</a>
                     <?php } else {?>
                       <a href="<?php echo site_url('c=post&m=changeStatus&id='.$article['id']) ?>"  class="am-btn am-btn-default am-btn-xs am-text-danger y-article-status-btn"><span class="am-icon-copy"></span> 草稿</a>
                     <?php }?>
+                  <?php endif ?>
+
                     <?php if ($article['is_top'] == 1) {?>
                        <a href="<?php echo site_url('c=post&m=setTop&id='.$article['id']) ?>" class="am-btn am-btn-default am-btn-xs am-text-danger y-article-nowtop-btn"><span class="am-icon-copy"></span> 置顶中</a>
                     <?php } else {?>

@@ -16,7 +16,7 @@ class article_model extends CI_Model {
 		'content', 'pic_src', 'url_src', 'come_from', 'file_src',
 		'add_time', 'edit_time', 'hits', 'status', 'sort', 'is_delete', 'link', 'json_data');
 
-	public $front_select = 'id, title, category_name, category_id, index_id, is_redirect,  publish_date, summary, coverimg_path, hits, love, come_from, come_from_url';
+	public $front_select = 'id, title, category_name, category_id, index_id, is_redirect,  publish_date, summary, coverimg_path, hits, love, come_from, come_from_url, author_name, status, is_top';
 	/**
 	 *构造方法
 	 */
@@ -221,8 +221,10 @@ class article_model extends CI_Model {
 			);
 		$like = array();
 
-		if(isset($cond['category_id'])) {
-			$where['category_id'] = $cond['category_id'];
+
+		$category_id = $this->input->get('category_id');
+		if( ! empty($category_id)) {
+			$where['category_id'] = intval($category_id);
 		}
 
 		if(isset($cond['is_top'])) {
@@ -241,6 +243,10 @@ class article_model extends CI_Model {
 			->where($where)
 			->like($like)
 			->order_by('publish_date desc, id desc');
+
+		if(isset($cond['article_cate_access'])) {
+			$this->db->where_in('category_id', $cond['article_cate_access']);
+		}
 		$this->db->stop_cache();
 
 		$this->db->limit($limit, $offset);
@@ -252,6 +258,19 @@ class article_model extends CI_Model {
 			'data_list'		=> $data_list,
 			'total_rows'	=> $count,
 			);
+	}
+
+	public function get_admin_page($offset=0, $limit=20, $cond=array()) {
+		$this->load->model('user_model');
+
+		$cond = array();
+		$user = $this->user_model->get_cur_user();
+		if( ! $this->user_model->_is_super()) {
+			$user = $this->session->userdata('user');
+			$cond['article_cate_access'] = $user['article_cate_access'];
+		}
+
+		return $this->get_pages($offset, $limit, $cond);
 	}
 
 	//v2获取前端文章列表分页
@@ -340,23 +359,25 @@ class article_model extends CI_Model {
 		return $data_list;
 	}
 
+	public function get_admin_top() {
+		$where = array(
+			'is_top'	=> '1',
+			);
 
-	public function get_admin_top_list($limit, $offset = 0){
-		$where = array();
 		$category_id = $this->input->get('category_id');
 		if(! empty($category_id)) {
-			$where['category_id'] = $category_id;
+			$where['category_id'] = intval($category_id);
 		}
 
-		$where['is_top'] = '1';
-
-		if($limit !== NULL) {
-			$this->db->limit($limit, $offset);
+		if( ! $this->user_model->_is_super()) {
+			$user = $this->user_model->get_cur_user();
+			$this->db->where_in('category_id', $user['article_cate_access']);
 		}
 
-		$articles = $this->db->select('id, title, publish_date, category_name, category_id, author_name, is_top, status, hits')
-		->from($this->table_name)->where($where)->get()->result_array();
-		return $articles;
+		$top_articles = $this->db->from(TABLE_ARTICLE)->select($this->front_select)->where($where)
+					->order_by('publish_date desc, id desc')->get()->result_array();
+
+		return $top_articles;
 	}
 
 	public function _deal_front_list(&$data_list) {
@@ -432,7 +453,19 @@ class article_model extends CI_Model {
 
 	// v2 批量更新
 	public function update_by_ids($article, $ids) {
-		$this->db->or_where_in('id', $ids)->update('summer_article', $article);
+		$this->load->library('rbac');
+		$allowed_categories = $this->rbac->get_allowed_categories();
+
+		foreach($ids as $id) {
+			$article = $this->db->from(TABLE_ARTICLE)->where('id', $id)->get()->row_array();
+			if(empty($article)) {
+				continue;
+			}
+
+			if(isset($allowed_categories[$article['category_id']])) {
+				$this->db->where('id', $article['id'])->update(TABLE_ARTICLE, array('is_delete'=>'1'));
+			}
+		}
 		return $this->db->affected_rows();
 	}
 
@@ -505,6 +538,13 @@ class article_model extends CI_Model {
 	}
 
 	public function createArticle($article) {
+		$this->load->model('user_model');
+		if($this->user_model->_is_super()) {
+			$user = $this->user_model->get_cur_user();
+			if( ! in_array($article['category_id'], $user['article_cate_access'])) {
+				show_error('权限不够');
+			}
+		}
 		$this->db->insert($this->tableName, $article);
 		return $this->db->insert_id();
 	}

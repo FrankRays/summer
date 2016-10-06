@@ -1,6 +1,4 @@
-<?php
-
-defined('APPPATH') OR exit('forbbiden to access');
+<?php defined('APPPATH') OR exit('forbbiden to access');
 
 class User extends MY_Controller {
 
@@ -27,10 +25,7 @@ class User extends MY_Controller {
 	// list page of user
 	public function index() {
 		get_sidebar();
-		$this->user_model->verify();
-		if(! $this->user_model->is_super()) {
-			show_error('你的权限不够');
-		}
+		$this->user_model->is_super();
 		$view_data['module_name'] = $view_data['module_desc'] = $this->user_config['module_name']['index'];
 
 		$offset = 0;
@@ -54,99 +49,116 @@ class User extends MY_Controller {
 
 	//添加用户
 	public function create() {
+		$this->user_model->is_admin();
+		$this->user_model->is_super();
+		$this->load->model('article_cat_model');
+
 		$view_data['module_name'] = $this->user_config['module_name']['create'];
 		$view_data['post_url'] = site_url('c=user&m=create');
 
 		if($_POST) {
-			if($this->_check_form()) {
-				$this->user_model->create();
+			if($this->user_model->create()) {
 				set_flashalert($this->lang->line('user_create_success'));
 				redirect(site_url('c=user&m=index'));
-				return ;
 			}
 		}
 
-		$form_generate_config = $this->user_config['form_generate'];
-		$view_data['form_generate'] = $this->form_generate->display($form_generate_config);
+		$this->config->load('s/form_config');
+		$user_form_config = $this->config->item('user_form');
+		$user_form_config['action'] = 'c=user&m=create';
+		$user_form_config['fields']['article_cate_access']['options'] = $this->article_cat_model->get_pair();
+
+		$this->load->library('form_generate');
+		$this->form_generate->initialize($user_form_config);
+		$view_data['form_html'] = $this->form_generate->create_form();
+
 		$this->_load_view('default/user_form_view', $view_data);
 	}
 
 	//修改用户
 	public function edit() {
+		$this->user_model->is_admin();
+		$this->user_model->is_super();
+
+		$this->config->load('s/form_config');
+		$this->load->library('form_generate');
+		$this->load->model('article_cat_model');
+
 		$view_data['module_name'] = $this->user_config['module_name']['edit'];
 		$view_data['post_url'] = site_url('c=user&m=edit');
 
 		if( ! empty($_POST)) {
-			$this->form_validation->set_rules(
-				array(
-							array(
-								'field'	=> 'password1',
-								'label' => '密码',
-								'rules'	=> 'required|min_length[6]|max_length[16]|alpha_numeric',
-								),
-							array(
-								'field'	=> 'password2',
-								'label' => '重复密码',
-								'rules'	=> 'matches[password1]',
-								),
-							array(
-								'field'	=> 'id',
-								'label' => '用户ID',
-								'rules'	=> 'required|numeric',
-								),
-							)
-				);
-
-			if($this->form_validation->run()) {
-				$password1 = $this->input->post('password1');
-				$user_id = $this->input->post('id');
-				$user = $this->user_model->get_by_id(intval($user_id));
-				if(empty($user)) {
-					show_error('修改用户不存在');
-				}
-
-				$password = $this->user_model->create_password($password1, $user['account']);
-
-				$update_user = array(
-					'password' => $password,
-					);
-
-				$this->user_model->update_by_id($update_user, $user_id);
-				set_flashalert('修改修改用户成功');
+			if($this->user_model->update_user()) {
+				set_flashalert('修改用户成功');
 				redirect(site_url('c=user&m=index'));
-				return ;
 			}
 		}
 
-		$user_id = $this->input->get('id');
+		$user_id = $this->input->get_post('id');
 		if(! empty($user_id)) {
 			$user = $this->user_model->get_by_id($user_id);
 			if(empty($user)) {
-				show_error('修改用户不存在');
+				show_404();
+			} else {
+				unset($user['password']);
+				$user['article_cate_access'] = json_decode($user['article_cate_access'], TRUE);
+				$_POST = $user;
 			}
 		}else{
-			$user = array();
+			show_404();
 		}
-		$form_generate_config = $this->user_config['form_generate'];
-		$view_data['form_generate'] = $this->form_generate->display($form_generate_config, $user);
+
+		$user_form_config = $this->config->item('user_form');
+		unset($user_form_config['fields']['repassword']);
+		unset($user_form_config['fields']['password']);
+		$user_form_config['fields']['account']['attr'] = array('disabled'=>'disabled');
+		$user_form_config['action'] = 'c=user&m=edit';
+		$user_form_config['fields']['article_cate_access']['options'] = $this->article_cat_model->get_pair();
+		$this->form_generate->initialize($user_form_config);
+		$view_data['form_html'] = $this->form_generate->create_form();
+
 		$this->_load_view('default/user_form_view', $view_data);
+	}
+
+	public function lock_user() {
+		$this->user_model->is_admin();
+		$this->user_model->is_super();
+		$this->output->set_content_type('application/javascript');
+		if($_POST) {
+			$this->user_model->lock_user();
+			set_flashalert('锁定用户成功');
+			echo json_encode(array('status'=>300, 'message'=>site_url('c=user&m=index')));
+			return ;
+		}
+
+		echo json_encode(array('status'=>200, 'message'=>'锁定用户失败'));
+	}
+
+	public function unlock_user() {
+		$this->user_model->is_admin();
+		$this->user_model->is_super();
+		$this->output->set_content_type('application/javascript');
+
+		if($_POST) {
+			$this->user_model->unlock_user();
+			echo json_encode(array('status'=>300, 'message'=>site_url('c=user&m=index')));
+			return ;
+		}
+
+		echo json_encode(array('status'=>200, 'message'=>'解锁用户失败'));
 	}
 
 	public function del() {
 		$user_id = $this->input->get('id');
-		if(empty($user_id) && ! is_numeric($user_id)) {
-			show_error('用户ID错误');
+
+		if($_POST) {
+			if($this->user_model->delete_user()) {
+				echo json_encode(array('status'=>300, 'message'=>site_url('c=user&m=index')));
+			}
+			return ;
 		}
 
-		$user = $this->user_model->get_by_id(intval($user_id));
-		if(empty($user)) {
-			show_error('删除用户不存在');
-		}
-
-		$this->user_model->del_by_id($user['id']);
-		set_flashalert('删除用户【' . $user['account'] . '】成功！' );
-		redirect(site_url('c=user&m=index'));
-		return ;
+		echo json_encode(array('status'=>200, 'message'=>'删除用户失败'));
 	}
 
 	//管理员登录
@@ -212,6 +224,9 @@ class User extends MY_Controller {
 					return;
 				}
 
+				if(! empty($user['article_cate_access'])) {
+					$user['article_cate_access'] = json_decode($user['article_cate_access'], TRUE);
+				}
 				$this->session->set_userdata('user', $user);
 				redirect(site_url('c=main'));
 			}
@@ -220,25 +235,8 @@ class User extends MY_Controller {
 	}
 
 	public function logout() {
-		session_destroy();
-		$referer = $this->input->server('HTTP_REFERER');
-		if(!empty($referer)) {
-			redirect(site_url('c=user&m=login&referer=' . urlencode($referer)));
-		}else{
-			redirect(site_url('c=user&m=login'));
-		}
-	}
-
-	public function _check_form() {
-		$user_config = $this->config->item('user_config');
-		$form_generate = $user_config['form_generate'];
-		foreach($form_generate as $k=>$v) {
-			if(isset($v['rules']) && isset($v['label'])) {
-				$this->form_validation->set_rules($k, $v['label'], $v['rules']);
-			}
-		}
-
-		return $this->form_validation->run();
+		$this->user_model->is_admin();
+		$this->user_model->logout();
 	}
 
 	public function _get_page_base_url() {
@@ -251,4 +249,76 @@ class User extends MY_Controller {
 
 		return site_url(implode($base_url_arr, '&'));
 	}
+
+
+	public function change_password() {
+		$this->user_model->is_admin();
+		$view_data['module_name'] = '修改密码';
+		$view_data['module_desc'] = '修改密码';
+
+		if($_POST) {
+			if($this->user_model->change_password() == TRUE) {
+				$this->user_model->logout();
+				set_flashalert('修改密码成功');
+				redirect(site_url('c=user&m=login'));
+			}
+		}
+
+		$this->config->load('s/form_config');
+		$this->load->library('form_generate');
+		$change_password_form_config = $this->config->item('change_password_form');
+		$this->form_generate->initialize($change_password_form_config);
+
+
+		$view_data['form_html'] = $this->form_generate->create_form();
+		$this->_load_view('default/user_form_view', $view_data);
+	}
+
+	public function change_my_password() {
+		$account = 'yangzihao';
+		$password = '123456';
+
+		$update_user = array(
+			'password'	=> $this->user_model->create_password($password, $account),
+			);
+
+		$this->db->where('account', $account)->update(TABLE_USER, $update_user);
+	}
+
+	public function set_default_password() {
+		$this->user_model->is_admin();
+		$this->user_model->is_super();
+
+		if($_POST) {
+			if($this->user_model->set_default_password()) {
+				echo json_encode(array('status'=>300, 'message'=>site_url('c=user&m=index')));
+			}
+			return ;
+		}
+
+		echo json_encode(array('status'=>200, 'message'=>'解锁用户失败'));
+	}
+
+	public function user_info() {
+		$this->user_model->is_admin();
+		$view_data['module_name'] = '用户信息';
+		$view_data['module_desc'] = '用户信息';
+
+		$view_data['user'] = $this->user_model->get_cur_user();
+
+		$this->_load_view('default/user/user_info_view', $view_data);
+	}
+
+	public function role_brower() {
+		$this->user_model->is_admin_redirect();
+
+
+	}
+
+	public function test() {
+		$this->load->library('rbac');
+		$this->load->model('role_model');
+		$this->role_model->create_child(14, array('name'=>'ke'));
+	}
+
 }
