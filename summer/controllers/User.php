@@ -317,9 +317,23 @@ class User extends MY_Controller {
 
 	public function test() {
 		$this->load->library('js_builder');
-		$this->js_builder->append_foot_js(static_url('plugins/ztree/js/jquery.ztree.all.js'));
-		$this->js_builder->append_css(static_url('plugins/ztree/css/zTreeStyle/zTreeStyle.css'));
-		$this->_load_view('default/user/privilege_view.php');
+		$this->load->model('role_model');
+		$children = $this->role_model->get_cascade_chidren('root');
+		$this->js_builder->append_module_resource('ztree');
+		$view_data['roletree'] = json_encode($children);
+		$this->_load_view('default/user/privilege_view.php', $view_data);
+	}
+
+	public function test_add() {
+		$this->load->model('role_model');
+		$node = new Tree_node();
+		$node->name = 'xue';
+		$this->role_model->insert_child(1, $node);
+	}
+
+	/*--------------------------------------role------------------------------*/
+	public function rename_role_name() {
+		echo 'xxx';
 	}
 
 }

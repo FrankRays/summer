@@ -22,10 +22,11 @@ class Tree_model extends MY_Model {
 		$this->db->query("UPDATE {$this->table_name} SET rgt=rgt+2 WHERE rgt>=?", array($parent_node->rgt));
 		$this->db->query("UPDATE {$this->table_name} SET lft=lft+2 WHERE lft>?", array($parent_node->rgt));
 
-		$node->rgt = $parent_node->rgt + 1;
-		$node->lft = $parent_node->rgt;
+		$node->rgt 	= $parent_node->rgt + 1;
+		$node->lft 	= $parent_node->rgt;
 		$node->path = $parent_node->path . self::PATH_SEPARTATE . $node->name;
-		$node->level = $parent_node->level + 1;
+		$node->level= $parent_node->level + 1;
+		$node->parent_id = $parent_node->id;
 
 		$this->db->insert($this->table_name, $node);
 		$this->db->trans_complete();
@@ -45,7 +46,7 @@ class Tree_model extends MY_Model {
 
 		$this->db->trans_start();
 		$this->db->query("UPDATE {$this->table_name} SET rgt=rgt+2 WHERE rgt>?", array($sibling_node->rgt));
-		$this->db->query("UPDATE {$this->table_name} SET lft=lft+2 where lft>?", array($sibling_node->rgt));
+		$this->db->query("UPDATE {$this->table_name} SET lft=lft+2 WHERE lft>?", array($sibling_node->rgt));
 
 		$node = new Tree_node();
 		$node->lft 	= $sibling_node->rgt + 1;
@@ -53,13 +54,52 @@ class Tree_model extends MY_Model {
 		$node->path = substr($sibling_node->path, 0, strrpos($sibling_node->path, self::PATH_SEPARTATE)) . self::PATH_SEPARTATE . $node->name;
 		$node->name = $node->name;
 		$node->level= $sibling_node->level;
+		$node->parent_id = $sibling_node->parent_id;
 
 		$this->db->insert($this->table_name, $node);
 		$this->db->trans_complete();
 		return $this->db->insert_id();
 	}
 
+	public function get_children($parent_name) {
+		$parent_node = $this->db->from($this->table_name)->where('name', $parent_name)->get()->row();
+		if($parent_node === null) {
+			throw new Exception("parent node is not exist, where parent name = {$parent_name}", 1);;	
+		}
 
+		$children = $this->db->query("	SELECT node.* 
+										FROM {$this->table_name} AS node 
+										WHERE node.lft BETWEEN ? AND ? 
+										ORDER BY node.lft",
+							array($parent_node->lft, $parent_node->rgt))->result();
+
+		return $children;
+	}
+
+	public function get_cascade_chidren($parent_name) {
+		$children = $this->get_children($parent_name);
+
+		$new = array();
+		foreach ($children as $node) {
+			$new[$node->parent_id][] = $node;
+		}
+
+		$tree = $this->_create_tree($new, array($children[0]));
+		return $tree;
+	}
+
+	private function _create_tree(&$list, $parents) {
+		$tree = array();
+		foreach ($parents as $node) {
+			$new_node = array('name'=>$node->name, 'open'=>TRUE);
+			if(isset($list[$node->id])) {
+				$new_node['children'] = $this->_create_tree($list, $list[$node->id]);
+			}
+			$tree[] = $new_node;
+		}
+
+		return $tree;
+	}
 
 	private function name_has_exist($node_name) {
 		$name_has_exist_node = $this->db->from($this->table_name)->where('name', $node_name)->get()->row();
@@ -81,6 +121,8 @@ class Tree_node {
 	public $name;
 
 	public $level;
+
+	public $parent_id;
 
 	public function __construct() {
 	}

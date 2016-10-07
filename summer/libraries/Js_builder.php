@@ -14,8 +14,53 @@ class Js_Builder {
 
 	public $js_source_code;
 
-	public function __construct() {
+	public $CI;
 
+	public $resource;
+
+	public function __construct() {
+		if( $this->CI === null) {
+			$this->CI = &get_instance();
+		}
+
+		$this->CI->config->load('resource');
+		$this->resource = $this->CI->config->item('resource');
+
+		$this->init();
+	}
+
+	public function init($modules=array()) {
+		if(is_array($modules)) {
+			foreach($modules as $module) {
+			}
+		}
+	}
+
+	public function append_module_resource($module_name) {
+		if( ! isset($this->resource[$module_name])) {
+			return FALSE;
+		} else {
+			$module = $this->resource[$module_name];
+		}
+
+		$js = isset($module['js']) ? $module['js'] : array();
+		$css = isset($module['css']) ? $module['css'] : array();
+
+		foreach($js as $js_href) {
+			if(strpos($js_href, 'http') === FALSE) {
+				$js_href = static_url($js_href);
+			} 
+
+			$this->js_head_hrefs[] = $js_href;
+		}
+
+		foreach($css as $css_href) {
+			if(strpos($css_href, 'http') === FALSE) {
+				$css_href = static_url($css_href);
+			}
+
+			$this->css_hrefs[] = $css_href;
+		}
 	}
 
 	public function js_include_display() {

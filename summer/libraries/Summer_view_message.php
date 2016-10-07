@@ -4,7 +4,13 @@ class Summer_view_message {
 
 	public $messages;
 
+	public $CI;
+
 	public function __construct() {
+
+		$this->$CI = &get_instance();
+
+		if($this->CI->js_builder)
 
 	}
 

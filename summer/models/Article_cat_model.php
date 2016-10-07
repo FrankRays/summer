@@ -173,7 +173,6 @@ class Article_cat_model extends CI_Model {
 		return $cats_arr;
 	}
 
-
 	public function _create_tree_a($data, $fid=0, &$cats_str='', &$cats_arr, $level=0) {
 		if(! empty($data[$fid])) {
 			$cats_str .= '<ul>';
