@@ -316,9 +316,10 @@ class User extends MY_Controller {
 	}
 
 	public function test() {
-		$this->load->library('rbac');
-		$this->load->model('role_model');
-		$this->role_model->create_child(14, array('name'=>'ke'));
+		$this->load->library('js_builder');
+		$this->js_builder->append_foot_js(static_url('plugins/ztree/js/jquery.ztree.all.js'));
+		$this->js_builder->append_css(static_url('plugins/ztree/css/zTreeStyle/zTreeStyle.css'));
+		$this->_load_view('default/user/privilege_view.php');
 	}
 
 }

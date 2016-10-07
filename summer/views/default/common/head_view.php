@@ -44,10 +44,8 @@
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("statics/plugins/chosen/amazeui.chosen.css") ?>">
 <!-- chose plugin -->
 
-<!-- chose plugin -->
-  <script type="text/javascript" src="<?php echo base_url("statics/plugins/webuploader/webuploader.js") ?>"></script>
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url("statics/plugins/webuploader/webuploader.css") ?>">
-<!-- chose plugin -->
+<?php echo html_resource('css') ?>
+<?php echo html_resource('head_js') ?>
 </head>
 <body>
 <!--[if lte IE 9]>

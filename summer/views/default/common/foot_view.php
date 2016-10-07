@@ -29,5 +29,7 @@
 <script src="<?php echo base_url('source/AmazeUI-2.1.0/assets/js/amazeui.widgets.helper.min.js') ?>"></script>
 <!--<![endif]-->
 <script src="<?php echo base_url('source/AmazeUI-2.1.0/assets/js/app.js') ?>"></script>
+
+<?php echo html_resource('foot_js') ?>
 </body>
 </html>

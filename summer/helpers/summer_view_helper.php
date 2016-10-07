@@ -142,3 +142,25 @@ if( ! function_exists('datetime_compare')) {
 		}
 	}
 }
+
+
+if( ! function_exists('html_resource')) {
+	function html_resource($type) {
+		$CI = &get_instance();
+		if(empty($CI->js_builder)) {
+			$CI->load->library('js_builder');
+		}
+
+		switch ($type) {
+			case 'css':
+				return $CI->js_builder->display_css();
+			case 'head_js':
+				return $CI->js_builder->display_head_js();
+			case 'foot_js':
+				return $CI->js_builder->display_foot_js();
+			default:
+				return '';
+		}
+		$CI->js_builder->display_css();
+	}
+}
