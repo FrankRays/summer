@@ -28,11 +28,13 @@ class post extends MY_controller {
 		$get = $this->input->get();
 
         $cond = array();
-        $category_id = 0;
-        if( isset($get['category_id']) && is_numeric($get['category_id'])) {
-            $category_id = intval($get['category_id']);
-            $_POST['category_id'] = $category_id . '';
+        $category_id = $this->input->get('category_id', TRUE);
+        if($category_id !== NULL) {
+            $category_id = intval($category_id);
+            $_POST['category_id'] = $category_id;
             $cond['category_id'] = $category_id;
+        } else {
+            $cateogry_id = 0;
         }
 
         $offset = 0;
@@ -50,8 +52,6 @@ class post extends MY_controller {
             $top_article = $this->article_model->get_admin_top(NULL);
             $page['data_list'] = array_merge($top_article, $page['data_list']);
         }
-
-        // var_dump($top_article);
 
 		$page_config['base_url'] = deal_page_base_url();
 		$page_config['total_rows'] = $page['total_rows'];
