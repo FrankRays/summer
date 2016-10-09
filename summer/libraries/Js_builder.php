@@ -18,6 +18,8 @@ class Js_Builder {
 
 	public $resource;
 
+	public $_is_load_resource = array();
+
 	public function __construct() {
 		if( $this->CI === null) {
 			$this->CI = &get_instance();
@@ -37,6 +39,9 @@ class Js_Builder {
 	}
 
 	public function append_module_resource($module_name) {
+		if(isset($this->_is_load_resource[$module_name])) {
+			return TRUE;
+		}
 		if( ! isset($this->resource[$module_name])) {
 			return FALSE;
 		} else {
@@ -61,6 +66,9 @@ class Js_Builder {
 
 			$this->css_hrefs[] = $css_href;
 		}
+
+		$this->_is_load_resource[$module_name] = TRUE;
+		return TRUE;
 	}
 
 	public function js_include_display() {

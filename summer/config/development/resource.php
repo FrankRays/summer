@@ -8,5 +8,5 @@ $config['resource'] = array(
 		'layer'		=> array(
 			'js'	=> array('plugins/layer/layer.js'),
 			)
-	)
+	);
 

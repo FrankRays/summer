@@ -16,7 +16,9 @@ class Tree_model extends MY_Model {
 			return FALSE;
 		}
 
-		$this->name_has_exist($node->name);
+		if($this->name_has_exist($node->name)) {
+			throw new Exception("节点名字已经存在", 1);
+		}
 
 		$this->db->trans_start();
 		$this->db->query("UPDATE {$this->table_name} SET rgt=rgt+2 WHERE rgt>=?", array($parent_node->rgt));
@@ -42,7 +44,9 @@ class Tree_model extends MY_Model {
 			throw new Exception("can not insert sibling on the root", 1);
 		}
 
-		$this->name_has_exist($node->name);
+		if($this->name_has_exist($node->name)) {
+			throw new Exception("节点名字已经存在", 1);
+		}
 
 		$this->db->trans_start();
 		$this->db->query("UPDATE {$this->table_name} SET rgt=rgt+2 WHERE rgt>?", array($sibling_node->rgt));
@@ -101,13 +105,30 @@ class Tree_model extends MY_Model {
 		return $tree;
 	}
 
+	public function udpate_node_name($old_name, $new_name) {
+		$old_node = $this->db->from($this->table_name)->where('name', $old_name)->get()->row_array();
+		if(empty($old_node)) {
+			$this->summer_view_message->append_error('更新节点不存在');
+			return FALSE;
+		}
+
+		if($this->name_has_exist($new_name)) {
+			$this->summer_view_message->append_error('节点名字已存在');
+			return FALSE;
+		}
+
+		$this->db->where('name', $old_name)->update($this->table_name, array('name'=>$new_name));
+		return $this->db->affected_rows();
+	}
+
 	private function name_has_exist($node_name) {
 		$name_has_exist_node = $this->db->from($this->table_name)->where('name', $node_name)->get()->row();
 		if($name_has_exist_node != NULL) {
-			throw new Exception("this node name has been insert", 1);
+			return TRUE;
+		} else{
+			return FALSE;
 		}
 	}
-
 }
 
 class Tree_node {

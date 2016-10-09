@@ -309,12 +309,6 @@ class User extends MY_Controller {
 		$this->_load_view('default/user/user_info_view', $view_data);
 	}
 
-	public function role_brower() {
-		$this->user_model->is_admin_redirect();
-
-
-	}
-
 	public function test() {
 		$this->load->library('js_builder');
 		$this->load->model('role_model');
@@ -333,7 +327,26 @@ class User extends MY_Controller {
 
 	/*--------------------------------------role------------------------------*/
 	public function rename_role_name() {
-		echo 'xxx';
+		$this->load->model('role_model');
+		if($_POST) {
+			$old_name = $this->input->post('old_name', TRUE);
+			$new_name = $this->input->post('new_name', TRUE);
+			if($this->role_model->update_node_name($old_name, $new_name)) {
+				$this->summer_view_message->set_message('更新节点名称成功');
+			}
+
+			echo $this->summer_view_message->json_message();
+		}
+	}
+
+	public function role_brower() {
+		$this->load->library('js_builder');
+		$this->load->model('role_model');
+		$children = $this->role_model->get_cascade_chidren('root');
+		$this->js_builder->append_module_resource('ztree');
+		$this->js_builder->append_module_resource('layer');
+		$view_data['roletree'] = json_encode($children);
+		$this->_load_view('default/user/privilege_view.php', $view_data);
 	}
 
 }

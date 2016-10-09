@@ -87,13 +87,13 @@ $config['form_validation']['error_suffix'] = '</p></div>';
 
 
 //静态路径配置和资源路径配置
-$config['static_base_path']         = 'http://test.summer.com:9999/statics/';
+$config['static_base_path']         = 'http://test.news.svtcc.edu.cn:9999/statics/';
 // $config['static_base_path'] = 'http://192.168.2.167/xww/statics/';
 
-$config['resource_base_path']       = 'http://test.summer.com:9999/resource/';
+$config['resource_base_path']       = 'http://test.news.svtcc.edu.cn:9999/resource/';
 // $config['resource_base_path'] = 'http://192.168.2.167/xww/resource/';
 //资源上传绝对路径
-$config['resource_upload_path']     = 'D:/personal/ke/summer/resource/';
+$config['resource_upload_path']     = 'resource';
 
 //sidar link data and authority
 $config['sidebar_config'] = array(
