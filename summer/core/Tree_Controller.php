@@ -52,8 +52,17 @@ class Tree_Controller extends MY_Controller{
 				}
 			}
 		}
-
 		redirect(site_url('c='.$this->controller_name.'&m=browse'));
+	}
+
+	public function delete_node() {
+		if($_POST) {
+			$this->load->library('summer_view_message');
+			$node_name = $this->input->post('node_name');
+			
+			echo($node_name);
+
+		}
 	}
 
 }

@@ -11,9 +11,10 @@
         <div class="am-btn-toolbar">
           <div class="am-btn-group am-btn-group-xs">
             <button id="create-child-btn" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span>新增节点</button>
+            <button id="edit-child-btn" type="button" class="am-btn am-btn-default"><span class="am-icon-edit"></span>修改节点</button>
             <!-- <button type="button" class="am-btn am-btn-default"><span class="am-icon-save"></span> 保存</button>
             <button type="button" class="am-btn am-btn-default"><span class="am-icon-archive"></span> 审核</button> -->
-            <button id="slider-del-article-btn" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
+            <button id="delete-node-btn" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
           </div>
         </div>
       </div>
@@ -74,30 +75,13 @@
 			"onRename" : function(event, treeId, treeNode, isCancel) {
 			}
 		},
-		"edit" : {
-			"enable" : true,
-			"renameTitle" : "重命名", 
-			"removeTitle" : "删除节点",
-		},
 		view : {
 			selectedMulti : false,
-
 		}
 	};
 	var zNodes = <?php echo $roletree ?>;
 		$(document).ready(function(){
 			var treeObj = $.fn.zTree.init($("#roletree"), setting, zNodes);
-
-			function add(e) {
-				//var treeObj = $.fn.zTree.getZTreeObj('roletree'),
-				// is_parent = $treeObj.data.isParent,
-				// notes = $treeObj.getSelectedNotes(),
-				// treeNode = notes[0];
-				// if(treeNode) {
-				// 	$treeObj.addNodes(treeNode);
-				// }
-			}
-
 
 			//new child node
 			$("#create-child-btn").on('click', function(e){
@@ -121,6 +105,37 @@
 				treeNode = treeNodes[0];
 				layero.find("#parent-name").val(treeNode.name);
 				layero.find("#parent-name-hidden").val(treeNode.name);
+			}
+
+			//delete node
+			$("#delete-node-btn").on('click', function(e){
+				var treeNodes = treeObj.getSelectedNodes(),
+				treeNode = treeNodes[0];
+				if(treeNode) {
+					layer.open({
+						title : '删除节点'
+						,content : '是否要删除节点【' + treeNode.name + '】及其子节点'
+						,icon : 3
+						,yes : deleteNodeYes
+					});
+				} else {
+					layer.msg("请选择需要删除的节点");
+				}
+			});
+
+			var deleteNodeYes = function(index, layero) {
+				treeObj = $.fn.zTree.getZTreeObj('roletree'),
+				treeNodes = treeObj.getSelectedNodes(),
+				treeNode = treeNodes[0];
+				var hasSendRequest = -1;
+				if(hasSendRequest === -1) {
+					hasSendRequest = 1;
+					$.post('<?php echo site_url('c='.$controller_name.'&m=delete_node') ?>',
+					{node_name:treeNode.name},
+					function(msg, status, xh){
+						console.log(msg);
+					});
+				}
 			}
 		});
 </script>
