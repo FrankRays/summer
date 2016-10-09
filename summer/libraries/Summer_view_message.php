@@ -12,6 +12,8 @@ class Summer_view_message {
 
 	public $status;
 
+	public static $valid_status = array('success', 'warning', 'danger', 'secondary');
+
 	public static $flashdata_key;
 
 	public function __construct() {
@@ -95,28 +97,13 @@ class Summer_view_message {
 		$this->response_data = $response_data;
 	}
 
-	public function json_message() {
-		if(empty($this->message)) {
-			$message = '';
-		} else {
-			$message = $this->message;
-		}
-
-		if(empty($this->status)) {
-			$status = 'normal';
-		} else {
-			$status = $this->status;
-		}
-
+	public function ajax_msg($msg, $status) {
+		$this->CI->output->set_header('Content-Type: application/json');
 		$response = array(
-			'message'	=> $message,
+			'msg'		=> $msg,
 			'status'	=> $status,
 			);
-		if( ! empty($this->response_data)) {
-			$response['response_data'] = $this->response_data;
-		}
 
 		return json_encode($response);
 	}
-
 }

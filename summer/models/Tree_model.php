@@ -61,6 +61,19 @@ class Tree_model extends MY_Model {
 		return $this->db->insert_id();
 	}
 
+	public function delete_node($node_name) {
+		$node = $this->db->from($this->table_name)->where('name', $node_name)->get()->row_array();
+		if(empty($node)) {
+			throw new Exception("删除节点不存在", 1);
+		}
+
+		$where = array(
+			'lft >='	=> $node['lft'],
+			'rgt <='	=> $node['rgt'],
+			);
+		$this->db->where($where)->delete($this->table_name);
+	}
+
 	public function get_children($parent_name) {
 		$parent_node = $this->db->from($this->table_name)->where('name', $parent_name)->get()->row();
 		if($parent_node === null) {

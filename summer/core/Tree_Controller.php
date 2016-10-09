@@ -59,7 +59,13 @@ class Tree_Controller extends MY_Controller{
 		if($_POST) {
 			$this->load->library('summer_view_message');
 			$node_name = $this->input->post('node_name');
-			
+
+			try{
+				// $this->main_model->delete_node(stripslashes($node_name));
+				$this->summer_view_message->ajax_msg('删除节点成功', 'success');
+			} catch(Exception $e) {
+
+			}
 			echo($node_name);
 
 		}
