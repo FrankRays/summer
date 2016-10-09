@@ -339,7 +339,7 @@ class User extends MY_Controller {
 		}
 	}
 
-	public function role_brower() {
+	public function role_browse() {
 		$this->load->library('js_builder');
 		$this->load->model('role_model');
 		$children = $this->role_model->get_cascade_chidren('root');

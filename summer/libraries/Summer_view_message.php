@@ -1,4 +1,4 @@
-<?php defined('APPPATH') or exit('no access')
+<?php defined('APPPATH') or exit('no access');
 
 class Summer_view_message {
 
@@ -12,15 +12,15 @@ class Summer_view_message {
 
 	public $status;
 
+	public static $flashdata_key;
+
 	public function __construct() {
 
-		$this->$CI = &get_instance();
+		$this->CI = &get_instance();
 
-		if($this->CI->js_builder == null) {
+		if( ! isset($this->CI->js_builder)) {
 			$this->CI->load->library('js_builder');
 		}
-
-		$this->js_builder->append_module_resource('layer');
 	}
 
 	public function append_message($message) {
@@ -49,11 +49,46 @@ class Summer_view_message {
 			'message'	=> $message,
 			'status'	=> $status,
 			);
-		$this->session->set_flashdata('summer_flash_data', $flashdata);
+		$this->CI->session->set_flashdata('summer_flash_data', $flashdata);
 	}
 
-	public function get_flash_message() {
-		
+	public function set_flash_msg($msg, $status) {
+		$this->CI->session->mark_as_flash('flash_msg');
+
+		$falsh_msg = array(
+			'msg'		=> $msg,
+			'status'	=> $status,
+			);
+		$this->CI->session->set_flashdata('flash_msg', $falsh_msg);
+	}
+
+	public function get_flash_msg() {
+		$flash_msg = $this->CI->session->userdata('flash_msg');
+
+		$msg_html = '';
+		if( ! empty($flash_msg)) {
+			$msg = isset($flash_msg['msg']) ? $flash_msg['msg'] : '';
+			$alert_type_class = '';
+			if(isset($flash_msg['status'])) {
+				if(in_array($flash_msg['status'], array('success', 'warning', 'danger', 'secondary'))) {
+					$alert_type_class = 'am-alert-'.$flash_msg['status'];
+				} 		
+			}
+			$msg_html = '<div class="am-alert '.$alert_type_class.'" data-am-alert>
+				  <button type="button" class="am-close">&times;</button>';
+
+			if(is_array($msg)) {
+				foreach($msg as $item) {
+					$msg_html .= '<p>'.$item.'</p>';
+				}
+			} else {
+				$msg_html .= '<p>'.$msg.'</p>';
+			}
+
+			$msg_html .= '</div>';
+		}
+
+		return $msg_html;
 	}
 
 	public function set_response_data($response_data) {

@@ -20,6 +20,13 @@
       <div class="am-u-sm-12 am-u-md-3">
       </div>
     </div>
+
+     <div class="am-g">
+          <div class="am-u-sm-12">
+    		<?php echo flash_msg()  ?>
+        </div>
+    </div>
+
     <div class="am-g" >
         <div class="am-u-sm-12">
 
@@ -34,14 +41,15 @@
 
 <div id="create-child-form" class="am-g" style="display: none;">
 	<div class="am-u-sm-12">
-		<form action="" method="post" id="articleForm" class="am-form">
+	<?php echo form_open(site_url('c=role&m=create_child'), array('class'=>'am-form', 'method'=>'post')) ?>
 		    <div class="am-form-group">
-				<label for="doc-ipt-email-1">父节点</label>
-				<input type="email" class="" id="doc-ipt-email-1" placeholder="输入电子邮件">
+				<label for="parent-name">父节点</label>
+				<input type="text" id="parent-name" disabled="disabled" />
+				<input type="hidden" name="parent_name_hidden" id="parent-name-hidden" />
 			</div>
 	        <div class="am-form-group">
-	    		<label for="doc-ipt-email-1">几点名称</label>
-	    		<input type="email" class="" id="doc-ipt-email-1" placeholder="输入电子邮件">
+	    		<label for="node-name">节点名称</label>
+	    		<input type="text" name="node_name" id="node-name" placeholder="请输入节点名称">
 	    	</div>
 	    	<p><button type="submit" class="am-btn am-btn-default">提交</button></p>
 		</form>
@@ -85,7 +93,6 @@
 				// is_parent = $treeObj.data.isParent,
 				// notes = $treeObj.getSelectedNotes(),
 				// treeNode = notes[0];
-
 				// if(treeNode) {
 				// 	$treeObj.addNodes(treeNode);
 				// }
@@ -94,11 +101,26 @@
 
 			//new child node
 			$("#create-child-btn").on('click', function(e){
-				layer.open({
-					title : "增加子节点"
-					,type : 1
-					,content : $("#create-child-form")
-				});
+				var treeNodes = treeObj.getSelectedNodes(),
+				treeNode = treeNodes[0];
+				if(treeNode) {
+					layer.open({
+						title : "增加子节点"
+						,type : 1
+						,content : $("#create-child-form")
+						,success : createChildSuccess
+					});
+				} else {
+					layer.msg('请选择需要添加子节点的父节点');
+				}
 			});
+
+			var createChildSuccess = function(layero, index) {
+				treeObj = $.fn.zTree.getZTreeObj('roletree'),
+				treeNodes = treeObj.getSelectedNodes(),
+				treeNode = treeNodes[0];
+				layero.find("#parent-name").val(treeNode.name);
+				layero.find("#parent-name-hidden").val(treeNode.name);
+			}
 		});
 </script>

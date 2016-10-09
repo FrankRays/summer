@@ -11,12 +11,15 @@ class MY_Controller extends CI_Controller{
 	protected $_footer;
 
 	//构造方法
-	public function __construct(){	
+	public function __construct(){
+		date_default_timezone_set('Asia/Shanghai');
+
 		parent::__construct();
 
 		//加载
 		$this->config->load('snowConfig/admin', TRUE);
 		$this->config->load('s/config');
+
 
 		$this->load->helper("url");
 		$this->load->helper("form");
@@ -28,12 +31,6 @@ class MY_Controller extends CI_Controller{
 		$this->load->library('session');
 		$this->load->library('form_validation', $this->config->item('form_validation'));
 		$this->load->library('user_agent');
-
-		$this->load->model('lm_model');
-		$this->load->model('news_category_model');
-		$this->load->model('friendlink_model');
-		$this->load->model('article_model');
-		$this->load->model('user_model');
 
 		$this -> _data['head']['sitename'] = '新闻网';
 		$this -> _data['head']['tplHeadCss'] = array();
@@ -47,15 +44,8 @@ class MY_Controller extends CI_Controller{
 		$this -> _purefoot = 'v_01/common/purefoot_view';
 		$this -> _data['content'] = array();
 		$this -> _data['foot'] = array();
-
-		//开发模式下开启性能分析模式
-		if(ENVIRONMENT == 'development' && ! isset($this->is_ajax)){
-			// $this -> output -> enable_profiler(TRUE);
-		}
-
-		date_default_timezone_set('Asia/Shanghai');
 	}
-
+	
 	public function judgeLogin($login = FALSE){
 		$session_Clogin = $this -> session -> userdata('user');
 			if(empty($session_Clogin) || empty($_SESSION['user'])){

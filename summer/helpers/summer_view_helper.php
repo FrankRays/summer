@@ -3,10 +3,21 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+
+if( ! function_exists('flash_msg')) {
+	function flash_msg() {
+		$CI = &get_instance();
+		if( ! isset($CI->summer_view_helper)) {
+			$CI->load->library('summer_view_message');
+		}
+
+		return $CI->summer_view_message->get_flash_msg();
+	}
+}
+
 /**
  * summer_view
  */
-
 if(!function_exists('getFlashAlert')) {
 
 	function getFlashAlert() {

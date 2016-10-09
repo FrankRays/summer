@@ -9,15 +9,11 @@ class Tree_model extends MY_Model {
 
 	}
 
-	public function insert_child($parent_id, $node) {
-		$parent_node = $this->db->from($this->table_name)->where('id', $parent_id)->get()->row();
+	public function insert_child($parent_name, $node) {
+		$parent_node = $this->db->from($this->table_name)->where('name', $parent_name)->get()->row();
 
 		if(empty($parent_node)) {
-			return FALSE;
-		}
-
-		if($this->name_has_exist($node->name)) {
-			throw new Exception("节点名字已经存在", 1);
+			throw new Exception("父节点不存在", 1);
 		}
 
 		$this->db->trans_start();

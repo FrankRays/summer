@@ -44,4 +44,8 @@ class MY_Model extends CI_Model {
 		return $this->db->affected_rows();
 	}
 
+	public function get_table_name() {
+		return $this->table_name;
+	}
+
 }
