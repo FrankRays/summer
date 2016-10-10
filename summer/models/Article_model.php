@@ -431,6 +431,21 @@ class article_model extends CI_Model {
 		return $article;
 	}
 
+	public function f_get_by_id($article_id) {
+		$where = array(
+			'id'	=> $article_id,
+			'status'=> '1',
+			);
+
+		$article = $this->db->where($where)->from($this->table_name)->get()->row_array();
+
+		//replace the file link from content to www server
+		$content = preg_replace('/"(.*)\.(docx)"/', '"http://www.svtcc.edu.cn$1.docx"', $article['content']);
+		$article['content'] = $content;
+		
+		return $article;
+	}
+
 	//v2 根据首页ID更新文章内容
 	public function update_by_index_id($article, $index_id) {
 		$where = array(
@@ -585,6 +600,10 @@ class article_model extends CI_Model {
 			'status'				=> YES,
 			);
 
+		if(isset($param['category_id'])) {
+			$where['category_id'] = $param['category_id'];
+		}
+
 		$article = $this->db->where($where)
 			->from(TABLE_ARTICLE)
 			->limit(1)
@@ -636,10 +655,11 @@ class article_model extends CI_Model {
 	public function get_week_hot() {
 
 		$where = array(
-			'is_delete'			=> NO,
-			'status'			=> YES,
+			'is_delete'			=> '0',
+			'status'			=> '1',
 			'publish_date >'	=> date(DATE_FORMAT, time() - 24 * 3600 * 7),
 			'publish_date <'	=> date(TIME_FORMAT),
+			'category_id <>'	=> 1,
 			);
 
 		$articles = $this->db->select('title, id, category_id, category_name, is_redirect, come_from, come_from_url')

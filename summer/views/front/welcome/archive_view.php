@@ -73,6 +73,7 @@
 	               <span class="art_author">作者：<?php echo $article['author_name'] ?></span> 
 	               <span class="art_view">阅读：<?php echo $article['hits'] ?> </span> 
 	               <span class="art_publish">发布：<?php echo substr($article['publish_date'], 0, 10) ?></span>
+                 <span class="art_publish">发布：<?php echo substr($article['publish_date'], 0, 10) ?></span>
 	            </div>
            </div>
            <!-- <div class="art_summary">

@@ -56,7 +56,6 @@ class Welcome extends MY_Controller {
 	}
 
 	public function archive() {
-
 		//check mobile page
 		if($this->agent->is_mobile()) {
 			$this->m_archive();
@@ -77,7 +76,6 @@ class Welcome extends MY_Controller {
 			$category_id = intval($segment_info[0]);
 
 			$article = $this->article_model->get_by_id($article_id);
-
 			if(empty($article)) {
 				show_404();
 			}
@@ -89,12 +87,16 @@ class Welcome extends MY_Controller {
 			$view_data['navs'] 				= $this->nav_model->get_list(1, 11, 0);
 			$view_data['bread_path'] 		= $this->article_cat_model->get_nav_path($category_id);
 			$view_data['next_article'] 		
-			= $this->article_model->get_next_article($article['id'], array('class' => 'p-essay next-essay'));
+			= $this->article_model->get_next_article($article['id'],
+						array('class' => 'p-essay next-essay', 'category_id'=>$article['category_id']));
 			$view_data['prev_article'] 		
-			= $this->article_model->get_prev_article($article['id'], array('class' => 'p-essay previous-essay'));
+			= $this->article_model->get_prev_article($article['id'], 
+						array('class' => 'p-essay previous-essay', 'category_id'=>$article['category_id']));
 			$view_data['week_hot']			= $this->article_model->get_week_hot();
 			$view_data['date_archive_html'] = $this->article_model->get_archive_html();
 			$view_data['title']		= $article['title'] . '-' . $article['category_name'] . '-';
+
+			var_dump($article);
 		}
 
 		$this->load->view('front/welcome/archive_view', $view_data);

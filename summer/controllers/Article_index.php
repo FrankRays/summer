@@ -204,6 +204,29 @@ class Article_index extends MY_Controller {
 		redirect(site_url('c=post&m=index'));
 	}
 
+	public function www_crawler() {
+		$url_queue = array('http://www.svtcc.edu.cn/front/list-11.html');
+		while (count($url_queue) !== 0) {
+			$request_url = array_pop($url_queue);
+			printf("[%s] start deal : %s", date('Y-m-d h:i:s'), $request_url);
+
+			printf("[%s] start curl : %s", date('Y-m-d h:i:s'), $request_url);
+			$ch = curl_init();
+	    	curl_setopt($ch, CURLOPT_URL, $url);
+	    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+	    	$output = curl_exec($ch);
+	    	curl_close($ch);
+			printf("[%s] completely curl : %s", date('Y-m-d h:i:s'), $request_url);
+
+
+			printf("[%s] start deal content : %s", date('Y-m-d h:i:s'), $request_url);
+
+			sleep(1);
+		}
+
+	}
+
 	private function _check_form() {
 		$this->form_validation->set_rules(array(
 			array(
