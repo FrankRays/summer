@@ -40,9 +40,11 @@
     </div>
 </div>
 
+
+<!-- hidden form -->
 <div id="create-child-form" class="am-g" style="display: none;">
 	<div class="am-u-sm-12">
-	<?php echo form_open(site_url('c=role&m=create_child'), array('class'=>'am-form', 'method'=>'post')) ?>
+	<?php echo form_open(site_url('c='.$controller_name.'&m=create_child'), array('class'=>'am-form', 'method'=>'post')) ?>
 		    <div class="am-form-group">
 				<label for="parent-name">父节点</label>
 				<input type="text" id="parent-name" disabled="disabled" />
@@ -56,7 +58,10 @@
 		</form>
 	</div>
 </div>
-
+<?php echo form_open(site_url('c='.$controller_name.'&m=delete_node'), array('id'=>'delete-node-form', 'method'=>'post')) ?>
+	<input type="hidden" name="node_name" />
+</form>
+<!-- hidden form -->
 
 <script type="text/javascript">
 	var setting = {	
@@ -128,14 +133,8 @@
 				treeNodes = treeObj.getSelectedNodes(),
 				treeNode = treeNodes[0];
 				var hasSendRequest = -1;
-				if(hasSendRequest === -1) {
-					hasSendRequest = 1;
-					$.post('<?php echo site_url('c='.$controller_name.'&m=delete_node') ?>',
-					{node_name:treeNode.name},
-					function(msg, status, xh){
-						console.log(msg);
-					});
-				}
+				$("#delete-node-form").find("[name='node_name']").val(treeNode.name);
+				$("#delete-node-form").trigger('submit');
 			}
 		});
 </script>

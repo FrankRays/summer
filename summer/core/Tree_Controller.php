@@ -8,6 +8,8 @@ class Tree_Controller extends MY_Controller{
 
 	protected $browse_view_path;
 
+	protected $browse_url;
+
 	protected $controller_name;
 
 	//correspond tree model
@@ -52,23 +54,26 @@ class Tree_Controller extends MY_Controller{
 				}
 			}
 		}
-		redirect(site_url('c='.$this->controller_name.'&m=browse'));
+		redirect($this->browse_url);
 	}
 
 	public function delete_node() {
 		if($_POST) {
 			$this->load->library('summer_view_message');
 			$node_name = $this->input->post('node_name');
-
 			try{
-				// $this->main_model->delete_node(stripslashes($node_name));
-				$this->summer_view_message->ajax_msg('删除节点成功', 'success');
-			} catch(Exception $e) {
-
+				$this->main_model->delete_node(stripslashes($node_name));
+				$this->summer_view_message->set_flash_msg('删除节点成功', 'success');
+			} catch (Exception $e) {
+				var_dump($e->getMessage());
+				$this->summer_view_message->set_flash_msg($e->getMessage(), 'error');
 			}
-			echo($node_name);
-
 		}
+		redirect($this->browse_url);
+	}
+
+	public function reset_tree() {
+		$this->main_model->reset_tree();
 	}
 
 }

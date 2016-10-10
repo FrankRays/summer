@@ -12,6 +12,7 @@ class Role extends Tree_Controller {
 		$this->load->model('role_model');
 		$this->main_model = &$this->role_model;
 		$this->load->vars('controller_name', $this->controller_name);
+		$this->browse_url = site_url('c='.$this->controller_name.'&m=browse');
 	}
 
 }

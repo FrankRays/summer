@@ -66,12 +66,25 @@ class Tree_model extends MY_Model {
 		if(empty($node)) {
 			throw new Exception("删除节点不存在", 1);
 		}
-
+		if($node['id'] == 1) {
+			throw new Exception("不能删除根节点", 1);
+		}
 		$where = array(
 			'lft >='	=> $node['lft'],
 			'rgt <='	=> $node['rgt'],
 			);
+		$delete_nodes_number = $this->db->select('count(*) as number')
+								->from($this->table_name)
+								->where($where)
+								->get()
+								->row_array();
+		$delete_nodes_number = $delete_nodes_number['number'];
+
+		$this->db->trans_start();
 		$this->db->where($where)->delete($this->table_name);
+		$this->db->query('UPDATE ' . $this->table_name . ' SET rgt = rgt - '.($delete_nodes_number*2).' where rgt > ?', array($node['rgt']));
+		$this->db->query('UPDATE ' . $this->table_name . ' SET lft = lft - '.($delete_nodes_number*2).' where lft > ?', array($node['rgt']));
+		$this->db->trans_complete();
 	}
 
 	public function get_children($parent_name) {
@@ -128,6 +141,14 @@ class Tree_model extends MY_Model {
 
 		$this->db->where('name', $old_name)->update($this->table_name, array('name'=>$new_name));
 		return $this->db->affected_rows();
+	}
+
+	public function reset_tree() {
+		$this->db->trans_start();
+		$this->db->truncate($this->table_name);
+		$this->db->query("INSERT INTO `{$this->table_name}` (`id`, `lft`, `rgt`, `level`, `path`, `name`, `parent_id`) 
+			VALUES (NULL, '1', '2', '1', 'root', 'root', '0')");
+		$this->db->trans_complete();
 	}
 
 	private function name_has_exist($node_name) {

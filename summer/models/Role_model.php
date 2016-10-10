@@ -29,7 +29,7 @@ class Role_model extends Tree_model {
 		return $this->db->insert_id();
 	}
 
-	public function delete_node($node_id) {
+	public function _delete_node($node_id) {
 		$delete_node = $this->db->from(TABLE_ROLE)->where('id', $node_id)->get()->row_array();
 		if(empty($delete_node)) {
 			show_error('删除节点不存在');
