@@ -205,23 +205,86 @@ class Article_index extends MY_Controller {
 	}
 
 	public function www_crawler() {
-		$url_queue = array('http://www.svtcc.edu.cn/front/list-11.html');
+		$this->load->helper('simple_html_dom_helper');
+		$url_queue 	= array('http://www.svtcc.edu.cn/front/list-11.html');
+		$visited	= array();
 		while (count($url_queue) !== 0) {
-			$request_url = array_pop($url_queue);
-			printf("[%s] start deal : %s", date('Y-m-d h:i:s'), $request_url);
+			$request_url = array_shift($url_queue);
+			printf("[%s] start deal : %s\n", date('Y-m-d h:i:s'), $request_url);
 
-			printf("[%s] start curl : %s", date('Y-m-d h:i:s'), $request_url);
-			$ch = curl_init();
-	    	curl_setopt($ch, CURLOPT_URL, $url);
-	    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-	    	$output = curl_exec($ch);
-	    	curl_close($ch);
-			printf("[%s] completely curl : %s", date('Y-m-d h:i:s'), $request_url);
+			printf("[%s] start curl : %s\n", date('Y-m-d h:i:s'), $request_url);
+			$html = file_get_html($request_url);
+			printf("[%s] completely curl : %s\n", date('Y-m-d h:i:s'), $request_url);
 
+			if(strpos($request_url, 'list') !== false) {
+				//deal with list
+				$ret = $html->find('.szlbys_content ul', 0)->find('li a');
 
-			printf("[%s] start deal content : %s", date('Y-m-d h:i:s'), $request_url);
+				foreach($ret as $a) {
+					$href = 'http://www.svtcc.edu.cn' . $a->href;
+					if(in_array($href, $visited)) {
+						continue;
+					} else {
+						array_push($url_queue, $href);
+					}
+				}
+			} else {
+				//deal with article content page
+				printf("[%s] start deal content : %s\n", date('Y-m-d h:i:s'), $request_url);
 
+				if( ! empty($html)) {
+					$article_dom = $html->find('#newscontent', 0);
+					$title_dom = $article_dom->find('h3', 0);
+					$title = $title_dom->plaintext;
+					$article_info_dom = $title_dom->next_sibling();
+					$article_info = $article_info_dom->plaintext;
+					preg_match('/发布者：(.*?) &/', $article_info, $author_name);
+					preg_match('/点击数：(.*?) &/', $article_info, $hits);
+					preg_match('/发布时间：(\d{4}-\d{2}-\d{2})/', $article_info, $publish_date);
+					$author_name = $author_name[1];
+					$hits = $hits[1];
+					$publish_date = $publish_date[1];
+
+					$article_content_dom = $article_info_dom->next_sibling();
+					$article_imgs = $article_content_dom->find('img');
+					foreach($article_imgs as &$imgs) {
+						$imgs->src = 'http://www.svtcc.edu.cn' . $imgs->src;
+					}
+					$content = $article_content_dom->innertext;
+
+					$category_map = array(
+						'11' => array(
+							'category_id'=>'2',
+							'category_name'=>'学院新闻'),
+						'12' => array(
+							'category_id'=>'1',
+							'category_name'=>'通知公告',
+							),
+						'16' => array(
+							'category_id'=>'3',
+							'category_name'=>'系部动态',
+							),
+						);
+					$category_id = explode('-', $request_url);
+					$category = $category_map[$category_id[1]];
+
+					$insert_article = array(
+						'title'		=> $title,
+						'category_id' => $category['category_id'],
+						'category_name'=>$category['category_name'],
+						'content'	=> $content,
+						'hits'		=> $hits,
+						'author_name'	=> $author_name,
+						'publish_date'	=> $publish_date,
+						);
+
+					var_dump($insert_article);
+					exit();
+				}
+
+			}
+			
+			array_push($visited, $request_url);
 			sleep(1);
 		}
 

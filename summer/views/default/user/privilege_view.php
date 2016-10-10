@@ -136,5 +136,10 @@
 				$("#delete-node-form").find("[name='node_name']").val(treeNode.name);
 				$("#delete-node-form").trigger('submit');
 			}
+
+			//edit node 
+			$('#edit-child-btn').on('click', function(e){
+				
+			});
 		});
 </script>
