@@ -83,3 +83,5 @@ ENGINE = MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 
 ALTER TABLE `summer_article_category` ADD `is_img` TINYINT NOT NULL DEFAULT '0' AFTER `is_delete`;
+
+ALTER TABLE `summer_article_index` ADD `www_href` VARCHAR(255) NOT NULL AFTER `fingerprint`;

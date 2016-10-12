@@ -204,7 +204,7 @@ class Article_index extends MY_Controller {
 		redirect(site_url('c=post&m=index'));
 	}
 
-	public function www_crawler($page_url_code=1, $page_no=1, $page_size=20) {
+	public function www_crawler($page_url_code=0, $page_no=1, $page_size=20) {
 		if( ! is_cli()) {
 			exit('ba');
 		}
@@ -349,8 +349,28 @@ class Article_index extends MY_Controller {
 						->get()->row_array();
 		if(empty($old_article)) {
 			$this->db->insert(TABLE_ARTICLE, $insert_article);
+			$insert_article['id'] = $this->db->insert_id();
 		} else {
 			$this->db->where('id', $old_article['id'])->update(TABLE_ARTICLE, $insert_article);
+			$insert_article['id'] = $old_article['id'];
+		}
+
+		$old_www_article = $this->db->from(TABLE_ARTICLE_INDEX)
+								->where('article_id', $insert_article['id'])
+								->get()
+								->row_array();
+		$insert_index_article = array(
+			'article_id' 	=> $insert_article['id'],
+			'index_id'		=> stripslashes($index_article_id),
+			'category_id'	=> intval($category_id[1]),
+			'category_name'	=> $insert_article['category_name'],
+			'index_create_date'	=> $publish_date,
+			'www_href'		=> $request_url
+			);
+		if(empty($old_www_article)) {
+			$this->db->insert(TABLE_ARTICLE_INDEX, $insert_index_article);
+		} else {
+			$this->db->where('article_id', $insert_article['id'])->update(TABLE_ARTICLE_INDEX, $insert_index_article);
 		}
 	}
 
