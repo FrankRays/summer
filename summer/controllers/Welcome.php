@@ -95,8 +95,6 @@ class Welcome extends MY_Controller {
 			$view_data['week_hot']			= $this->article_model->get_week_hot();
 			$view_data['date_archive_html'] = $this->article_model->get_archive_html();
 			$view_data['title']		= $article['title'] . '-' . $article['category_name'] . '-';
-
-			var_dump($article);
 		}
 
 		$this->load->view('front/welcome/archive_view', $view_data);

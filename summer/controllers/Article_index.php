@@ -204,91 +204,122 @@ class Article_index extends MY_Controller {
 		redirect(site_url('c=post&m=index'));
 	}
 
-	public function www_crawler() {
+	public function www_crawler($page_url='http://www.svtcc.edu.cn/front/list-11.html') {
 		$this->load->helper('simple_html_dom_helper');
-		$url_queue 	= array('http://www.svtcc.edu.cn/front/list-11.html');
+		$url_queue 	= array($page_url);
 		$visited	= array();
-		while (count($url_queue) !== 0) {
-			$request_url = array_shift($url_queue);
-			printf("[%s] start deal : %s\n", date('Y-m-d h:i:s'), $request_url);
+		while(TRUE) {
+			while (count($url_queue) !== 0) {
+				$request_url = array_shift($url_queue);
+				printf("[%s] start deal : %s\n", date('Y-m-d h:i:s'), $request_url);
 
-			printf("[%s] start curl : %s\n", date('Y-m-d h:i:s'), $request_url);
-			$html = file_get_html($request_url);
-			printf("[%s] completely curl : %s\n", date('Y-m-d h:i:s'), $request_url);
+				printf("[%s] start curl : %s\n", date('Y-m-d h:i:s'), $request_url);
+				$html = file_get_html($request_url);
+				printf("[%s] completely curl : %s\n", date('Y-m-d h:i:s'), $request_url);
 
-			if(strpos($request_url, 'list') !== false) {
-				//deal with list
-				$ret = $html->find('.szlbys_content ul', 0)->find('li a');
+				if(strpos($request_url, 'list') !== false) {
+					//deal with list
+					$ret = $html->find('.szlbys_content ul', 0)->find('li a');
 
-				foreach($ret as $a) {
-					$href = 'http://www.svtcc.edu.cn' . $a->href;
-					if(in_array($href, $visited)) {
-						continue;
-					} else {
-						array_push($url_queue, $href);
+					foreach($ret as $a) {
+						$href = 'http://www.svtcc.edu.cn' . $a->href;
+						if(in_array($href, $visited)) {
+							continue;
+						} else {
+							array_push($url_queue, $href);
+						}
 					}
-				}
-			} else {
-				//deal with article content page
-				printf("[%s] start deal content : %s\n", date('Y-m-d h:i:s'), $request_url);
+					unset($ret);
+				} else {
+					//deal with article content page
+					printf("[%s] start deal content : %s\n", date('Y-m-d h:i:s'), $request_url);
 
-				if( ! empty($html)) {
-					$article_dom = $html->find('#newscontent', 0);
-					$title_dom = $article_dom->find('h3', 0);
-					$title = $title_dom->plaintext;
-					$article_info_dom = $title_dom->next_sibling();
-					$article_info = $article_info_dom->plaintext;
-					preg_match('/发布者：(.*?) &/', $article_info, $author_name);
-					preg_match('/点击数：(.*?) &/', $article_info, $hits);
-					preg_match('/发布时间：(\d{4}-\d{2}-\d{2})/', $article_info, $publish_date);
-					$author_name = $author_name[1];
-					$hits = $hits[1];
-					$publish_date = $publish_date[1];
-
-					$article_content_dom = $article_info_dom->next_sibling();
-					$article_imgs = $article_content_dom->find('img');
-					foreach($article_imgs as &$imgs) {
-						$imgs->src = 'http://www.svtcc.edu.cn' . $imgs->src;
+					if( ! empty($html)) {
+						$this->_crawl_article_content($html, $request_url);
 					}
-					$content = $article_content_dom->innertext;
 
-					$category_map = array(
-						'11' => array(
-							'category_id'=>'2',
-							'category_name'=>'学院新闻'),
-						'12' => array(
-							'category_id'=>'1',
-							'category_name'=>'通知公告',
-							),
-						'16' => array(
-							'category_id'=>'3',
-							'category_name'=>'系部动态',
-							),
-						);
-					$category_id = explode('-', $request_url);
-					$category = $category_map[$category_id[1]];
-
-					$insert_article = array(
-						'title'		=> $title,
-						'category_id' => $category['category_id'],
-						'category_name'=>$category['category_name'],
-						'content'	=> $content,
-						'hits'		=> $hits,
-						'author_name'	=> $author_name,
-						'publish_date'	=> $publish_date,
-						);
-
-					var_dump($insert_article);
-					exit();
 				}
-
+				array_push($visited, $request_url);
+				unset($html);
+				unset($request_url);
+				echo memory_get_usage() . "\n";
+				sleep(1);
 			}
-			
-			array_push($visited, $request_url);
-			sleep(1);
+			sleep(60*15);
 		}
 
 	}
+
+	private function _crawl_article_content($html, $request_url) {
+		$article_dom = $html->find('#newscontent', 0);
+		$title_dom = $article_dom->find('h3', 0);
+		$title = $title_dom->plaintext;
+		$article_info_dom = $title_dom->next_sibling();
+		$article_info = $article_info_dom->plaintext;
+		preg_match('/发布者：(.*?) &/', $article_info, $author_name);
+		preg_match('/点击数：(.*?) &/', $article_info, $hits);
+		preg_match('/发布时间：(\d{4}-\d{2}-\d{2})/', $article_info, $publish_date);
+		$author_name = $author_name[1];
+		$hits = $hits[1];
+		$publish_date = $publish_date[1];
+
+		$article_content_dom = $article_info_dom->next_sibling();
+		$article_imgs = $article_content_dom->find('img');
+		foreach($article_imgs as &$imgs) {
+			$imgs->src = 'http://www.svtcc.edu.cn' . $imgs->src;
+			$imgs->style = 'width:100%';
+			$img_copy = $imgs;
+			do {
+				$img_copy = $img_copy->parent();
+				echo $img_copy->tag . "\n";
+			}while( ! empty($img_copy) and $img_copy->tag != 'p');
+
+			if( ! empty($img_copy)) {
+				$img_copy->style = '';
+			}
+		}
+		$content = $article_content_dom->innertext;
+
+		$category_map = array(
+			'11' => array(
+				'category_id'=>'2',
+				'category_name'=>'学院新闻'),
+			'12' => array(
+				'category_id'=>'1',
+				'category_name'=>'通知公告',
+				),
+			'16' => array(
+				'category_id'=>'3',
+				'category_name'=>'系部动态',
+				),
+			);
+		$category_id = explode('-', $request_url);
+		$category = $category_map[$category_id[1]];
+		$index_article_id = $category_id[2];
+		$index_article_id = substr($index_article_id, 0, strpos($index_article_id, '.'));
+
+		$insert_article = array(
+			'title'		=> $title,
+			'category_id' => $category['category_id'],
+			'category_name'=>$category['category_name'],
+			'content'	=> $content,
+			'hits'		=> $hits,
+			'author_name'	=> $author_name,
+			'publish_date'	=> $publish_date,
+			'index_id'		=> $index_article_id,
+			'status'		=> '1',
+			'is_delete'		=> '0',
+			);
+
+		$old_article = $this->db->from(TABLE_ARTICLE)->where('index_id', $index_article_id)
+						->get()->row_array();
+		if(empty($old_article)) {
+			$this->db->insert(TABLE_ARTICLE, $insert_article);
+		} else {
+			$this->db->where('id', $old_article['id'])->update(TABLE_ARTICLE, $insert_article);
+		}
+	}
+
 
 	private function _check_form() {
 		$this->form_validation->set_rules(array(
