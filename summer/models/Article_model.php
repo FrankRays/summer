@@ -655,20 +655,30 @@ class article_model extends CI_Model {
 	public function get_week_hot() {
 
 		$where = array(
-			'is_delete'			=> '0',
-			'status'			=> '1',
+			'a.is_delete'			=> '0',
+			'a.status'			=> '1',
 			'publish_date >'	=> date(DATE_FORMAT, time() - 24 * 3600 * 7),
 			'publish_date <'	=> date(TIME_FORMAT),
-			'category_id <>'	=> 1,
+			'a.category_id <>'	=> 1,
 			);
 
-		$articles = $this->db->select('title, id, category_id, category_name, is_redirect, come_from, come_from_url')
-						->from(TABLE_ARTICLE)
+		$articles = $this->db->select('title, a.id as id, category_id, category_name,
+							 is_redirect, come_from, come_from_url, a_cat.is_img as is_img')
+						->from(TABLE_ARTICLE . ' as a')
 						->where($where)
+						->join(TABLE_ARTICLE_CAT . ' as a_cat', 'a_cat.id=a.category_id')
 						->order_by('hits desc')
 						->limit(5)
 						->get()
 						->result_array();
+
+		foreach($articles as &$a) {
+			if($a['is_img'] == 1) {
+				$a['href'] = site_url('photo_archive/'.$a['id']);
+			} else {
+				$a['href'] = site_url('archive/' . $a['category_id'] . '-' . $a['id']);
+			}
+		}
 
 		return $articles;
 	}

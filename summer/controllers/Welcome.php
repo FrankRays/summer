@@ -194,7 +194,7 @@ class Welcome extends MY_Controller {
 		$view_data['next_pic']	= site_url('photo_archive/' . $article['id'] . '/' . $next_image_index);
 		$view_data['cur_image_index'] 	= $cur_image_index;
 		$view_data['latest_images']		= $this->article_model->get_front_list(5, 0, $article['category_id']);
-		$view_data['title']		= $category['name'] . '-';
+		$view_data['title']		= $article['title'] . '-' . $article['category_name'] . '-';
 
 		// $this->load->view('front/welcome/photo_archive_view', $view_data);
 		$this->load->view('front/welcome/old_photo_archive_view', $view_data);

@@ -204,8 +204,21 @@ class Article_index extends MY_Controller {
 		redirect(site_url('c=post&m=index'));
 	}
 
-	public function www_crawler($page_url='http://www.svtcc.edu.cn/front/list-11.html') {
+	public function www_crawler($page_url_code=1, $page_no=1, $page_size=20) {
+		if( ! is_cli()) {
+			exit('ba');
+		}
+		
 		$this->load->helper('simple_html_dom_helper');
+		$page_url_map = array('http://www.svtcc.edu.cn/front/list-11.html',
+				 	'http://www.svtcc.edu.cn/front/list-12.html',
+				  	'http://www.svtcc.edu.cn/front/list-16.html');
+		$page_url = $page_url_map[$page_url_code];
+		if(empty($page_url)) {
+			exit('no set this $page_url_code : ' . $page_url_code);
+		}
+
+		$page_url .= '?pageNo=' . intval($page_no) . '&pageSize=' . intval($page_size);
 		$url_queue 	= array($page_url);
 		$visited	= array();
 		while(TRUE) {
@@ -250,6 +263,16 @@ class Article_index extends MY_Controller {
 
 	}
 
+	public function www_crawler_single() {
+		exit();
+		$request_url = 'http://www.svtcc.edu.cn/front/view-12-8dab6616157e4c839d140b3ce05c08a7.html';
+		$this->load->helper('simple_html_dom_helper');
+		$html = file_get_html($request_url);
+		if( ! empty($html)) {
+			$this->_crawl_article_content($html, $request_url);
+		}
+	}
+
 	private function _crawl_article_content($html, $request_url) {
 		$article_dom = $html->find('#newscontent', 0);
 		$title_dom = $article_dom->find('h3', 0);
@@ -263,6 +286,7 @@ class Article_index extends MY_Controller {
 		$hits = $hits[1];
 		$publish_date = $publish_date[1];
 
+		//deal article content img tag src replace to www absolute src
 		$article_content_dom = $article_info_dom->next_sibling();
 		$article_imgs = $article_content_dom->find('img');
 		foreach($article_imgs as &$imgs) {
@@ -271,13 +295,23 @@ class Article_index extends MY_Controller {
 			$img_copy = $imgs;
 			do {
 				$img_copy = $img_copy->parent();
-				echo $img_copy->tag . "\n";
 			}while( ! empty($img_copy) and $img_copy->tag != 'p');
 
 			if( ! empty($img_copy)) {
 				$img_copy->style = '';
 			}
 		}
+
+		//deal article content a tag href replace to www abolute href
+		$article_atags = $article_content_dom->find('a');
+		foreach ($article_atags as &$atag) {
+			if( ! strpos($atag->href, 'http://') and  ! strpos($atag->href, 'https://')) {
+				if(strpos($atag->href, 'userfiles')) {
+					$atag->href = 'http://www.svtcc.edu.cn' . $atag->href;
+				}
+			}
+		}
+
 		$content = $article_content_dom->innertext;
 
 		$category_map = array(

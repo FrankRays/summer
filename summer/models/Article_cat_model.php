@@ -143,13 +143,14 @@ class Article_cat_model extends CI_Model {
 
 	//v2， 返回生成属性数组
 	public function create_tree_a($fid=0) {
-		$cats = $this->db
-			->select('id, cat_id, name, path, fid')
+
+		$cats = $this->db->select('id, cat_id, name, path, fid')
 			->from($this->table_name)
 			->where(array('status'=>YES, 'is_delete'=>NO))
-			->get()
-			->result_array();
+			->get()->result_array();
 
+
+			//article category filter start
 			$filter_cats = array();
 			$this->load->model('user_model');
 			if( ! $this->user_model->_is_super()) {
@@ -159,8 +160,10 @@ class Article_cat_model extends CI_Model {
 						$filter_cats[] = $cat;
 					}
 				}
+			} else {
+				$filter_cats = $cats;
 			}
-
+			//article category filter start
 
 		$new_cats = array();
 		foreach($filter_cats as $item) {
