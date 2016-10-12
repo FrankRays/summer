@@ -35,7 +35,7 @@
                     	<b>0<?php echo $i + 1 ?></b>
                 	</dd>
                     <dt>
-	                    <a href="<?php echo $v['href'] ?>"><?php echo $v['title'] ?></a>
+	                    <a href="<?php echo archive_url($v) ?>"><?php echo $v['title'] ?></a>
                 	</dt>
             </dl>
             <?php }else{ ?>
@@ -44,7 +44,7 @@
                 <?php } ?>
 
                 <li>
-                    <a href="<?php echo $v['href'] ?>" class="clearfix">
+                    <a href="<?php echo archive_url($v) ?>" class="clearfix">
                         <span class="fl indbase_tit"><?php echo $v['title'] ?></span>
                     </a>
                 </li>

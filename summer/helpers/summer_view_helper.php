@@ -111,10 +111,13 @@ if ( ! function_exists('sub_text_mb')) {
 }
 
 
+/*
+	$id int or article array,
+*/
 if( ! function_exists('archive_url')) {
 	function archive_url($id, $cid=0) {
 		$CI = &get_instance();
-		$photo_category_id = $CI->config->item('photo_category_id');
+		$photo_category_id = config_item('photo_category_id');
 
 		if(is_array($id)) {
 			$article = $id;
@@ -124,15 +127,15 @@ if( ! function_exists('archive_url')) {
 				if(in_array($article["category_id"], $photo_category_id)) {
 					return site_url("photo_archive/" . $article["id"]);
 				} else {
-					return site_url("archive/" . $article["category_id"] . '-' . $article["id"]);
+					return site_url("archive/" . $article["id"]);
 				}
 			}
 		}
 		if( ! $CI->agent->is_mobile()) {
-			return site_url('archive/' . $cid . '-' . $id);
+			return site_url('archive/' . $id);
 		}else{
 			if( ! in_array(intval($cid), $photo_category_id)) {
-				return site_url('m/archive/' . $cid . '-' . $id);
+				return site_url('m/archive/' . $id);
 			} else {
 				return site_url('m/photo_archive/' . $id);
 			}

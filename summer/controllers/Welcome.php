@@ -61,51 +61,52 @@ class Welcome extends MY_Controller {
 		$this->site_model->increase_site_hits();
 
 		$view_data = array();
-		
-		$artilce_segment_info = $this->uri->rsegment(3);
-		if(! strpos($artilce_segment_info, '-')) {
+
+		$article_id = $this->uri->rsegment(3);
+		if(empty($article_id) or ! is_numeric($article_id)) {
+			show_404();
+		} else {
+			$article_id = intval($article_id);
+		}
+		$article = $this->article_model->f_get_by_id($article_id);
+		if(empty($article)) {
 			show_404();
 		}
 
-		$segment_info = explode('-', $artilce_segment_info);
-		if(count($segment_info) == 2) {
-			$article_id = intval($segment_info[1]);
-			$category_id = intval($segment_info[0]);
+		$this->article_model->increase_hit($article['id']);
 
-			$article = $this->article_model->get_by_id($article_id);
-			if(empty($article)) {
-				show_404();
-			}
-
-			//find if is the index article
-			$index_article = $this->db->from(TABLE_ARTICLE_INDEX)->where('article_id', $article['id'])->get()->row_array();
-			if( ! empty($index_article)) {
-				$view_data['index_article'] = $index_article;
-			}
-
-			$this->article_model->increase_hit($article['id']);
-
-			$article['imgs'] 				= $this->file_model->get_imgs_by_object_id($article['id']);
-			$view_data['article'] 			= $article;
-			$view_data['title'] 			= $article['title'];
-			$view_data['navs'] 				= $this->nav_model->get_list(1, 11, 0);
-			$view_data['bread_path'] 		= $this->article_cat_model->get_nav_path($category_id);
-			$view_data['next_article'] 		
-			= $this->article_model->get_next_article($article['id'],
-						array('class' => 'p-essay next-essay', 'category_id'=>$article['category_id']));
-			$view_data['prev_article'] 		
-			= $this->article_model->get_prev_article($article['id'], 
-						array('class' => 'p-essay previous-essay', 'category_id'=>$article['category_id']));
-			$view_data['week_hot']			= $this->article_model->get_week_hot();
-			$view_data['date_archive_html'] = $this->article_model->get_archive_html();
-			$view_data['title']		= $article['title'] . '-' . $article['category_name'] . '-';
+		//get category
+		$category = $this->article_cat_model->get_by_id($article['category_id']);
+		if(empty($category)) {
+			show_404();
 		}
+
+
+		//find if is the index article
+		$index_article = $this->db->from(TABLE_ARTICLE_INDEX)->where('article_id', $article['id'])->get()->row_array();
+		if( ! empty($index_article)) {
+			$view_data['index_article'] = $index_article;
+		}
+
+		$article['imgs'] 				= $this->file_model->get_imgs_by_object_id($article['id']);
+		$view_data['article'] 			= $article;
+		$view_data['navs'] 				= $this->nav_model->get_list(1, 11, 0);
+		$view_data['bread_path'] 		= $this->article_cat_model->get_nav_path($article['category_id']);
+		$view_data['next_article'] 		
+		= $this->article_model->get_next_article($article['id'],
+					array('class' => 'p-essay next-essay', 'category_id'=>$article['category_id']));
+		$view_data['prev_article'] 		
+		= $this->article_model->get_prev_article($article['id'], 
+					array('class' => 'p-essay previous-essay', 'category_id'=>$article['category_id']));
+		$view_data['week_hot']			= $this->article_model->get_week_hot();
+		$view_data['date_archive_html'] = $this->article_model->get_archive_html();
+		$view_data['title'] = $article['title'] . '-' . $category['name'] . '-';
+		$view_data['category'] = $category;
 
 		$this->load->view('front/welcome/archive_view', $view_data);
 	}
 
 	public function photo_archive() {
-
 		if( $this->agent->is_mobile()) {
 			$this->m_photo_archive();
 			return ;
@@ -167,7 +168,6 @@ class Welcome extends MY_Controller {
 		$view_data['latest_images']		= $this->article_model->get_front_list(5, 0, $article['category_id']);
 		$view_data['title']		= $article['title'] . '-' . $article['category_name'] . '-';
 
-		// $this->load->view('front/welcome/photo_archive_view', $view_data);
 		$this->load->view('front/welcome/old_photo_archive_view', $view_data);
 	}
 
@@ -177,9 +177,9 @@ class Welcome extends MY_Controller {
 			return ;
 		}
 		$this->site_model->increase_site_hits();
+
 		$category_id = $this->uri->rsegment(3);
 		$offset = $this->input->get('offset');
-
 		if(empty($category_id)) {
 			show_404();
 		}

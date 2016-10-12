@@ -423,26 +423,20 @@ class article_model extends CI_Model {
 					->from('summer_article')
 					->get()
 					->row_array();					
-
-
-		//replace the file a link from content
-		$content = preg_replace('/"(.*)\.(docx)"/', '"http://www.svtcc.edu.cn$1.docx"', $article['content']);
-		$article['content'] = $content;
 		return $article;
 	}
 
+	//get front article by id
 	public function f_get_by_id($article_id) {
 		$where = array(
-			'id'	=> $article_id,
-			'status'=> '1',
+			'id'		=> $article_id,
+			'status'	=> '1',
+			'is_delete'	=> '0',
 			);
 
-		$article = $this->db->where($where)->from($this->table_name)->get()->row_array();
+		$article = $this->db->from($this->table_name)->where($where)
+						->get()->row_array();
 
-		//replace the file link from content to www server
-		$content = preg_replace('/"(.*)\.(docx)"/', '"http://www.svtcc.edu.cn$1.docx"', $article['content']);
-		$article['content'] = $content;
-		
 		return $article;
 	}
 
@@ -655,7 +649,7 @@ class article_model extends CI_Model {
 	public function get_week_hot() {
 
 		$where = array(
-			'a.is_delete'			=> '0',
+			'a.is_delete'		=> '0',
 			'a.status'			=> '1',
 			'publish_date >'	=> date(DATE_FORMAT, time() - 24 * 3600 * 7),
 			'publish_date <'	=> date(TIME_FORMAT),
@@ -671,14 +665,6 @@ class article_model extends CI_Model {
 						->limit(5)
 						->get()
 						->result_array();
-
-		foreach($articles as &$a) {
-			if($a['is_img'] == 1) {
-				$a['href'] = site_url('photo_archive/'.$a['id']);
-			} else {
-				$a['href'] = site_url('archive/' . $a['category_id'] . '-' . $a['id']);
-			}
-		}
 
 		return $articles;
 	}
