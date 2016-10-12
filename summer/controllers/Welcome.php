@@ -352,24 +352,12 @@ class Welcome extends MY_Controller {
 	}
 
 	public function m_archive() {
-		
 		$this->site_model->increase_site_hits();
-		$segment3 = $this->uri->rsegment(3);
-		if(empty($segment3) || ! strpos($segment3, '-')) {
+		$article_id = $this->uri->rsegment(3);
+		if(empty($article_id) or ! is_numeric($article_id)) {
 			show_404();
-		}else{
-			list($category_id, $article_id) = explode('-', $segment3);
-			if(empty($category_id) || empty($article_id) || ! is_numeric($category_id) ||
-				! is_numeric($article_id)) {
-				show_404();
-			}else{
-				$article_id = intval($article_id);
-				$category_id = intval($category_id);
-			}
 		}
-
-		$article = $this->article_model->get_by_id($article_id);
-
+		$article = $this->article_model->f_get_by_id($article_id);
 		if(empty($article)) {
 			show_404();
 		}
