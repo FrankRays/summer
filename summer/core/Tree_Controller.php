@@ -57,6 +57,30 @@ class Tree_Controller extends MY_Controller{
 		redirect($this->browse_url);
 	}
 
+	public function edit_node() {
+		if($_POST) {
+			$this->load->library('form_validation');
+			$this->load->library('summer_view_message');
+			$this->form_validation->set_rules('node_name_hidden', '节点旧名', 'required|min_length[1]');
+			$this->form_validation->set_rules('node_name', '节点新名', 'required|min_length[1]|max_length[64]');
+			if( ! $this->form_validation->run()) {
+				$this->summer_view_message->set_flash_msg($this->form_validation->error_array(), 'warning');
+			} else {
+				$old_name = $this->input->post('node_name_hidden', TRUE);
+				$new_name = $this->input->post('node_name', TRUE);
+
+				try {
+					$this->main_model->update_node_name($old_name, $new_name);
+					$this->summer_view_message->set_flash_msg('修改节点名称成功', 'success');
+				} catch(Exception $e) {
+					$this->summer_view_message->set_flash_msg($e->getMessage(), 'error');
+				}
+			}
+		}
+
+		redirect($this->browse_url);
+	}
+
 	public function delete_node() {
 		if($_POST) {
 			$this->load->library('summer_view_message');
@@ -65,7 +89,6 @@ class Tree_Controller extends MY_Controller{
 				$this->main_model->delete_node(stripslashes($node_name));
 				$this->summer_view_message->set_flash_msg('删除节点成功', 'success');
 			} catch (Exception $e) {
-				var_dump($e->getMessage());
 				$this->summer_view_message->set_flash_msg($e->getMessage(), 'error');
 			}
 		}

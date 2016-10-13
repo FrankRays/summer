@@ -61,27 +61,34 @@
 <?php echo form_open(site_url('c='.$controller_name.'&m=delete_node'), array('id'=>'delete-node-form', 'method'=>'post')) ?>
 	<input type="hidden" name="node_name" />
 </form>
+<div id="edit-node-form" class="am-g" style="display: none;">
+	<div class="am-u-sm-12">
+	<?php echo form_open(site_url('c='.$controller_name.'&m=edit_node'), array('class'=>'am-form', 'method'=>'post')) ?>
+			<input type="hidden" name="node_name_hidden" id="node-name-hidden" />
+	        <div class="am-form-group">
+	    		<label for="node-name">节点名称</label>
+	    		<input type="text" name="node_name" id="node-name" placeholder="请输入节点名称">
+	    	</div>
+		</form>
+	</div>
+</div>
 <!-- hidden form -->
 
 <script type="text/javascript">
+
+	var beforeDrop = function(treeId, treeNodes, targetNode, moveType) {
+		console.log(treeNodes.name, targetNode.name, moveType);
+		return !(targetNode == null || (moveType != "inner" && !targetNode.parentTId));
+	}
 	var setting = {	
 		"callback" : {
-			"beforeRename" : function(treeId, treeNode, newName, isCancel) {
-				if(!isCancel) {
-					var data = {
-						"old_name" 	: treeNode.name,
-						"new_name"	: newName
-					};
-					$.post("<?php echo site_url('c=user&m=rename_role_name') ?>", data, function(data, status, xh){
-						console.log(data);
-					});
-				}
-			},
-			"onRename" : function(event, treeId, treeNode, isCancel) {
-			}
+			beforeDrop : beforeDrop
 		},
 		view : {
 			selectedMulti : false,
+		},
+		edit : {
+			enable : true
 		}
 	};
 	var zNodes = <?php echo $roletree ?>;
@@ -139,7 +146,24 @@
 
 			//edit node 
 			$('#edit-child-btn').on('click', function(e){
-				
+				var treeNodes = treeObj.getSelectedNodes(),
+				treeNode = treeNodes[0];
+				if(treeNode) {
+					$("#edit-node-form").find("[name='node_name_hidden']").val(treeNode.name);
+					layer.open({
+						title : '修改节点'
+						,type : 1
+						,btn : ['确定', '取消']
+						,content : $('#edit-node-form')
+						,yes : editNodeYes
+					});
+				} else {
+					layer.msg("请选择需要修改的节点");
+				}
 			});
+
+			var editNodeYes = function(index, layero) {
+				$("#edit-node-form form").trigger('submit');
+			}
 		});
 </script>

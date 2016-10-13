@@ -73,17 +73,12 @@ class Tree_model extends MY_Model {
 			'lft >='	=> $node['lft'],
 			'rgt <='	=> $node['rgt'],
 			);
-		$delete_nodes_number = $this->db->select('count(*) as number')
-								->from($this->table_name)
-								->where($where)
-								->get()
-								->row_array();
-		$delete_nodes_number = $delete_nodes_number['number'];
 
+		$close_up = $node['rgt'] - $node['lft'] + 1;
 		$this->db->trans_start();
 		$this->db->where($where)->delete($this->table_name);
-		$this->db->query('UPDATE ' . $this->table_name . ' SET rgt = rgt - '.($delete_nodes_number*2).' where rgt > ?', array($node['rgt']));
-		$this->db->query('UPDATE ' . $this->table_name . ' SET lft = lft - '.($delete_nodes_number*2).' where lft > ?', array($node['rgt']));
+		$this->db->query('UPDATE ' . $this->table_name . ' SET rgt = (rgt - '.$close_up.') where rgt > ?', array($node['rgt']));
+		$this->db->query('UPDATE ' . $this->table_name . ' SET lft = (lft - '.$close_up.') where lft > ?', array($node['rgt']));
 		$this->db->trans_complete();
 	}
 
@@ -127,20 +122,64 @@ class Tree_model extends MY_Model {
 		return $tree;
 	}
 
-	public function udpate_node_name($old_name, $new_name) {
+	public function update_node_name($old_name, $new_name) {
 		$old_node = $this->db->from($this->table_name)->where('name', $old_name)->get()->row_array();
 		if(empty($old_node)) {
-			$this->summer_view_message->append_error('更新节点不存在');
-			return FALSE;
+			throw new Exception("更新节点不存在", 1);
 		}
 
 		if($this->name_has_exist($new_name)) {
-			$this->summer_view_message->append_error('节点名字已存在');
-			return FALSE;
+			throw new Exception("节点名字已存在", 1);
 		}
 
-		$this->db->where('name', $old_name)->update($this->table_name, array('name'=>$new_name));
+		$this->db->where('id', $old_node['id'])->update($this->table_name, array('name'=>$new_name));
 		return $this->db->affected_rows();
+	}
+
+	public function move_subtree_before($move_tree_node_name, $target_node_name) {
+
+		$move_node = $this->db->from($this->table_name)->where('name', $move_tree_node_name)
+							->get()->row_array();
+		if(empty($move_node)) {
+			throw new Exception("被移动子树不存在", 1);
+		}
+		$target_node = $this->db->form($this->table_name)->where('name', $target_node_name)
+							->get()->row_array();
+		if(empty($target_node)) {
+			throw new Exception("目标节点不存在", 1);
+		}
+		if($move_node['id'] == 1) {
+			throw new Exception("不支持移动到根节点上", 1);
+		}
+
+		//parent can not move to its child node
+		if($move_node['rgt'] > $target_node['rgt'] and $move_node['lft'] < $move_node['lft']) {
+			throw new Exception("父节点不能被移动到自己的子节点上", 1);
+		}
+
+		$this->db->trans_start();
+		if($move_node['lft'] < $target_node['lft']) {
+			//move to after node
+			$diff_when_inside_sourcetree = $target_node['rgt'] - $move_node['lft'] - 1;
+			$diff_when_next_sourcetree = -($move_node['rgt'] - $move_node['lft'] + 1);
+			$this->db->query("UPDATE {$this->table_name} 
+								SET lft = lft + {$diff_when_next_sourcetree}
+								lft BETWEEN '{$move_node['rgt']}'
+								AND '{$target_node['lft']}'");
+			$this->db->query("UPDATE {$this->table_name}
+								SET rgt = rgt + {$diff_when_next_sourcetree}
+								rgt BETWEEN '{move_node['rgt']}'
+								AND '{$target_node['lft']}");
+			$this->db->query("UPDATE {$this->table_name}
+								SET lft = lft + {$diff_when_inside_sourcetree}
+								lft BETWEEN '{}")
+		} else if($move_node['lft'] > $target_node['lft']) {
+			//move to before node
+		} else {
+			//do not move
+
+		}
+
 	}
 
 	public function reset_tree() {
