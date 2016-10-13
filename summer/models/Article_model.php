@@ -612,7 +612,7 @@ class article_model extends CI_Model {
 		if(empty($article)) {
 			$a_str .= ' href="#" >最后一篇了</a>';
 		}else{
-			$a_str .= ' href="'.site_url('archive/' . $article['category_id'] . '-' . $article['id']).'" >下一篇：' .$article['title']. '</a>';
+			$a_str .= ' href="'.archive_url($article).'" >下一篇：' .$article['title']. '</a>';
 		}
 
 		return $a_str;
@@ -640,7 +640,7 @@ class article_model extends CI_Model {
 		if(empty($article)) {
 			$a_str .= ' href="#" >第一篇咯</a>';
 		}else{
-			$a_str .= 'href="'.site_url('archive/' . $article['category_id'] . '-' . $article['id']).'" >上一篇：' .$article['title']. '</a>';
+			$a_str .= 'href="'.archive_url($article).'" >上一篇：' .$article['title']. '</a>';
 		}
 
 		return $a_str;

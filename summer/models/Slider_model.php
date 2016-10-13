@@ -3,10 +3,12 @@
 
 //v2 幻灯片model类
 //
-class Slider_Model extends CI_Model {
+class Slider_Model extends MY_Model {
 
 	public function __construct() {
 		parent::__construct();
+
+		$this->table_name = TABLE_SLIDER;
 	}
 	
 	//获取列表
@@ -14,7 +16,22 @@ class Slider_Model extends CI_Model {
 		$where = array(
 			'is_delete'		=> '0',
 			);
-		$sliders = $this->db->from(TABLE_SLIDER)->where($where)->limit($limit, $offset)->get()->result_array();
+		$sliders = $this->db->from(TABLE_SLIDER)
+			->where($where)->limit($limit, $offset)->get()->result_array();
+		return $sliders;
+	}
+
+	public function f_get_list($limit, $offset, $cond=array()) {
+		$where = array(
+			'is_delete' 	=> '0',
+			);
+
+		$sliders = $this->db->from($this->table_name)
+						->where($where)
+						->limit($limit, $offset)
+						->order_by('id desc')
+						->get()->result_array();
+
 		return $sliders;
 	}
 

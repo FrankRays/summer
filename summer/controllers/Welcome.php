@@ -26,7 +26,7 @@ class Welcome extends MY_Controller {
 		$this->site_model->increase_site_hits();
 
 		//get index page content
-		$data_view['sliders']	= $this->slider_model->get_list(50, 0);
+		$data_view['sliders']	= $this->slider_model->f_get_list(50, 0);
 		$data_view['college_news_top'] 		= $this->article_model->get_top_list(1, 0, 2);
 		$data_view['college_news'] 			= $this->article_model->get_front_list(5, 0, 2);
 		$data_view['notice'] 				= $this->article_model->get_front_list(4, 0, 1);
@@ -313,7 +313,7 @@ class Welcome extends MY_Controller {
 
 		$data_view['navs'] 		= $this->nav_model->get_mobile_nav(4, 10, 0);
 
-		$data_view['sliders']	= $this->slider_model->get_list(50, 0);
+		$data_view['sliders']	= $this->slider_model->f_get_list(50, 0);
 		$data_view['articles'] 	= $page['data_list'];
 
 		$this->load->view('front/mobile/welcome_view', $data_view);
