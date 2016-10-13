@@ -157,12 +157,29 @@ class Tree_model extends MY_Model {
 			throw new Exception("父节点不能被移动到自己的子节点上", 1);
 		}
 
+		$target_node_parent = $this->db->from($this->table_name)->where('lft', -1+$target_node['lft']);
+
 		$this->db->trans_start();
-		if($move_node['lft'] < $target_node['lft']) {
-			//move to after node
-			$diff_when_inside_sourcetree = $target_node['rgt'] - $move_node['lft'] - 1;
-			$diff_when_next_sourcetree = -($move_node['rgt'] - $move_node['lft'] + 1);
-			$this->db->query("UPDATE {$this->table_name} 
+		if(empty($target_node_parent)) {
+			if($move_node['lft'] < $target_node['lft']) {
+				//move to after node
+				$diff_when_inside_sourcetree = $target_node['rgt'] - $move_node['lft'] - 1;
+				$diff_when_next_sourcetree = -($move_node['rgt'] - $move_node['lft'] + 1);
+				$
+				
+			} else if($move_node['lft'] > $target_node['lft']) {
+				//move to before node
+			} else {
+				//do not move
+
+			}
+		} else {
+			
+		}
+
+
+
+		$this->db->query("UPDATE {$this->table_name} 
 								SET lft = lft + {$diff_when_next_sourcetree}
 								lft BETWEEN '{$move_node['rgt']}'
 								AND '{$target_node['lft']}'");
@@ -173,12 +190,6 @@ class Tree_model extends MY_Model {
 			$this->db->query("UPDATE {$this->table_name}
 								SET lft = lft + {$diff_when_inside_sourcetree}
 								lft BETWEEN '{}")
-		} else if($move_node['lft'] > $target_node['lft']) {
-			//move to before node
-		} else {
-			//do not move
-
-		}
 
 	}
 
