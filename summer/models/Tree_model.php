@@ -218,62 +218,30 @@ class Tree_model extends MY_Model {
 		return TRUE;
 	}
 
-	public function move_subtree_before($move_tree_node_name, $target_node_name) {
-
-		$move_node = $this->db->from($this->table_name)->where('name', $move_tree_node_name)
-							->get()->row_array();
-		if(empty($move_node)) {
-			throw new Exception("被移动子树不存在", 1);
-		}
-		$target_node = $this->db->from($this->table_name)->where('name', $target_node_name)
-							->get()->row_array();
-		if(empty($target_node)) {
-			throw new Exception("目标节点不存在", 1);
-		}
-		if($move_node['id'] == 1) {
-			throw new Exception("不支持移动到根节点上", 1);
+	public function move_subtree_before($move_node_name, $target_node_name) {
+		//can not move self position
+		if($move_node_name == $target_node_name) {
+			return FALSE
 		}
 
-		//parent can not move to its child node
-		if($move_node['rgt'] > $target_node['rgt'] and $move_node['lft'] < $move_node['lft']) {
-			throw new Exception("父节点不能被移动到自己的子节点上", 1);
+		//find move and target node from database
+		$move_target_nodes = $this->db->from($this->table_name)
+									->or_where(array('name'=>$move_node_name, 'name'=>$target_node_name))
+									->get()
+									->result_array();
+		if(count($move_target_nodes) != 2) {
+			return FALSE;
 		}
 
-		// $target_node_parent = $this->db->from($this->table_name)->where('lft', -1+$target_node['lft'])->get()->row_array();
-		// var_dump($target_node_parent);
-
-		var_dump($move_node);
-		var_dump($target_node);
-
-		$this->db->trans_start();
-		if($move_node['lft'] < $target_node['lft']) {
-			//move to after node
-			$diff_when_inside_sourcetree = $target_node['lft'] - $move_node['right'] - 1;
-			$diff_when_next_sourcetree = -($move_node['rgt'] - $move_node['lft'] + 1);
-			
-		} else if($move_node['lft'] > $target_node['lft']) {
-			//move to before node
+		if($move_target_nodes[0]['name'] == $move_node_name) {
+			$move_node = $move_target_nodes[0];
+			$target_node = $move_target_nodes[1];
 		} else {
-			//do not move
-
+			$move_node = $move_target_nodes[1];
+			$target_node = $move_target_nodes[0];
 		}
-
-		var_dump($diff_when_next_sourcetree);
-		var_dump($diff_when_inside_sourcetree);
-
-
-
-		// $this->db->query("UPDATE {$this->table_name} 
-		// 						SET lft = lft + {$diff_when_next_sourcetree}
-		// 						lft BETWEEN '{$move_node['rgt']}'
-		// 						AND '{$target_node['lft']}'");
-		// 	$this->db->query("UPDATE {$this->table_name}
-		// 						SET rgt = rgt + {$diff_when_next_sourcetree}
-		// 						rgt BETWEEN '{move_node['rgt']}'
-		// 						AND '{$target_node['lft']}");
-		// 	$this->db->query("UPDATE {$this->table_name}
-		// 						SET lft = lft + {$diff_when_inside_sourcetree}
-		// 						lft BETWEEN '{}")
+		
+			
 
 	}
 
