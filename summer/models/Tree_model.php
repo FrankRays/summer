@@ -221,12 +221,13 @@ class Tree_model extends MY_Model {
 	public function move_subtree_before($move_node_name, $target_node_name) {
 		//can not move self position
 		if($move_node_name == $target_node_name) {
-			return FALSE
+			return FALSE;	
 		}
 
 		//find move and target node from database
 		$move_target_nodes = $this->db->from($this->table_name)
-									->or_where(array('name'=>$move_node_name, 'name'=>$target_node_name))
+									->or_where('name', $move_node_name)
+									->or_where('name', $target_node_name)
 									->get()
 									->result_array();
 		if(count($move_target_nodes) != 2) {
@@ -241,9 +242,78 @@ class Tree_model extends MY_Model {
 			$target_node = $move_target_nodes[0];
 		}
 		
-			
+		//if is not at the same level, put it at the same level
+		if($move_node['level'] != $target_node['level']) {
+			$target_parent_node = $this->db->from($this->table_name)->where('id', $target_node['parent_id'])
+										->get()->row_array();
+			if(empty($target_parent_node)) {
+				return FALSE;
+			}
 
+			$this->move_subtree_inner($move_node['name'], $target_node['name']);
+			return $this->move_subtree_before($move_node['name'], $target_node['name']);
+		}
+
+		
+		//same level, put move node before target node
+		$move_node_size = $move_node['rgt'] - $move_node['lft'] + 1;
+		$target_node_size = $target_node['rgt'] - $target_node['lft'] + 1;
+
+		$this->db->trans_start();
+
+		//temporary save move node
+		$sql = 'UPDATE '.$this->table_name.'
+					SET lft = 0 - lft
+					,rgt = 0 - rgt
+					WHERE lft >= ? AND rgt <= ?';
+		$this->db->query($sql, array($move_node['lft'], $move_node['rgt']));
+
+		//shift node
+		if($move_node['rgt'] > $target_node['rgt']) {
+			//shift left
+			$sql = 'UPDATE '.$this->table_name.'
+						SET lft = lft + ?
+						WHERE lft >= ? and lft <= ?';
+			$this->db->query($sql, array($move_node_size, $target_node['lft'], $move_node['rgt']));
+
+			$sql = 'UPDATE '.$this->table_name.'
+						SET rgt = rgt + ?
+						WHERE rgt >= ? and rgt <= ?';
+			$this->db->query($sql, array($move_node_size, $target_node['rgt'], $move_node['rgt']));
+
+			//move node to target node before
+			$sql = 'UPDATE '.$this->table_name.'
+						SET lft = 0 - lft + (?)
+						,rgt = 0 - rgt + (?)
+						WHERE lft <= ? AND rgt >= ?';
+			$this->db->query($sql, array($target_node['lft'] - $move_node['lft'], $target_node['lft'] - $move_node['lft']
+										, 0 - $move_node['lft'], 0 - $move_node['rgt']));
+		} else {
+			//shift right
+			$sql = 'UPDATE '.$this->table_name.'
+						SET lft = lft - ?
+						WHERE lft >= ? AND lft <= ?';
+			$this->db->query($sql, array($move_node_size, $move_node['rgt'], $target_node['lft'] - 1));
+
+			$sql = 'UPDATE '.$this->table_name.'
+						SET rgt = rgt - ?
+						WHERE rgt >= ? AND rgt <= ?';
+			$this->db->query($sql, array($move_node_size, $move_node['rgt'], $target_node['lft'] - 1));
+
+			//move node to target node before
+			$sql = 'UPDATE '.$this->table_name.'
+						SET lft = 0 - lft + (?)
+						, rgt = 0 - rgt + (?)
+						WHERE lft <= ? AND rgt >= ?';
+			$this->db->query($sql, array($target_node['lft'] - $move_node['rgt'] - 1, $target_node['lft'] - $move_node['rgt'] - 1
+											, 0 - $move_node['lft'], 0 - $move_node['rgt']));
+		}
+
+		$this->db->trans_complete();
+		return TRUE;
 	}
+
+	
 
 	public function reset_tree() {
 		$this->db->trans_start();
