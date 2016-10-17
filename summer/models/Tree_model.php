@@ -313,7 +313,34 @@ class Tree_model extends MY_Model {
 		return TRUE;
 	}
 
-	
+	public function move_subtree_after($move_node_name, $target_node_name) {
+		//same node, do not move
+		if($move_node_name == $target_node_name) {
+			return FALSE;
+		}
+
+		//chekc if move node and target node is exist
+		$move_target_nodes = $this->db->from($this->table_name)->or_where('name', $move_node_name)
+									->or_where('name',, $target_node_name)
+									->get()
+									->result_array();
+		if(count($move_target_nodes) != 2) {
+			return FALSE;
+		}
+
+		if($move_target_nodes[0]['name'] == $move_node_name) {
+			$move_node = $move_target_nodes[0];
+			$target_node = $move_target_nodes[1];
+		} else {
+			$move_node = $move_target_nodes[1];
+			$target_node = $move_target_nodes[0];
+		}
+
+		//now, move node is the first node after target node, do not move
+		if(($move_node['rgt'] > $target['rgt'] and $move_node['rgt'] + 1 = $target['lft'])
+					or ($move_node['rgt'] < $target_node))
+
+	}
 
 	public function reset_tree() {
 		$this->db->trans_start();
