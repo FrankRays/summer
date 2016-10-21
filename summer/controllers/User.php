@@ -348,5 +348,4 @@ class User extends MY_Controller {
 		$view_data['roletree'] = json_encode($children);
 		$this->_load_view('default/user/privilege_view.php', $view_data);
 	}
-
 }

@@ -15,6 +15,7 @@
             <!-- <button type="button" class="am-btn am-btn-default"><span class="am-icon-save"></span> 保存</button>
             <button type="button" class="am-btn am-btn-default"><span class="am-icon-archive"></span> 审核</button> -->
             <button id="delete-node-btn" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
+            <button id="reset-tree-btn" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> Reset</button>
           </div>
         </div>
       </div>
@@ -72,6 +73,9 @@
 		</form>
 	</div>
 </div>
+<?php echo form_open(site_url('c='.$controller_name.'&m=reset_tree'), array('id'=>'reset-tree-form', 'method'=>'post')) ?>
+	<input type="hidden" name="reset_tree" value="true" />
+</form>
 <!-- hidden form -->
 
 <script type="text/javascript">
@@ -165,5 +169,18 @@
 			var editNodeYes = function(index, layero) {
 				$("#edit-node-form form").trigger('submit');
 			}
+
+			//reset the tree
+			$('#reset-tree-btn').on('click', function(e){
+				layer.open({
+					title : '确认是否要重置树'
+					,type : 0
+					,btn : ['确定', '取消']
+					,content : '是否要重置树'
+					,yes : function(index, layero) {
+						$('#reset-tree-form').trigger('submit');
+					}
+				});
+			});
 		});
 </script>

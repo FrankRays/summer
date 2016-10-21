@@ -95,8 +95,20 @@ class Tree_Controller extends MY_Controller{
 		redirect($this->browse_url);
 	}
 
+	public function move_node() {
+		$this->output->enable_profiler(TRUE);
+		$this->load->model('role_model');
+		$this->role_model->move_subtree_after('windows', 'os2');
+	}
+
 	public function reset_tree() {
-		$this->main_model->reset_tree();
+
+		if($_POST) {
+			$this->load->library('summer_view_message');
+			$this->main_model->reset_tree();
+			$this->summer_view_message->set_flash_msg('reset tree successful', 'success');
+			redirect($this->browse_url);
+		}
 	}
 
 }
