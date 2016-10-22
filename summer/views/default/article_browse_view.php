@@ -59,7 +59,7 @@
           <?php foreach ($data_list as $article) {?>
             <tr>
               <td><input type="checkbox" value="<?=$article['id']?>" name="article_id" /></td>
-              <td style="width:20%"><a target="blank" href="<?php echo str_replace('y.php?', 'index.php/', site_url('archive/' . $article['category_id'] . '-' . $article['id']))  ?>.html"><?php echo $article['title']; ?></a></td>
+              <td class="table-title" style="width:20%"><a target="blank" href="<?php echo str_replace('y.php?', 'index.php/', site_url('archive/' . $article['category_id'] . '-' . $article['id']))  ?>.html"><?php echo $article['title']; ?></a></td>
               <td>
                 <?php if( ! empty($article['coverimg_path'])) { ?>
                   <a target="blank" href="<?php echo resource_url($article['coverimg_path'])?>" >
@@ -101,7 +101,6 @@
           <?php }?>
           </tbody>
         </table>
-
           <div class="am-cf">
   共 <?=$page['total_rows']?> 条记录
   <div class="am-fr">
@@ -114,6 +113,11 @@
       </div>
 
     </div>
+  </div>
+  <div style="display: none">
+    <?php echo form_open(site_url('c=post&m=delete_article'), array('id'=>'delete-node-form', 'method'=>'post')) ?>
+      <input type="hidden" name="article_ids[]" />
+    </form>
   </div>
 <!-- content end -->
 <script>
@@ -136,18 +140,22 @@ $(function(){
 
     //删除文章事件
     $("#summer-del-article-btn").on('click', function(e){
-      var articleIds = [];
-      var checkbox = $("[name=article_id]:checked"); 
-      if(checkbox.length == 0) {
-        alert('请勾选删除文章');
+      var selectedRow = $('#y-article-list').find('tr:has([name=article_id]:checked)');
+      if(selectedRow.length == 0) {
+        layer.msg('请选择需要删除的文章');
         return ;
       }
-      checkbox.each(function(){
-        articleIds.push(this.value);
+
+      var selectedrticleTitles = []
+      var selectedArticleIds = [];
+      selectedRow.each(function(index, item){
+        selectedArticleIds.push($(this).find('[name=article_id]').val());
+        selectedrticleTitles.push($(this).find('.table-title a').text());
       });
 
-      var href = '<?=site_url('c=post&m=del')?>&article_ids=' + articleIds.join('_');
-      document.location.href = href;
+      layer.confirm('是否要删除文章[' + selectedrticleTitles.toString() + ']', function(index){
+        $('<form />')
+      });
     });
 
     $("#article-search-btn").on('click', function(e){

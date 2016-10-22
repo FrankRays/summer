@@ -22,6 +22,8 @@ class post extends MY_controller {
     //首页
 	public function browse() {
         $this->user_model->is_admin();
+        $this->load->library('js_builder');
+        $this->js_builder->append_module_resource('layer');
 		$data['moduleName'] = '文章管理';
 		$data['moduleDesc'] = '管理多媒体文章信息';
 
@@ -527,7 +529,7 @@ class post extends MY_controller {
                 );
             $affected_rows = $this->article_model->update_by_ids($update_article, $article_ids);
             set_flashalert('删除文章成功');
-            redirect(site_url('c=post'));
+            // redirect(site_url('c=post'));
             return ;
         }else{
             show_error('文章ID错误');

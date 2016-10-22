@@ -21,11 +21,6 @@
   <script src="<?php echo base_url('source/AmazeUI-2.1.0/assets/js/jquery.min.js') ?>"></script>
   <!--<![endif]-->
 
-  <!--layer-->
-  <link rel="stylesheet" href="<?php echo base_url('source/layer/skin/layer.css')?>" />
-  <script src="<?php echo base_url('source/layer/layer.min.js')?>"></script>
-  <!--layer  -->
-
   <!-- layerdate -->
   <script type="text/javascript" src="<?php echo base_url('source/laydate/laydate.js') ?>"></script>
   <!-- layerdate -->
