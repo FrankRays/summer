@@ -74,7 +74,7 @@ class Summer_view_message {
 			if(isset($flash_msg['status'])) {
 				if(in_array($flash_msg['status'], array('success', 'warning', 'danger', 'secondary'))) {
 					$alert_type_class = 'am-alert-'.$flash_msg['status'];
-				} 		
+				}
 			}
 			$msg_html = '<div class="am-alert '.$alert_type_class.'" data-am-alert>
 				  <button type="button" class="am-close">&times;</button>';

@@ -175,6 +175,13 @@ class article_model extends CI_Model {
 		}
 	}
 
+	public function delete_articles($ids) {
+		if(count($ids) <= 0) {
+			return FALSE;
+		}
+		$this->db->from($this->table_name)->where_in('id', $ids)->delete();
+	}
+
 
 
 	//得到总数新接口，直接传入get或者post参数
@@ -588,22 +595,21 @@ class article_model extends CI_Model {
 
 	//v2 得到下一篇地址
 	public function get_next_article($article_id, $param = array()) {
+		$cur_article = $this->db->from($this->table_name)->where('id', $article_id)
+							->get()->row_array();
+		if(empty($cur_article)) {
+			return '';
+		}
+
 		$where = array(
-			'id > ' 				=> $article_id,
+			'category_id'			=> $cur_article['category_id'],
+			'publish_date > ' 		=> $cur_article['publish_date'],
 			'is_delete'				=> NO,
 			'status'				=> YES,
 			);
 
-		if(isset($param['category_id'])) {
-			$where['category_id'] = $param['category_id'];
-		}
-
-		$article = $this->db->where($where)
-			->from(TABLE_ARTICLE)
-			->limit(1)
-			->order_by('id asc')
-			->get()
-			->row_array();
+		$article = $this->db->where($where)->from($this->table_name)
+			->limit(1)->order_by('publish_date asc')->get()->row_array();
 
 		$a_str = '<a ';
 		if(isset($param['class'])) {
@@ -620,18 +626,21 @@ class article_model extends CI_Model {
 
 	//v2 得到上一篇地址a标签
 	public function get_prev_article($article_id, $param = array()) {
+		$cur_article = $this->db->from($this->table_name)->where('id', $article_id)
+							->get()->row_array();
+		if(empty($cur_article)) {
+			return '';
+		}
+
 		$where = array(
-			'id < '					=> $article_id,
+			'category_id'			=> $cur_article['category_id'],
+			'publish_date < ' 		=> $cur_article['publish_date'],
 			'is_delete'				=> NO,
 			'status'				=> YES,
 			);
 
-		$article = $this->db->where($where)
-			->from(TABLE_ARTICLE)
-			->limit(1)
-			->order_by('id desc')
-			->get()
-			->row_array();
+		$article = $this->db->where($where)->from($this->table_name)->limit(1)
+					->order_by('publish_date desc')->get()->row_array();
 
 		$a_str = '<a ';
 		if(isset($param['class'])) {

@@ -15,6 +15,17 @@ if( ! function_exists('flash_msg')) {
 	}
 }
 
+if( ! function_exists('set_flash_msg')) {
+	function set_flash_msg($msg, $status = 'default') {
+		$CI = &get_instance();
+		if( ! isset($CI->summer_view_message)) {
+			$CI->load->library('summer_view_message');
+		}
+
+		return $CI->summer_view_message->set_flash_msg($msg, $status);
+	}
+}
+
 /**
  * summer_view
  */
@@ -40,7 +51,6 @@ if(!function_exists('setFlashAlert')) {
 		}
 		// $_SESSION[FLASH_STATUS] = 200;
 		// $_SESSION[FLASH_MESSAGE] = $this->lang->line('article_save_success');
-		
 
 		//set flash session data
 		get_instance()->session->set_flashdata(FLASH_STATUS, $status);

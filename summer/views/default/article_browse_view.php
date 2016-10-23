@@ -13,8 +13,8 @@
         <div class="am-btn-toolbar">
           <div class="am-btn-group am-btn-group-xs">
             <a class="am-btn am-btn-default" href="<?php echo site_url('c=post&m=article_create') ?>"><span class="am-icon-plus"></span> 新增</a>
-            <a class="am-btn am-btn-default" href="<?php echo site_url('c=article_index&m=create_index_article') ?>"><span class="am-icon-plus"></span> 新增首页</a>
-            <a class="am-btn am-btn-default" href="<?php echo site_url('c=article_index&m=batch_fetch_index_article') ?>"><span class="am-icon-archive"></span> 批量新增首页</a>
+<!--             <a class="am-btn am-btn-default" href="<?php echo site_url('c=article_index&m=create_index_article') ?>"><span class="am-icon-plus"></span> 新增首页</a>
+            <a class="am-btn am-btn-default" href="<?php echo site_url('c=article_index&m=batch_fetch_index_article') ?>"><span class="am-icon-archive"></span> 批量新增首页</a> -->
             <button id="summer-del-article-btn" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
           </div>
         </div>
@@ -40,6 +40,12 @@
     </div>
 
     <div class="am-g">
+        <div class="am-u-sm-12">
+        <?php echo flash_msg()  ?>
+        </div>
+    </div>
+
+    <div class="am-g">
       <div class="am-u-sm-12">
         <form class="am-form">
           <table class="am-table am-table-striped am-table-hover table-main" id="y-article-list">
@@ -59,11 +65,11 @@
           <?php foreach ($data_list as $article) {?>
             <tr>
               <td><input type="checkbox" value="<?=$article['id']?>" name="article_id" /></td>
-              <td class="table-title" style="width:20%"><a target="blank" href="<?php echo str_replace('y.php?', 'index.php/', site_url('archive/' . $article['category_id'] . '-' . $article['id']))  ?>.html"><?php echo $article['title']; ?></a></td>
+              <td class="table-title" style="width:20%"><a target="blank" href="<?php echo str_replace('y.php?', 'index.php/', site_url('archive/' . $article['id']))  ?>.html"><?php echo $article['title']; ?></a></td>
               <td>
                 <?php if( ! empty($article['coverimg_path'])) { ?>
                   <a target="blank" href="<?php echo resource_url($article['coverimg_path'])?>" >
-                    <img src="<?php echo resource_url($article['coverimg_path'])?>" style="width:100px;" />      
+                    <img src="<?php echo resource_url($article['coverimg_path'])?>" style="width:100px;" />
                   </a>
                 <?php }else{ ?>
                   <a href="<?php echo site_url('c=post&m=imgs&object_id=' . $article['id']); ?>">添加</a>
@@ -116,7 +122,7 @@
   </div>
   <div style="display: none">
     <?php echo form_open(site_url('c=post&m=delete_article'), array('id'=>'delete-node-form', 'method'=>'post')) ?>
-      <input type="hidden" name="article_ids[]" />
+      <input type="hidden" name="article_ids" />
     </form>
   </div>
 <!-- content end -->
@@ -153,8 +159,9 @@ $(function(){
         selectedrticleTitles.push($(this).find('.table-title a').text());
       });
 
-      layer.confirm('是否要删除文章[' + selectedrticleTitles.toString() + ']', function(index){
-        $('<form />')
+      layer.confirm('是否要删除文章[' + selectedrticleTitles.toString() + ']',{}, function(index){
+        $('#delete-node-form').find('[name=article_ids]').val(selectedArticleIds.join('_'));
+        $('#delete-node-form').trigger('submit');
       });
     });
 

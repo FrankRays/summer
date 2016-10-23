@@ -2,6 +2,8 @@
 
 class post extends MY_controller {
 
+    public $browse_url;
+
 	//设置封面图片的路径
 	public $tpl_path_set_coverimg = 'default/article_set_coverimg_view';
 
@@ -13,6 +15,8 @@ class post extends MY_controller {
         $this->load->model('article_model');
 		$this->load->model('file_model');
         $this->load->model('user_model');
+
+        $this->browse_url = site_url('c=post&m=browse');
 	}
 
 	public function index() {
@@ -21,8 +25,9 @@ class post extends MY_controller {
 
     //首页
 	public function browse() {
-        $this->user_model->is_admin();
+        $this->user_model->is_admin_redirect();
         $this->load->library('js_builder');
+        $this->load->library('summer_view_message');
         $this->js_builder->append_module_resource('layer');
 		$data['moduleName'] = '文章管理';
 		$data['moduleDesc'] = '管理多媒体文章信息';
@@ -158,8 +163,6 @@ class post extends MY_controller {
                 if($category == NULL) {
                     show_error('文章分类不存在');
                 }
-
-              
 
                 $article_id = $this->input->post('id');
                 if(empty($article_id) || ! is_numeric($article_id)) {
@@ -415,7 +418,7 @@ class post extends MY_controller {
 
             $relative_path = trim(str_replace(base_url(), '', $post['coverimg_path']), '/');
             //插入到资源表
-            
+
             $update_article = array(
                 'coverimg_path' => $relative_path,
                 );
@@ -503,7 +506,7 @@ class post extends MY_controller {
         if( ! empty($id)) {
             $this->form_validation->set_rules('id', '文章ID', 'is_natural_no_zero');
         }
-        
+
         $is_redirect = $this->input->post('is_redirect');
         if( ! empty($is_redirect) && $is_redirect == YES) {
             $this->form_validation->set_rules('redirect_come_from', '转载自', 'required');
@@ -513,32 +516,33 @@ class post extends MY_controller {
         return $this->form_validation->run();
     }
 
-
-    //批量删除
-    public function del() {
+    public function delete_article() {
         $this->user_model->is_admin_redirect();
-        $article_ids_str = $this->input->get('article_ids');
-        if($article_ids_str === NULL) {
-            show_error('文章ID错误');
+        $this->load->library('summer_view_message');
+        if($_POST) {
+            $article_ids = $this->input->post('article_ids');
+            $article_ids_arr = explode('_', $article_ids);
+
+            foreach($article_ids_arr as &$v) {
+                if(is_numeric($v)) {
+                    $v = intval($v);
+                }
+            }
+            if(count($article_ids_arr) <= 0) {
+                show_error('删除文章出错');
+            }
+            $this->article_model->delete_articles($article_ids_arr);
+            $this->summer_view_message->set_flash_msg('成功删除'.count($article_ids_arr).'篇文章', 'success');
+        } else {
+            $this->summer_view_message->set_flash_msg('删除文章失败', 'error');
         }
 
-        $article_ids = explode('_', $article_ids_str);
-        if(is_array($article_ids) && count($article_ids)) {
-            $update_article = array(
-                'is_delete' => YES,
-                );
-            $affected_rows = $this->article_model->update_by_ids($update_article, $article_ids);
-            set_flashalert('删除文章成功');
-            // redirect(site_url('c=post'));
-            return ;
-        }else{
-            show_error('文章ID错误');
-        }
+        redirect($this->browse_url);
     }
 
     //改变文章状态
     public function changeStatus() {
-        $this->_verify();
+        $this->is_admin_redirect();
         $id = $this->input->get('id');
         if($id == NULL || ! is_numeric($id)) {
             show_error('文章ID错误');
