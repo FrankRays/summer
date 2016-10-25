@@ -22,10 +22,8 @@ require('header_view.php');
 						<?php } ?>
 					</ul>
 				</div>
-	  			
 	  		</div>
 	  	</div>
-
 
 	    <div class="row">
 	    	<div class="col-sm-12 summer-index-list-sm">
@@ -73,7 +71,10 @@ require('header_view.php');
 <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 <!-- light slider js -->
-<script type="text/javascript" src="<?=static_url("plugins/lightslider/js/lightslider.js") ?>"></script>
+<script type="text/javascript" src="<?php echo static_url("plugins/lightslider/js/lightslider.js") ?>"></script>
+
+<!-- layer ui good luck -->
+<script type="text/javascript" src="<?php echo static_url('plugins/layui/layui.js') ?>"></script>
 
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -108,19 +109,17 @@ require('header_view.php');
 			}
 		});
 
-
 		//load more news handle
 		var handling = 0;
 		var offset = 10;
 		$("#load-more-news").on('click', function(e){
-
 			if(handling == 1) {
 				return ;
 			}
 			handling = 1;
 			$.ajax({
 				"type" 		: "get",
-				"url" 		: "<?=site_url('m/index/load_more_news')?>?offset=" + offset,
+				"url" 		: "<?php echo site_url('m/index/load_more_news')?>?offset=" + offset,
 				"success" 	: function (data){
 					$(".summer-index-list-sm").append(data);
 					offset += 10;
@@ -129,5 +128,11 @@ require('header_view.php');
 			});
 		});
 	});
+
+	//layui
+	layui.config({
+		base : 'statics/js/modules/'
+		,debug : true
+	}).use('index');
 </script>
 </html>

@@ -2,18 +2,36 @@
 
 class Article_Love_Model extends CI_Model {
 
+	public $table_name;
+
 	public function __construct() {
 		parent::__construct();
+
+		$this->table_name = TABLE_ARTICLE_LOVE;
 	}
 
 	//v2 判断是否已经赞过
 	public function is_love($article_id, $ip_addr) {
+		$this->load->library('form_validation');
+		$this->form_validation->set_data(array('ip_addr' => $ip_addr));
+		$this->form_validation->set_rules('ip_addr', 'IP地址', 'required|valid_ip');
+
+		if( ! $this->form_validation->run()) {
+			return FALSE;
+		}
+
+		$article = $this->db->from(TABLE_ARTICLE)->where('id', intval($article_id))
+							->get()->row_array();
+		if(empty($article_id)) {
+			return FALSE;
+		}
+
 		$where = array(
 			'article_id'	=> $article_id,
 			'ip_addr'		=> $ip_addr,
 			);
 
-		$love = $this->db->from(TABLE_ARTICLE_LOVE)->where($where)->get()->row_array();
+		$love = $this->db->from($this->table_name)->where($where)->get()->row_array();
 		if(empty($love)) {
 			return FALSE;
 		}else{

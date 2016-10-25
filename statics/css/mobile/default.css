@@ -9,14 +9,47 @@ body {
 /* 移动端navbar */
 #summer-mobile-navbar {
     margin-bottom: 0;
-    background-color: #fff;
+    background-color: #2b5cab;
     border: none;
 }
 
-#summer-mobile-navbar .navbar-brand {
-
+#summer-mobile-navbar .navbar-toggle .icon-bar {
+    background-color: #fff;
 }
 
+#summer-mobile-navbar .navbar-toggle:focus, .navbar-default .navbar-toggle:hover {
+    background-color: #ff822d;
+}
+
+#summer-mobile-navbar .navbar-nav>li>a {
+    color:#fff;
+}
+
+.navbar-brand-warpper {
+   overflow: auto;
+   zoom :1;
+}
+
+#summer-mobile-navbar .navbar-brand {
+    padding:0;
+}
+
+#summer-mobile-navbar .navbar-brand #mobile-logo {
+    width:50px;
+    height:50px;
+    float: left;
+}
+#summer-mobile-navbar .navbar-brand #mobile-head {
+    width:150px;
+    height:50px;
+    float: left;
+}
+#summer-mobile-navbar .navbar-brand span {
+    font-family: "Helvetica Neue", Helvetica, STHeiTi, sans-serif;
+    color:#fff;
+    line-height: 52px;
+    float: left;
+}
 /* 移动端slider */
 .imgag-gallery-wrapper {
     background-color: #fff;
@@ -59,13 +92,14 @@ body {
 /* 移动端 footer */
 .summer-foot-container {
     padding:10px 0px;
-    background-color: #fff;
+    background-color: #2b5cab;
 }
 
 .summer-foot-logo{
     width:50px;
     height:50px;
-    background-image: url('../../images/logo.jpg');
+    background-image: url('../../images/footer_logo.gif');
+    background-size: 50px 50px;
     background-repeat: no-repeat;
     margin:0 auto;
 }
@@ -78,7 +112,7 @@ body {
 .summer-foot-container .summer-m-schoolmotto {
     font-weight: bold;
     font-size: 15px;
-    color: #4d4d4d;
+    color: #fff;
 }
 
 .summer-foot-container .summer-m-footerinfo {

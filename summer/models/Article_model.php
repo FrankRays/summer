@@ -179,6 +179,8 @@ class article_model extends CI_Model {
 		if(count($ids) <= 0) {
 			return FALSE;
 		}
+
+		$this->db->from(TABLE_ARTICLE_INDEX)->where_in('id', $ids)->delete();
 		$this->db->from($this->table_name)->where_in('id', $ids)->delete();
 	}
 

@@ -2,4 +2,4 @@
 /tpl/*
 /tpl_admin/*
 default.sql
-summer/config/development/*
+summer/config/development/

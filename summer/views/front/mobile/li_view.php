@@ -19,8 +19,8 @@ require('header_view.php');
 				    <dt class="zjj_title"><a href="<?php echo archive_url($v)?>"><?php echo $v['title']?></a></dt>
 				    <dd class="cr_summary"><?php echo $v['summary']?></dd>
 				    <dd class="summer-index-tail">
-				            <span class="summer-index-like"><?=$v['love']?></span>
-				            <span class="summer-index-hits"><?=$v['hits']?></span>
+				            <span class="summer-index-like"><?php echo $v['love']?></span>
+				            <span class="summer-index-hits"><?php echo $v['hits']?></span>
 				    </dd>
 				</dl>
 				<?php } ?>
@@ -34,8 +34,6 @@ require('header_view.php');
 		        </div>
 		    </div>
 	    </div>
-
-
     </div>
 
 	<!-- //引入footer -->
@@ -53,17 +51,22 @@ require('header_view.php');
 	$(document).ready(function() {
 
 		//load more news handle
-		var handling = 0;
-		var offset = 10;
+		var handling = 0
+		,offset = 10
+		,category_id = '<?php echo isset($category) ? $category['id'] : '' ?>'
+		,load_more_news_base_url = "<?=site_url('m/index/load_more_news')?>";
 		$("#load-more-news").on('click', function(e){
-
 			if(handling == 1) {
 				return ;
+			}
+
+			if(category_id != '') {
+				var load_more_news_url = load_more_news_base_url + '?offset=' + offset + '&category_id='+category_id;
 			}
 			handling = 1;
 			$.ajax({
 				"type" 		: "get",
-				"url" 		: "<?=site_url('m/index/load_more_news')?>?offset=" + offset,
+				"url" 		:  load_more_news_url,
 				"success" 	: function (data){
 					$(".summer-index-list-sm").append(data);
 					offset += 10;

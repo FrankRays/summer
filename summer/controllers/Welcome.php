@@ -92,11 +92,11 @@ class Welcome extends MY_Controller {
 		$view_data['article'] 			= $article;
 		$view_data['navs'] 				= $this->nav_model->get_list(1, 11, 0);
 		$view_data['bread_path'] 		= $this->article_cat_model->get_nav_path($article['category_id']);
-		$view_data['next_article'] 		
+		$view_data['next_article']
 		= $this->article_model->get_next_article($article['id'],
 					array('class' => 'p-essay next-essay', 'category_id'=>$article['category_id']));
-		$view_data['prev_article'] 		
-		= $this->article_model->get_prev_article($article['id'], 
+		$view_data['prev_article']
+		= $this->article_model->get_prev_article($article['id'],
 					array('class' => 'p-essay previous-essay', 'category_id'=>$article['category_id']));
 		$view_data['week_hot']			= $this->article_model->get_week_hot();
 		$view_data['date_archive_html'] = $this->article_model->get_archive_html();
@@ -278,25 +278,40 @@ class Welcome extends MY_Controller {
 	public function do_like_ajax() {
 		$this->output->set_header('Content-Type:text/html;charset=utf-8');
 		$this->output->set_header('Content-type: application/json');
-		$article_id = $this->input->get('article_id');
-		if(empty($article_id)) {
+
+		if($_POST) {
+			$article_id = $this->input->post('article_id');
+			// print_r($article_id);
+			if(empty($article_id)) {
+				echo '{"status" : 500, "message" : "文章ID不存在"}';
+				exit();
+			} else {
+				$article_id = intval($article_id);
+			}
+
+			$ip_addr = $this->input->ip_address();
+			$this->load->model('article_love_model');
+			if($this->article_love_model->is_love($article_id, $ip_addr)) {
+				echo '{"status" : 500, "message" : "你已经赞过了"}';
+			}else{
+				$this->article_love_model->increase_artilce_love($article_id, $ip_addr);
+				echo '{"status" : 200, "message" : "赞成功"}';
+			}
+		} else {
 			echo '{"status" : 500, "message" : "文章ID不存在"}';
 			exit();
-		}else{
-			$article_id = intval($article_id);
-		}
-
-		$ip_addr = $this->input->ip_address();
-		$this->load->model('article_love_model');
-		if($this->article_love_model->is_love($article_id, $ip_addr)) {
-			echo '{"status" : 500, "message" : "你已经赞过了"}';
-		}else{
-			$this->article_love_model->increase_artilce_love($article_id, $ip_addr);
-			echo '{"status" : 200, "message" : "赞成功"}';
 		}
 	}
 
 	public function m_index() {
+		//设置此页面的过期时间(用格林威治时间表示)，只要是已经过去的日期即可。
+		header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+		//设置此页面的最后更新日期(用格林威治时间表示)为当天，可以强制浏览器获取最新资料
+		header('Last-Modified: ' . gmdate('D, d M Y H:i:s').' GMT');
+		//告诉客户端浏览器不使用缓存，HTTP 1.1 协议
+		header('Cache-Control: no-cache, must-revalidate');
+		//告诉客户端浏览器不使用缓存，兼容HTTP 1.0 协议
+		header('Pragma: no-cache');
 
 		$this->site_model->increase_site_hits();
 
@@ -308,7 +323,7 @@ class Welcome extends MY_Controller {
 
 		$page = $this->article_model->get_front_pages(20, $offset, array("is_top"=>0));
 		$top_article = $this->article_model->get_front_pages(5, 0, array("is_top"=>1));
-		
+
 		$page["data_list"] = array_merge_recursive($top_article["data_list"], $page["data_list"]);
 
 		$data_view['navs'] 		= $this->nav_model->get_mobile_nav(4, 10, 0);
@@ -388,7 +403,7 @@ class Welcome extends MY_Controller {
 		$view_data['photoes']	= $photoes;
 		$view_data['navs'] 		= $this->nav_model->get_mobile_nav(4, 10, 0);
 		$view_data['title']		= $article['title'] . '-' . $article['category_name'] . '-';
-		
+
 		$this->load->view('front/mobile/m_photo_archive_view', $view_data);
 	}
 
@@ -401,8 +416,10 @@ class Welcome extends MY_Controller {
 			$limit = 10;
 		}else{
 			$limit = intval($limit);
+			if($limit > 100) {
+				$limit = 100;
+			}
 		}
-
 
 		if(empty($offset) || ! is_numeric($limit)) {
 			$offset = 0;
@@ -410,10 +427,15 @@ class Welcome extends MY_Controller {
 			$offset = intval($offset);
 		}
 
-		$cond = array(
-				'is_top'	=> FALSE,
-			);
-		$page = $this->article_model->get_front_pages($limit, $offset);
+		$cond = array('is_top'	=> '0');
+
+		$category_id = $this->input->get('category_id');
+		if(!empty($category_id) and is_numeric($category_id)) {
+			$category_id = intval($category_id);
+			$cond['category_id'] = $category_id;
+		}
+
+		$page = $this->article_model->get_front_pages($limit, $offset, $cond);
 		$news = $page['data_list'];
 
 		$return_str = '';
@@ -423,7 +445,7 @@ class Welcome extends MY_Controller {
 			return;
 		}
 		foreach($news as &$v) {
-			$href = site_url('archive/' . $v['category_id'] . '-' . $v['id']);
+			$href = archive_url($v);
 			$return_str .= '<dl><dt class="artitle_author_date"><div class="summer-index-cat">';
 			$return_str .= $v['category_name'] . '</div><div class="summer-index-date">';
 			$return_str .= $v['publish_date'] . '</div></dt>';

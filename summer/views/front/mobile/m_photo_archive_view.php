@@ -50,22 +50,18 @@ require('header_view.php');
 <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
-	
+
 	$(function(){
 		$("#summer-like-btn").on('click', function(e){
-			$.ajax({
-				'url' : "<?php echo site_url('welcome/do_like_ajax').'?article_id='.$article['id'] ?>",
-				'type' : 'get',
-				'dataType' : 'json',
-				'success' : function(res, mes){
-					if(mes == 'success') {
-						alert(res.message);
-					}else{
-						alert('系统错误，请稍后重试');
-					}
+			$.post("<?php echo site_url('welcome/do_like_ajax')?>", {article : <?php echo $article['id']?>}, function(data, xhr){
+				console.log(xhr);
+				if(data == 'success') {
+					alert(data.message);
+				}else{
+					alert('系统错误，请稍后重试');
 				}
-				}
-				)
+
+			});
 		});
 	});
 </script>

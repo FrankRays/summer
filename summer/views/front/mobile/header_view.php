@@ -1,24 +1,24 @@
-<?php defined('BASEPATH') || exit('no direct script access allowed'); 
-
-?>
+<?php defined('BASEPATH') || exit('no direct script access allowed');?>
 <!DOCTYPE html>
 <html lang="zh-CN">
   <head>
   	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title><?php echo isset($title) ? $title : '' ?>四川交院新闻网</title>
 
     <!-- Bootstrap -->
 	<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
 	<!-- default css -->
-	<link rel="stylesheet" href="<?=static_url('css/mobile/default.css')?>" >
+	<link rel="stylesheet" href="<?php echo static_url('css/mobile/default.css')?>" >
 
 	<!-- light slider -->
-	<link rel="stylesheet" type="text/css" href="<?=static_url("plugins/lightslider/css/lightslider.css") ?>">
+	<link rel="stylesheet" type="text/css" href="<?php echo static_url("plugins/lightslider/css/lightslider.css") ?>">
 
+	<!-- layer ui good luck -->
+	<link rel="stylesheet" href="<?php echo static_url('plugins/layui/css/layui.css') ?>">
   </head>
   <body>
   <nav id="summer-mobile-navbar" class="navbar navbar-default">
@@ -31,7 +31,13 @@
 	        <span class="icon-bar"></span>
 	        <span class="icon-bar"></span>
 	      </button>
-	      <a class="navbar-brand" href="<?=site_url('m/index')?>">四川交院新闻网</a>
+	      <a class="navbar-brand" href="<?php echo site_url('m/index')?>">
+	      	<div class="navbar-brand-warpper">
+	      		<img id="mobile-logo" src="<?php echo static_url('images/mobile_logo.gif') ?>">
+	      		<img id="mobile-head" src="<?php echo static_url('images/mobile_head1.jpg') ?>">
+	      		<span>新闻网</span>
+	      	</div>
+	      </a>
 	    </div>
 
 	    <!-- Collect the nav links, forms, and other content for toggling -->

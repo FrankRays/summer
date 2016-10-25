@@ -85,7 +85,7 @@ class post extends MY_controller {
         if($_POST) {
             if($this->_check_form()) {
                 $category_id = intval($this->input->post('category_id'));
-                
+
                 $category = $this->article_cat_model->get_by_id($category_id);
                 if($category == NULL) {
                     show_error('文章分类不存在');
@@ -128,9 +128,13 @@ class post extends MY_controller {
                     "is_redirect"   => $is_redirect,
                     );
 
-                $this->article_model->create($insert_article);
-                set_flashalert('添加文章成功');
-                redirect(site_url('c=post'));
+                $insert_id = $this->article_model->create($insert_article);
+                if( ! empty($insert_id)) {
+                    set_flash_msg('添加文章【<a target="blank" href="index.php/archive/'.$insert_id.'">'.$insert_article['title'].'</a>】成功', 'success');
+                } else {
+                    set_flash_msg('添加文章失败', 'error');
+                }
+                redirect($this->browse_url);
             }
 
             if( isset($_POST['content'])) {
@@ -146,8 +150,7 @@ class post extends MY_controller {
 
     //v2 编辑文章
     public function article_edit() {
-        //检查admin 登录
-        $this->user_model->is_admin();
+        $this->user_model->is_admin_redirect();
         $user = $this->user_model->get_cur_user();
 
         $view_data['module_name'] = '编辑文章';
@@ -210,8 +213,8 @@ class post extends MY_controller {
                     );
 
                 $this->article_model->update_by_id($update_article, intval($article_id));
-                set_flashalert('修改文章成功，去预览下你修改的文章是否正确吧');
-                redirect('c=post');
+                set_flash_msg('修改文章【<a target="blank" href="index.php/archive/'.$article_id.'">'.$update_article['title'].'</a>】成功', 'success');
+                redirect($this->browse_url);
             }
 
         }else{

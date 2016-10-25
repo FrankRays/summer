@@ -1,10 +1,9 @@
-<?php defined('BASEPATH') || exit('no direct script access allowed'); 
+<?php defined('BASEPATH') || exit('no direct script access allowed');
 
 require('header_view.php');
 ?>
-	
 	<div style="height:20px;background-color: rgb(238, 238, 238);width:100%">
-		
+
 	</div>
 	<div class="container summer-article-container">
 		<div class="row">
@@ -17,7 +16,6 @@ require('header_view.php');
 		                ·  <?php echo $article['author_name']?> · <?php echo substr($article['publish_date'], 5, 5) ?>
 		                · <?php echo $article['hits'] == 0 ? 3 : $article['hits'] ?>次阅读 ·
 	                </div>
-	                
 	            </div>
 				<div class="summer-content-view">
 	                     <?=$article['content']?>
@@ -48,22 +46,16 @@ require('header_view.php');
 <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
-	
 	$(function(){
 		$("#summer-like-btn").on('click', function(e){
-			$.ajax({
-				'url' : "<?php echo site_url('welcome/do_like_ajax').'?article_id='.$article['id'] ?>",
-				'type' : 'get',
-				'dataType' : 'json',
-				'success' : function(res, mes){
-					if(mes == 'success') {
-						alert(res.message);
-					}else{
-						alert('系统错误，请稍后重试');
-					}
+			$.post("<?php echo site_url('welcome/do_like_ajax')?>", {article_id : <?php echo $article['id']?>}, function(data, status, xhr){
+				if(data == 'success') {
+					alert(data.message);
+				}else{
+					alert('系统错误，请稍后重试');
 				}
-				}
-				)
+
+			});
 		});
 	});
 </script>
