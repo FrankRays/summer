@@ -219,9 +219,10 @@ class Article_index extends MY_Controller {
 		}
 
 		$page_url .= '?pageNo=' . intval($page_no) . '&pageSize=' . intval($page_size);
-		$url_queue 	= array($page_url);
+		$url_queue 	= array();
 		$visited	= array();
 		while(TRUE) {
+			array_push($url_queue, $page_url);
 			while (count($url_queue) !== 0) {
 				$request_url = array_shift($url_queue);
 				printf("[%s] start deal : %s\n", date('Y-m-d h:i:s'), $request_url);
