@@ -276,8 +276,7 @@ class Welcome extends MY_Controller {
 
 	//文章赞 ajax 接口
 	public function do_like_ajax() {
-		$this->output->set_header('Content-Type:text/html;charset=utf-8');
-		$this->output->set_header('Content-type: application/json');
+		$this->output->set_header('Content-Type:appliction/json;charset=utf-8');
 
 		if($_POST) {
 			$article_id = $this->input->post('article_id');
@@ -462,5 +461,56 @@ class Welcome extends MY_Controller {
 
 		echo $return_str;
 	}
+
+    public function load_flow_article() {
+	    $this->output->set_header('Content-Type:text/html;charset=utf-8');
+        
+        $page = $this->input->get('page');
+        if(empty($page)) {
+            echo '[]';
+        } else {
+            $page = intval($page);
+            if($page < 2) {
+                $page = 2; 
+            }
+        }
+        
+        $where = array('is_top'=>FALSE);
+        $category_id = $this->input->get('category_id');
+        if( ! empty($category_id) and is_numeric($category_id)) {
+            $where['category_id'] = intval($category_id);
+        }
+
+        $articles = $this->db->select('id,title,category_id,category_name,summary,is_redirect,
+                      love,hits,left(publish_date, 10) as show_date')->from(TABLE_ARTICLE)
+                      ->where($where)->limit(($page-1)* 20, 20)->order_by('publish_date desc')
+                      ->get()->result_array();
+        
+		$return_str = '';
+
+		if(empty($articles) || ! is_array($articles)) {
+			echo '';
+			return;
+		}
+
+		foreach($articles as &$v) {
+			$href = archive_url($v);
+			$return_str .= '<dl><dt class="artitle_author_date"><div class="summer-index-cat">';
+			$return_str .= $v['category_name'] . '</div><div class="summer-index-date">';
+			$return_str .= $v['show_date'] . '</div></dt>';
+			if( ! empty($v['cover_img'])) {
+				$return_str .= '<dd class="m"><a href="'.$href.'">';
+				$return_str .= '<img src="'.resource_url($v['cover_img']).'" alt="'.$v['title'].'"></a></dd>';
+			}
+			$return_str .= '<dt class="zjj_title"><a href="'.$href	.'">'.$v['title'].'</a></dt>';
+			$return_str .= '<dd class="cr_summary">'.$v['summary'].'</dd>';
+			$return_str .= '<dd class="summer-index-tail"><span class="summer-index-like">'
+						.$v['love'].
+				            '</span><span class="summer-index-hits">'.$v['hits'].'</span></dd></dl>';
+		}
+
+        echo $return_str;
+        
+    }
 
 }

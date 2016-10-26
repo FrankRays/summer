@@ -1039,9 +1039,6 @@ class article_model extends CI_Model {
 		 ' set `hits`=`hits`+1 where `id`=' . intval($article_id));
 	}
 
-
-
-
 	private function _get_thumb_path($origin_path) {
 		$index = strrpos($origin_path, '.');
 		if($index !== FALSE) {

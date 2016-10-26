@@ -1,7 +1,4 @@
-<?php defined('BASEPATH') || exit('no direct script access allowed'); 
-
-require('header_view.php');
-?>
+<?php defined('BASEPATH') || exit('no direct script access allowed'); require('header_view.php');?>
 
 	<div class="container">
 	  	<div class="row top-slider">
@@ -26,7 +23,7 @@ require('header_view.php');
 	  	</div>
 
 	    <div class="row">
-	    	<div class="col-sm-12 summer-index-list-sm">
+	    	<div class="col-sm-12 summer-index-list-sm" id="summer-stream">
 				<?php foreach($articles as &$v) { ?>
 				<dl>
 				    <dt class="artitle_author_date">
@@ -46,14 +43,6 @@ require('header_view.php');
 				</dl>
 				<?php } ?>
 	    	</div>
-
-			<div class="col-sm-12 summer-index-loadmore">
-		        <a id="load-more-news" href="javascript:;"><img src="<?=static_url('images/loadmore.gif')?>" alt="">加载更多</a>
-		        <div class="spinner">
-		          <div class="double-bounce1"></div>
-		          <div class="double-bounce2"></div>
-		        </div>
-		    </div>
 	    </div>
 
 
@@ -128,11 +117,22 @@ require('header_view.php');
 			});
 		});
 	});
+    
+    layui.use(['flow'], function(){
+        var flow = layui.flow
+        ,$ = layui.jquery;
 
-	//layui
-	layui.config({
-		base : 'statics/js/modules/'
-		,debug : true
-	}).use('index');
+        flow.load({
+            elem : '#summer-stream'
+            ,isAuto : false
+            ,done : function(page, next) {
+                var artilesLis = [];
+                $.get("<?php echo site_url('welcome/load_flow_article') ?>?page=" + page,
+                    function(res){
+                        next(res, res.length == '');
+                    });
+            }
+        });
+    });
 </script>
 </html>
