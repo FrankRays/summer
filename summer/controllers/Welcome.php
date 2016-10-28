@@ -52,6 +52,28 @@ class Welcome extends MY_Controller {
 		$this->load->view('front/welcome/old_index_view', $data_view);
 	}
 
+    private function check_love_article($article_id) {
+        $this->load->model('user_model');
+        $v_user_id = $this->user_model->get_v_user_id();
+        if(empty($v_user_id)) {
+            //empty user id to create a new user id
+            $this->load->vars('isloved', FALSE);
+            return FALSE;
+        } else {
+            //find if this user has love this article by v_userid
+            $is_loved = $this->db->from(TABLE_ARTICLE_LOVE)->where(array('article_id'=>$article_id,'user_id'=>$v_user_id))
+                    ->get()->row_array();
+            //set view variable love to show love article else you can love this article
+            if($is_loved) {
+                $this->load->vars('isloved', TRUE);
+                return TRUE;
+            } else {
+                $this->load->vars('isloved', FALSE);
+                return FALSE;
+            }
+        }
+    }
+
 	public function archive() {
 		//check mobile page
 		if($this->agent->is_mobile()) {
@@ -72,6 +94,9 @@ class Welcome extends MY_Controller {
 		if(empty($article)) {
 			show_404();
 		}
+
+        //to create variable of article love status
+        $this->check_love_article($article_id);
 
 		$this->article_model->increase_hit($article['id']);
 
@@ -276,7 +301,7 @@ class Welcome extends MY_Controller {
 
 	//文章赞 ajax 接口
 	public function do_like_ajax() {
-		$this->output->set_header('Content-Type:appliction/json;charset=utf-8');
+		$this->output->set_header('Content-Type:application/json;charset=utf-8');
 
 		if($_POST) {
 			$article_id = $this->input->post('article_id');
@@ -287,31 +312,48 @@ class Welcome extends MY_Controller {
 			} else {
 				$article_id = intval($article_id);
 			}
-
+            
+            $this->load->model('user_model');
+            $this->load->model('article_love_model');
+            $this->load->helper('summer_view');
 			$ip_addr = $this->input->ip_address();
-			$this->load->model('article_love_model');
-			if($this->article_love_model->is_love($article_id, $ip_addr)) {
-				echo '{"status" : 500, "message" : "你已经赞过了"}';
-			}else{
-				$this->article_love_model->increase_artilce_love($article_id, $ip_addr);
-				echo '{"status" : 200, "message" : "赞成功"}';
-			}
+            $user_id = $this->input->post('v_user_id', TRUE);
+            if(! empty($user_id)) {
+                $user_id = stripslashes($user_id);
+            } else {
+                $user_id = $this->user_model->get_v_user_id();
+            }
+            //check if this user has loved the article
+            //one ip address has the 100 max love one article
+            $count = $this->db->select('count(*) as count')->from(TABLE_ARTICLE_LOVE)
+                ->where(array('article_id'=>$article_id,'ip_addr'=>$ip_addr))
+                ->get()
+                ->row_array();
+            $count = $count['count'];
+            if($count > 100) {
+                echo json_msg('warning', '你已经赞过了o');
+                return ;
+            }
+
+            //check if this user id has love the article
+
+            $is_loved = $this->db->from(TABLE_ARTICLE_LOVE)
+                        ->where(array('article_id'=>$article_id,'user_id'=>$user_id))
+                        ->get()->row_array();
+            if($is_loved) {
+                echo json_msg('warning', '你已经赞过了');
+                return ;
+            }
+            
+            $this->article_love_model->increase_artilce_love($article_id, $user_id, $ip_addr);
+            echo json_msg('success', '赞成功');     
 		} else {
-			echo '{"status" : 500, "message" : "文章ID不存在"}';
-			exit();
+            json_msg('error', '文章不存在');
+            return ;
 		}
 	}
 
 	public function m_index() {
-		//设置此页面的过期时间(用格林威治时间表示)，只要是已经过去的日期即可。
-		header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-		//设置此页面的最后更新日期(用格林威治时间表示)为当天，可以强制浏览器获取最新资料
-		header('Last-Modified: ' . gmdate('D, d M Y H:i:s').' GMT');
-		//告诉客户端浏览器不使用缓存，HTTP 1.1 协议
-		header('Cache-Control: no-cache, must-revalidate');
-		//告诉客户端浏览器不使用缓存，兼容HTTP 1.0 协议
-		header('Pragma: no-cache');
-
 		$this->site_model->increase_site_hits();
 
 		$offset = $this->input->get('offset');
@@ -375,6 +417,7 @@ class Welcome extends MY_Controller {
 		if(empty($article)) {
 			show_404();
 		}
+        $this->check_love_article($article['id']);
 		$this->article_model->increase_hit($article['id']);
 
 		$view_data['article'] 	= $article;

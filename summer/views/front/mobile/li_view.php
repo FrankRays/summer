@@ -5,7 +5,7 @@ require('header_view.php');
 
 	<div class="container">
 	    <div class="row" style="margin-top:20px;">
-	    	<div class="col-sm-12 summer-index-list-sm">
+	    	<div class="col-sm-12 summer-index-list-sm" id="summer-article-stream">
 				<?php foreach($articles as &$v) { ?>
 				<dl>
 				    <dt class="artitle_author_date">
@@ -25,14 +25,6 @@ require('header_view.php');
 				</dl>
 				<?php } ?>
 	    	</div>
-
-			<div class="col-sm-12 summer-index-loadmore">
-		        <a id="load-more-news" href="javascript:;"><img src="<?=static_url('images/loadmore.gif')?>" alt="">加载更多</a>
-		        <div class="spinner">
-		          <div class="double-bounce1"></div>
-		          <div class="double-bounce2"></div>
-		        </div>
-		    </div>
 	    </div>
     </div>
 
@@ -46,34 +38,28 @@ require('header_view.php');
 
 <!-- Bootstrap  -->
 <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<!-- layer ui good luck -->
+<script type="text/javascript" src="<?php echo static_url('plugins/layui/layui.js') ?>"></script>
 
 <script type="text/javascript">
-	$(document).ready(function() {
+    layui.use(['flow'], function(){
+        var flow = layui.flow
+        ,$ = layui.jquery
+        ,category_id = <?php echo isset($category) ? $category['id'] : 0 ?>;
 
-		//load more news handle
-		var handling = 0
-		,offset = 10
-		,category_id = '<?php echo isset($category) ? $category['id'] : '' ?>'
-		,load_more_news_base_url = "<?=site_url('m/index/load_more_news')?>";
-		$("#load-more-news").on('click', function(e){
-			if(handling == 1) {
-				return ;
-			}
-
-			if(category_id != '') {
-				var load_more_news_url = load_more_news_base_url + '?offset=' + offset + '&category_id='+category_id;
-			}
-			handling = 1;
-			$.ajax({
-				"type" 		: "get",
-				"url" 		:  load_more_news_url,
-				"success" 	: function (data){
-					$(".summer-index-list-sm").append(data);
-					offset += 10;
-					handling = 0;
-				}
-			});
-		});
-	});
+        flow.load({
+            elem : '#summer-article-stream'
+            ,isAuto : false
+            ,done : function(page, next) {
+                var artilesLis = [];
+                if(category_id !== 0) {
+                    $.get("<?php echo site_url('welcome/load_flow_article') ?>?page=" + page + "&category_id=" + category_id,
+                        function(res){
+                            next(res, res.length == '');
+                        });
+                }
+            }
+        });
+    });
 </script>
 </html>

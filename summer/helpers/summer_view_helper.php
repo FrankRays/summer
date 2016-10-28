@@ -188,3 +188,15 @@ if( ! function_exists('html_resource')) {
 		$CI->js_builder->display_css();
 	}
 }
+
+
+if( ! function_exists('json_msg')) {
+    function json_msg($status, $msg, $data=array()) {
+        $msg = array(
+            'status'=>$status,
+            'msg'   =>$msg,
+            'data'  =>$data,
+            );
+        return json_encode($msg);
+    }
+}

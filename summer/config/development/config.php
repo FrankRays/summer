@@ -25,7 +25,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 
 
-$config['base_url'] = 'http://test.news.svtcc.edu.cn:9999';
+$config['base_url'] = 'http://192.168.3.199';
 
 /*
 |--------------------------------------------------------------------------

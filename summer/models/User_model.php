@@ -576,4 +576,24 @@ class User_model extends MY_Model{
 		}
 		return TRUE;
 	}
+
+    public function get_v_user_id() {
+        $v_user_id = $this->session->userdata('v_user_id');
+        //if session not ,get it form cookie
+        if(empty($v_user_id)) {
+            $v_user_id = get_cookie('v_user_id');
+            if(empty($v_user_id)) {
+                //session cookie not has, then create a new virtual user id
+                $v_user_id = md5(time() . 'summer') . rand(0, 999);
+                $cookie = array(
+                    'name'=>'v_user_id',
+                    'value'=>$v_user_id,
+                    'expire'=>time() + 315360000, //10 years expire
+                );
+                set_cookie($cookie);
+            }
+            $this->session->set_userdata('v_user_id', $v_user_id);
+        }
+        return $v_user_id;
+    }
 }

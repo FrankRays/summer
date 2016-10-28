@@ -341,8 +341,14 @@ body {
     margin:0 auto 20px auto;
 }
 
+.summer-is-love span{ border : 2px solid #ff822d !important;}
+.summer-is-love a{color:#ff822d;}
+.summer-is-love a i{background-position: -1px -110px !important;}
+.summer-not-love span{border: 2px solid #EEE !important;}
+.summer-not-love a{color:#ff822d;}
+.summer-not-love a i {background-position: -1px -75px !important;}
+
 .summer-m-like-wrap {
-    border: 2px solid #EEE !important;
     border-radius: 35px;
     font-size: 15px;
     text-align: center;
@@ -357,7 +363,6 @@ body {
 }
 
 .summer-m-like-wrap i{
-    background-position: -1px -75px !important;
     display: inline-block;
     width: 21px;
     height: 21px;
