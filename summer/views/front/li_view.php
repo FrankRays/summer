@@ -49,7 +49,7 @@ defined('APPPATH') || exit('no access');
                 <?php } ?>
 
                 <li>
-                    <a href="<?php echo $archive_url($v) ?>" class="clearfix">
+                    <a href="<?php echo archive_url($v) ?>" class="clearfix">
                         <span class="fl indbase_tit"><?php echo $v['title'] ?></span>
                     </a>
                 </li>

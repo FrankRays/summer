@@ -129,7 +129,7 @@
                 var artilesLis = [];
                 $.get("<?php echo site_url('welcome/load_flow_article') ?>?page=" + page,
                     function(res){
-                        next(res, res.length == '');
+                        next(res, res != '');
                     });
             }
         });
