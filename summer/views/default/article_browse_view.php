@@ -13,8 +13,8 @@
         <div class="am-btn-toolbar">
           <div class="am-btn-group am-btn-group-xs">
             <a class="am-btn am-btn-default" href="<?php echo site_url('c=post&m=article_create') ?>"><span class="am-icon-plus"></span> 新增</a>
-<!--             <a class="am-btn am-btn-default" href="<?php echo site_url('c=article_index&m=create_index_article') ?>"><span class="am-icon-plus"></span> 新增首页</a>
-            <a class="am-btn am-btn-default" href="<?php echo site_url('c=article_index&m=batch_fetch_index_article') ?>"><span class="am-icon-archive"></span> 批量新增首页</a> -->
+            <a class="am-btn am-btn-default" href="<?php echo site_url('c=article_index&m=manu_www_crawler') ?>"><span class="am-icon-plus"></span> 获取首页</a>
+           <!-- <a class="am-btn am-btn-default" href="<?php echo site_url('c=article_index&m=batch_fetch_index_article') ?>"><span class="am-icon-archive"></span> 批量新增首页</a> -->
             <button id="summer-del-article-btn" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
           </div>
         </div>

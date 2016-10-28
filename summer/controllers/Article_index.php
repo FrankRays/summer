@@ -204,11 +204,17 @@ class Article_index extends MY_Controller {
 		redirect(site_url('c=post&m=index'));
 	}
 
-	public function www_crawler($page_url_code=0, $page_no=1, $page_size=20) {
-		if( ! is_cli()) {
-			exit('ba');
-		}
-		
+	public function manu_www_crawler() {
+		$this->www_crawler(0);
+		$this->www_crawler(1);
+		$this->www_crawler(2);
+		set_flash_msg('获取首页文章成功');
+		redirect(site_url('c=post&m=browse'), 'success');
+	}
+
+	public function www_crawler($page_url_code=0, $page_no=1, $page_size=10) {
+		$this->load->model('user_model');
+		$this->user_model->is_admin();
 		$this->load->helper('simple_html_dom_helper');
 		$page_url_map = array('http://www.svtcc.edu.cn/front/list-11.html',
 				 	'http://www.svtcc.edu.cn/front/list-12.html',
@@ -221,16 +227,10 @@ class Article_index extends MY_Controller {
 		$page_url .= '?pageNo=' . intval($page_no) . '&pageSize=' . intval($page_size);
 		$url_queue 	= array();
 		$visited	= array();
-		while(TRUE) {
 			array_push($url_queue, $page_url);
 			while (count($url_queue) !== 0) {
 				$request_url = array_shift($url_queue);
-				printf("[%s] start deal : %s\n", date('Y-m-d h:i:s'), $request_url);
-
-				printf("[%s] start curl : %s\n", date('Y-m-d h:i:s'), $request_url);
 				$html = file_get_html($request_url);
-				printf("[%s] completely curl : %s\n", date('Y-m-d h:i:s'), $request_url);
-
 				if(strpos($request_url, 'list') !== false) {
 					//deal with list
 					$ret = $html->find('.szlbys_content ul', 0)->find('li a');
@@ -245,9 +245,6 @@ class Article_index extends MY_Controller {
 					}
 					unset($ret);
 				} else {
-					//deal with article content page
-					printf("[%s] start deal content : %s\n", date('Y-m-d h:i:s'), $request_url);
-
 					if( ! empty($html)) {
 						$this->_crawl_article_content($html, $request_url);
 					}
@@ -257,11 +254,7 @@ class Article_index extends MY_Controller {
 				unset($html);
 				unset($request_url);
 				echo memory_get_usage() . "\n";
-				sleep(1);
 			}
-			sleep(60*15);
-		}
-
 	}
 
 	public function www_crawler_single() {
