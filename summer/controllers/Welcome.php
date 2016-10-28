@@ -518,7 +518,7 @@ class Welcome extends MY_Controller {
             }
         }
         
-        $where = array('is_top'=>FALSE);
+        $where = array('is_top'=>FALSE, 'is_delete'=>'0', 'status'=>'1');
         $category_id = $this->input->get('category_id');
         if( ! empty($category_id) and is_numeric($category_id)) {
             $where['category_id'] = intval($category_id);
