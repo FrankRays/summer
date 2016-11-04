@@ -240,7 +240,7 @@ class Article_index extends MY_Controller
 
         $url_queue  = array();
         foreach ($ret as $a) {
-            array_push($url_queue, 'http://www.svtcc.edu.cn' . $a->href);
+            array_unshift($url_queue, 'http://www.svtcc.edu.cn' . $a->href);
         }
 
         foreach($url_queue as $request_url) {
