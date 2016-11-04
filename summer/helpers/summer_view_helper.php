@@ -103,10 +103,14 @@ if( ! function_exists('resource_url')) {
 
 	//get the resource url
 	function resource_url($url='') {
-		$url = str_replace('http://127.0.0.1:9999/xww/resource/', '', $url);
-		$base_static_url = get_instance()->config->item('resource_base_path');
-		$base_static_url .= $url;
-		return $base_static_url;
+		if(strstr($url, 'http')) {
+			return $url;
+		} else {
+			$url = str_replace('http://127.0.0.1:9999/xww/resource/', '', $url);
+			$base_static_url = get_instance()->config->item('resource_base_path');
+			$base_static_url .= $url;
+			return $base_static_url;
+		}
 	}
 }
 
@@ -191,7 +195,7 @@ if( ! function_exists('html_resource')) {
 
 
 if( ! function_exists('json_msg')) {
-    function json_msg($status, $msg, $data=array()) {
+    function json_msg($msg, $status, $data=array()) {
         $msg = array(
             'status'=>$status,
             'msg'   =>$msg,

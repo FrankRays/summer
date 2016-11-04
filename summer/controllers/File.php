@@ -17,8 +17,46 @@ class File extends MY_Controller {
 	}
 
 
-	public function articlePhoto() {
+	/**
+array(6) {
+  ["upload_path"]=>
+  string(22) "./resource/2016/10/30/"
+  ["allowed_types"]=>
+  string(11) "jpg|png|gif"
+  ["max_size"]=>
+  int(20480)
+  ["max_width"]=>
+  int(2048)
+  ["max_height"]=>
+  int(2048)
+  ["encrypt_name"]=>
+  bool(true)
+}
+	**/
+    public function upload() {   
+    	set_ajax_header();
+        //start update the image
+        $upload_config = array(
+                'upload_path'=>get_upload_path(),
+                'allowed_types' =>'jpg|png|gif',
+                'max_size'      =>20480,
+                'max_width'     =>2048,
+                'max_height'    =>2048,
+                'encrypt_name'  =>TRUE,
+                );
+        $this->load->library('upload');
+        $this->upload->initialize($upload_config);
+        if($this->upload->do_upload('upload_img')) {
+            $upload_data = $this->upload->data();
+            $relative_path = str_replace(str_replace('system/', '',  BASEPATH) . 'resource', '', $upload_data['full_path']);
+            echo json_msg('上传幻灯片图片成功', 'success', resource_url($relative_path));
+        } else {
+        	echo json_msg($this->upload->display_errors(), 'error');
+        }
 
+    }
+
+	public function articlePhoto() {
 		//create upload file
 		$this->config->load('snowConfig/admin');
 		$fileCfg = $this->config->item('upload', 'snowConfig/admin');

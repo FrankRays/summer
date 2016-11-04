@@ -39,6 +39,9 @@
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("statics/plugins/chosen/amazeui.chosen.css") ?>">
 <!-- chose plugin -->
 
+<!-- layui -->
+<link rel="stylesheet" type="text/css" href="/statics/plugins/layui/css/layui.css" />
+<script type="text/javascript" src="/statics/plugins/layui/layui.js"></script>
 <?php echo html_resource('css') ?>
 <?php echo html_resource('head_js') ?>
 </head>

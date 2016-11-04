@@ -130,9 +130,9 @@ if( ! function_exists('make_upload_dir')) {
 	//return : absotute path of upload file on server
 	function make_upload_dir() {
 		$CI = &get_instance();
-		$upload_path = $CI->config->item('resource_upload_path');
+		$upload_path = './resource';
 		if( ! file_exists($upload_path)) {
-			show_error('上传路径不存在');
+			show_error('文件上传本地路径不存在');
 		}
 
 		$relative_path = date('Y/m/d/');
@@ -142,9 +142,14 @@ if( ! function_exists('make_upload_dir')) {
 				show_error('创建上传图片路径失败');
 			}
 		}
-
 		return $upload_path;		
 	}
+}
+
+if( ! function_exists('get_upload_path')) {
+    function get_upload_path(){
+        return make_upload_dir();
+    }
 }
 
 if( ! function_exists('get_random_file_name')) {
@@ -174,4 +179,10 @@ if( ! function_exists('cms_version')) {
 		$CI = &get_instance();
 		return $CI->config->item('cms_version');
 	}
+}
+
+if( ! function_exists('set_ajax_header')) {
+    function set_ajax_header() {
+        get_instance()->output->set_header('Content-Type:application/json;charset=utf-8');
+    }
 }

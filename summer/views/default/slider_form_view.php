@@ -24,7 +24,7 @@ function sayValue($name , $arr){
             <div class="am-form-group">
               <label class="am-u-sm-3 am-form-label">图片名称</label>
               <div class="am-u-sm-6 am-u-end">
-                <input name="title"  value="<?=set_value('title')?>" placeholder="幻灯片标题" class="am-g am-input-sm am-form-field" style="width:100%" type="test" name="coverImg"/>
+                <input name="title"  value="<?php echo set_value('title')?>" placeholder="幻灯片标题" class="am-g am-input-sm am-form-field" style="width:100%" type="test" name="coverImg"/>
               </div>
             </div>
 
@@ -38,7 +38,7 @@ function sayValue($name , $arr){
             <div class="am-form-group">
               <label class="am-u-sm-3 am-form-label">图片预览</label>
               <div id="upload-img-view" class="am-u-sm-9">
-                <input type="file" name="img_path" />
+                <input type="file" name="upload_img"  class="layui-upload-file" />
                 <div>
                   <img style="width:200px" id="img-review" src="<?php echo resource_url(set_value('img_path'))?>">
                 </div>
@@ -51,7 +51,29 @@ function sayValue($name , $arr){
                 </div>
                 <div class="am-u-sm-4"></div>
             </div>
+            <input type="hidden" id="imgsrc" name="img_path" value="<?php echo set_value('img_path')?>"/>
             <input type="hidden" id="newsId" name="slider_id" value="<?php echo set_value('id')?>" />
         </form>
     </div>
 </div>
+
+<script type="text/javascript">
+layui.use(['upload', 'layer'], function(){
+  var $ = layui.jquery
+  ,upload = layui.upload
+  ,layer = layui.layer;
+
+  layui.upload({
+    url : '<?php echo site_url('c=file&m=upload') ?>'
+    ,title : '上传图片文件'
+    ,ext: 'jpg|png|gif'
+    ,success : function(res) {
+      if(res.msg) {
+        layer.msg(res.msg);
+        $("#img-review").attr('src', res.data);
+        $("#imgsrc").val(res.data);
+      }
+    }
+  })
+});
+</script>
