@@ -322,9 +322,9 @@ class Article_index extends MY_Controller
         $index_article_id = $category_id[2];
         $index_article_id = substr($index_article_id, 0, strpos($index_article_id, '.'));
         if(mb_strlen($content) > 64) {
-            $summary = mb_substr($content, 0, 64);
+            $summary = mb_substr(strip_tags($content), 0, 64);
         } else {
-            $summary = $content;
+            $summary = strip_tags($content);
         }
 
         $insert_article = array(
