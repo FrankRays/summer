@@ -236,3 +236,6 @@ body {overflow: hidden;}
 .pagingP{width:821px;margin:0 auto;padding:15px 0px; border-bottom: 1px solid #f0f0f0; text-indent:0 !important;overflow: hidden}
 .shareAtticle{margin:20px 0 30px;  float: right;}
 .p-essay {width:380px; text-overflow: ellipsis; white-space: nowrap;overflow:hidden;}
+.summer-article-imgp{text-align: center;}
+.summer-article-imgp img {width:70%;border:1px solid #e2e2e2;padding:4px;}
+
