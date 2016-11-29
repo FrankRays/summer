@@ -306,10 +306,9 @@
 										<a href="<?php echo archive_url($v) ?>
 											">
 											<img src="<?php echo resource_url($v['coverimg_path'])?>" /></a>
-										<a href="<?php echo archive_url($v) ?>
-											">
+										<a href="<?php echo archive_url($v) ?>">
 											<p  style="margin-top:5px;text-align:center;">
-												<?php echo $v['title']?></p>
+												<?php echo sub_text_mb($v['title'], 15)?></p>
 										</a>
 									</div>
 								<?php } ?>
