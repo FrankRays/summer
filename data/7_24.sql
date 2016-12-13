@@ -85,3 +85,16 @@ ENGINE = MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 ALTER TABLE `summer_article_category` ADD `is_img` TINYINT NOT NULL DEFAULT '0' AFTER `is_delete`;
 
 ALTER TABLE `summer_article_index` ADD `www_href` VARCHAR(255) NOT NULL AFTER `fingerprint`;
+
+
+-- 12.13 creat a new table `summer_visitor` 记录访客行文
+CREATE TABLE `summer_visitor` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `vci` char(36) NOT NULL COMMENT '生成的base64cookie',
+ `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `ip_addr` char(15) NOT NULL DEFAULT '' COMMENT 'IP地址',
+ `type` varchar(20) NOT NULL,
+ `type_value` varchar(20) NOT NULL,
+ PRIMARY KEY (`id`),
+ KEY `vci` (`vci`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8

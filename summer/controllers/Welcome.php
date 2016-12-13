@@ -52,6 +52,10 @@ class Welcome extends MY_Controller
             }
         }
 
+        $this->load->model('visitor_model');
+        $this->visitor_model->record_visitor('index', 0);
+
+
         $this->load->view('front/welcome/old_index_view', $data_view);
     }
 
