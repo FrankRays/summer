@@ -18,14 +18,6 @@ $config['upload']['thumb'] = array(
     );
 
 
-if(file_exists(APPPATH.'/resource/')) {
-    $config['upload']['resource_path'] = APPPATH.'/resource/';
-}else if(file_exists(dirname(APPPATH).'/resource/')) {
-    $config['upload']['resource_path'] = dirname(APPPATH).'/resource/';
-}else{
-    exit('未找到存放资源的文件夹');
-}
-
 //分页参数
 $config['paginationConfig'] = array(
     'per_page' => '20',

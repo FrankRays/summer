@@ -50,3 +50,4 @@ defined('TABLE_ROLE')				OR define('TABLE_ROLE', 'summer_role');
 defined('TABLE_ROLEUSER')			OR define('TABLE_ROLEUSER', 'summer_roleuser');
 defined('TABLE_ACCESS')				OR define('TABLE_ACCESS', 'summer_access');
 defined('TABLE_MODULE')				OR define('TABLE_MODULE', 'summer_module');
+defined('TABLE_VISITOR')			OR define('TABLE_VISITOR', 'summer_visitor');

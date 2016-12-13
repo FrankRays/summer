@@ -1,0 +1,395 @@
+body {
+    background-color:rgb(238, 238, 238);
+}
+
+.container {
+    background-color:rgb(238, 238, 238);
+}
+
+/* 移动端navbar */
+#summer-mobile-navbar {
+    margin-bottom: 0;
+    background-color: #2b5cab;
+    border: none;
+}
+
+#summer-mobile-navbar .navbar-toggle .icon-bar {
+    background-color: #fff;
+}
+
+#summer-mobile-navbar .navbar-toggle:focus, .navbar-default .navbar-toggle:hover {
+    background-color: #ff822d;
+}
+
+#summer-mobile-navbar .navbar-nav>li>a {
+    color:#fff;
+}
+
+.navbar-brand-warpper {
+   overflow: auto;
+   zoom :1;
+}
+
+#summer-mobile-navbar .navbar-brand {
+    padding:0;
+}
+
+#summer-mobile-navbar .navbar-brand #mobile-logo {
+    width:50px;
+    height:50px;
+    float: left;
+}
+#summer-mobile-navbar .navbar-brand #mobile-head {
+    width:150px;
+    height:50px;
+    float: left;
+}
+#summer-mobile-navbar .navbar-brand span {
+    font-family: "Helvetica Neue", Helvetica, STHeiTi, sans-serif;
+    color:#fff;
+    line-height: 52px;
+    float: left;
+}
+/* 移动端slider */
+.imgag-gallery-wrapper {
+    background-color: #fff;
+    margin-bottom: 15px;
+    position: relative;
+    box-shadow: 0px 2px 5px #c1c1c1;
+}
+
+.imgag-gallery-wrapper .image-gallery-title {
+    height: 20px;
+    width: 100%;
+    position: absolute;
+    left: 0px;
+    bottom: 14px;
+    list-style: none;
+    padding:0;
+}
+
+.imgag-gallery-wrapper .image-gallery-title li {
+    text-align: center;
+    background-color:rgba(70, 70, 70, 0.5);
+}
+
+.imgag-gallery-wrapper .image-gallery-title li a {
+    width:100%;
+    font-size: 10px;
+    line-height: 20px;
+    color: #fff;
+    padding:0 15px;
+    display: block;
+    word-wrap: normal; /* for IE */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.top-slider .top-slider-container{padding:0;}
+
+
+/* 移动端 footer */
+.summer-foot-container {
+    padding:10px 0px;
+    background-color: #2b5cab;
+}
+
+.summer-foot-logo{
+    width:50px;
+    height:50px;
+    background-image: url('../../images/footer_logo.gif');
+    background-size: 50px 50px;
+    background-repeat: no-repeat;
+    margin:0 auto;
+}
+
+.summer-foot-container p {
+    text-align: center;
+    margin: 10px 0 0 0 ;
+}
+
+.summer-foot-container .summer-m-schoolmotto {
+    font-weight: bold;
+    font-size: 15px;
+    color: #fff;
+}
+
+.summer-foot-container .summer-m-footerinfo {
+    font-size: 10px;
+    color: #9a9a9a;
+}
+
+.summer-index-list-sm dl {
+    background: #fff;
+    margin-bottom: 15px;
+    box-shadow: 0px 2px 5px #c1c1c1;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.summer-index-list-sm dd, .summer-index-list-sm dt {
+    margin: 0 17.5px;
+}
+
+.summer-index-list-sm dd.m {
+    text-align: center;
+    margin-left: 0;
+    margin-right: 0;
+    max-height: 200px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.summer-index-list-sm dt {
+    margin-top: 17.5px;
+    margin-bottom: 0px;
+    font-weight: bold;
+    font-size: 12px;
+    margin-left: 17.5px;
+}
+
+.summer-index-list-sm dd.m img {
+    width: 100%;
+    vertical-align: middle;
+}
+
+.summer-index-list-sm .artitle_author_date .summer-index-date {
+    font-size: 12px;
+    padding-top: 2px;
+    color: #9a9a9a;
+}
+
+.summer-index-list-sm .artitle_author_date {
+    height: 30px;
+    color: #929292;
+    font-weight: normal;
+}
+
+.summer-index-list-sm dt.zjj_title {
+    /* margin: 3px 8px; */
+    margin-bottom: 17.5px;
+    line-height: 1.6;
+}
+
+.summer-index-list-sm dt.zjj_title a{
+    font-size: 18px;
+    font-weight: bold;
+    color: #404040;
+    line-height: 1.6;
+    cursor: auto;
+}
+
+.summer-index-list-sm  dd.cr_summary {
+    color: #9a9a9a;
+    font-size: 14px;
+    line-height: 1.6;
+    height: 46px;
+    overflow: hidden;
+}
+
+.summer-index-list-sm .cr_mmtre {
+    margin: 17.5px 17.5px 16.5px;
+    height: 10px;
+    line-height: 20px;
+}
+
+.summer-index-list-sm .artitle_author_date .summer-index-cat {
+    background: none;
+    padding: 0px 0px 0px 0px;
+    font-weight: 500;
+    font-size: 14px;
+    color: #5A5A5A;
+    font-weight: bold;
+    min-width: 110px;
+    overflow: hidden;
+    float:left;
+}
+
+.summer-index-list-sm .artitle_author_date .summer-index-date {
+	float:right;
+}
+
+.summer-index-list-sm .summer-index-tail {
+    color: #aaa;
+    margin: 17.5px 17.5px 16.5px;
+    height: 10px;
+    line-height: 20px
+}
+
+.summer-index-list-sm .summer-index-tail .summer-index-like {
+    padding-left: 19px;
+    float: right;
+    color: #9a9a9a;
+    background-size: 10px;
+    background-position: 0px 6px;
+    font-size: 12px;
+    background: url(../../images/zan.gif) no-repeat 0 0;
+    background-size: 10px;
+    display: block;
+    height: 10px;
+    line-height: 10px;
+}
+
+.summer-index-list-sm .summer-index-tail .summer-index-hits {
+    padding-left: 19px;
+    float: right;
+    color: #9a9a9a;
+    background-size: 10px;
+    background-position: 0px 6px;
+    font-size: 12px;
+    background: url(../../images/hits.png) no-repeat 0 0;
+    background-size: 10px;
+    display: block;
+    height: 10px;
+    line-height: 10px;
+    margin-right:17px;
+}
+
+.summer-index-list-sm .summer-index-tail span {
+    display: block;
+    float: left;
+    height: 10px;
+    line-height: 10px;
+}
+
+
+
+.summer-index-loadmore {
+    background: #fff;
+    text-align: center;
+    height: 34px;
+    line-height: 34px;
+    box-shadow: 0 1px 5px #c6c6c6;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.summer-index-loadmore a, a:visited{
+    display: block;
+    font-size: 11px;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    color: #9a9a9a;
+}
+
+.summer-index-loadmore img{
+	text-align: center;
+    width: 15px;
+    padding-right: 4px;
+    vertical-align: -2px;
+    border:none;
+}
+
+
+/*  article-archive */
+.summer-article-container {
+    background-color: #fff;
+    margin-bottom: 20px;
+    box-shadow: 0px 2px 5px #c1c1c1;
+}
+
+.summer-article-archive-title {
+    border: none;
+    padding: 0;
+    width: auto;
+    margin: 40px 0;
+    text-align: center;
+    line-height: 35px;
+    font-size: 24px;
+    color: #4e5053;
+    font-weight: bold;
+    display: block;
+}
+
+.summer-article-archive-subtitle {
+    border: none;
+    margin: 0 0 50px 0;
+}
+
+.summer-article-archive-subtitle-a {
+    text-align: center;
+    color: #9a9a9a;
+    margin-top: -9px;
+    background-color: #fff;
+    padding-right: 4px;
+}
+
+.summer-content-view {
+    margin-bottom: 10px;
+    line-height: 30px;
+    color: #4b4c4c;
+    font-size: 17px;
+    zoom:1;
+}
+
+.summer-content-view p {
+    margin-top:10px;
+}
+
+
+.summer-content-view img {
+    /*max-width: none;
+    width: calc(100% + ( 15px ) * 2 );
+    margin-left: -20px*/
+    width: 100%;
+}
+
+.summer-m-like{
+    width:48px;
+    margin:0 auto 20px auto;
+}
+
+.summer-is-love span{ border : 2px solid #ff822d !important;}
+.summer-is-love a{color:#ff822d;}
+.summer-is-love a i{background-position: -1px -110px !important;}
+.summer-not-love span{border: 2px solid #EEE !important;}
+.summer-not-love a{color:#ff822d;}
+.summer-not-love a i {background-position: -1px -75px !important;}
+
+.summer-m-like-wrap {
+    border-radius: 35px;
+    font-size: 15px;
+    text-align: center;
+    width: 20px;
+    height: 20px;
+    margin-top: 0px;
+    margin-left: 0px;
+    padding: 12px;
+    background: #FFF none repeat scroll 0% 0%;
+    float:left;
+    box-sizing: content-box;
+}
+
+.summer-m-like-wrap i{
+    display: inline-block;
+    width: 21px;
+    height: 21px;
+    background: transparent url("../../images/like_fav_ico.png") no-repeat scroll 0% 0%;
+    vertical-align: middle;
+    background-size: 22px;
+}
+
+/* hidden */
+.summer-hidden {
+    display: none;
+}
+
+
+/* common */
+.cl:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+.image-gallery {
+    max-height: 200px;
+}
+
+.summer-m-like-num {
+    font-size: 20px;
+}

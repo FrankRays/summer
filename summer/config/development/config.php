@@ -25,7 +25,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 
 
-$config['base_url'] = 'http://192.168.3.199';
+$config['base_url'] = 'http://test.summer.com:9999';
 
 /*
 |--------------------------------------------------------------------------
