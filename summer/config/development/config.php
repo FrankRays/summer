@@ -37,12 +37,7 @@ $config['base_url'] = 'http://test.summer.com:9999';
 | variable so that it is blank.
 |
 */
-
-if(defined('ADMIN')) {
-	$config['index_page'] = 'y.php';
-}else{
-	$config['index_page'] = 'index.php';
-}
+$config['index_page'] = '';
 
 /*
 |--------------------------------------------------------------------------
