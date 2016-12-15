@@ -13,6 +13,10 @@ class User extends MY_Controller {
 	}
 
 	public function login() {
-		echo 'admin login';
+
+		if($_POST) {
+			var_dump($_POST);
+		}
+		$this->load->view('admin/login_view');
 	}
 }
